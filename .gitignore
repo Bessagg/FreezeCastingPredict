@@ -749,3 +749,4 @@ cython_debug/
 
 /temp_models/
 /catboost_info/
+/selected_models/
