@@ -19,7 +19,8 @@ class DataParser:
         self.ratios = [0.8]
         self.seed = 42
         # 19 columns. All chosen columns that might be relevant for porosity prediction.
-        self.all_cols = ['name_part1', 'material', 'name_part2',
+        self.all_cols = ['name_part1', 'name_part2',
+                         # 'material',
                          'name_fluid1', 'technique', 'direction',  # 'sublimated'
                          'material_group',
                          'name_mold_mat',
@@ -35,6 +36,9 @@ class DataParser:
                              'temp_cold', 'cooling_rate',
                              'time_sub',
                              'time_sinter_1', 'temp_sinter_1', 'vf_total', 'porosity']
+
+        self.simplest = ['material_group', 'name_part1', 'name_fluid1', 'vf_total', 'porosity']
+
         # 16 columns
         self.mid_cols = ['name_part1', 'name_part2',
                          'name_fluid1',  # 'sublimated', 'technique', 'direction',
@@ -75,7 +79,8 @@ class DataParser:
                            'porosity': 'Porosity'}
         self.all_cat_cols = [key for key in self.col_dtypes if self.col_dtypes[key] == 'enum']
         self.all_num_cols = [key for key in self.col_dtypes if self.col_dtypes[key] != 'enum']
-        self.feats_dict = {'all_cols': self.all_cols, 'mid_cols': self.mid_cols, 'reduced_cols': self.reduced_cols}
+        self.feats_dict = {'all_cols': self.all_cols, 'mid_cols': self.mid_cols, 'reduced_cols': self.reduced_cols,
+                           'simplest_cols': self.simplest}
 
         # technique', 'sublimated' only have one value / direction' only has 600 rows
 
