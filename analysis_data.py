@@ -20,22 +20,22 @@ import plotly.io as pio
 import data_parser
 import matplotlib
 import squarify
-
+from scipy.stats import ks_2samp  # Kolmogorov-Smirnov test
 pio.renderers.default = "browser"
 
 # Load Data
-DataParser = data_parser.DataParser()
-df_raw = DataParser.load_complete_data_from_pickle()
-df_raw = DataParser.preprocess_drop_not_sublimated(df_raw)
-df = df_raw[DataParser.selected_cols]
-df = DataParser.preprocess_dropna(df)
-df = DataParser.rename_columns_df(df)
-df_raw_porosity = DataParser.preprocess_dropna(df_raw)  # df with all columns and all rows that have porosity
+parser = data_parser.DataParser()
+df_raw = parser.load_complete_data_from_pickle()
+df_raw = parser.preprocess_drop_not_sublimated(df_raw)
+df = df_raw[parser.all_cols]
+df = parser.rename_columns_df(df)
+df_raw_porosity = parser.preprocess_dropna(df_raw)  # df with all columns and all rows that have porosity
 pallete = "summer"
 
 # Samples per paper
 samples_per_paper = df_raw_porosity.groupby('paper_ID').size()
 samples_per_paper = pd.DataFrame(samples_per_paper.sort_values(ascending=False), columns=['values'])
+print("Distinct papers", df_raw_porosity['paper_ID'].nunique())
 # Plot the TreeMap
 plt.figure(figsize=(10, 6))
 ths = 2  # count ths
@@ -66,11 +66,13 @@ df_num = df.select_dtypes(include=['number', 'float64'])
 # plt.tight_layout()
 plt.show()
 plt.subplots_adjust(left=0.21, right=1.05, top=0.95, bottom=0.3)
-heatmap = sns.heatmap(df_num.corr(), vmin=-1, vmax=1, annot=True, cmap='BrBG', fmt=".2%", annot_kws={"fontsize": 20})
+corr = df_num.corr()
+mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
+heatmap = sns.heatmap(corr, vmin=-1, vmax=1, mask=mask, annot=True, cmap='BrBG', fmt=".2%", annot_kws={"fontsize": 20})
 heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize=28)
 heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize=28)
 heatmap.set_xticklabels(heatmap.get_xticklabels(), rotation=38, horizontalalignment='right')
-heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=30, horizontalalignment='right')
+heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=20, horizontalalignment='right')
 # heatmap.set_title('Matriz de Correlação', fontdict={'fontsize': 18}, pad=12)
 print("Correlation matrix \n")
 plt.savefig(f"images/Correlation.png")
@@ -87,14 +89,40 @@ plt.close('all')
 order = df['Group'].value_counts().index.to_list()
 df['group_order'] = df['Group'].astype(pd.CategoricalDtype(categories=order, ordered=True))
 df_num_dist = df.sort_values(by='group_order')  # order raw df for numerical distribution plot
+top4_group_order_categories = df_num_dist['group_order'].value_counts().head(3).index.to_list()
+df_num_dist_top4 = df_num_dist[df_num_dist['group_order'].isin(top4_group_order_categories)]
 for col in df_num:
     sns.set(font_scale=1.5)
-    g = sns.FacetGrid(df_num_dist, row='Group',
+    g = sns.FacetGrid(df_num_dist_top4, row='Group',
                       height=1.6, aspect=4)
     g.map(sns.kdeplot, col, bw_adjust=.6)
     g.set_ylabels('Density')
     plt.savefig(f"images/num_dist_{col}.png")
 
+# Initialize a dictionary to store p-values
+p_values = {col: {} for col in df_num}
+
+# Calculate p-values for each pair of groups for each numerical column
+for col in df_num:
+    for i, group1 in enumerate(top4_group_order_categories):
+        for group2 in top4_group_order_categories[i+1:]:
+            group1_data = df_num_dist_top4[df_num_dist_top4['Group'] == group1][col]
+            group2_data = df_num_dist_top4[df_num_dist_top4['Group'] == group2][col]
+            p_value = ks_2samp(group1_data, group2_data).pvalue
+            p_values[col][(group1, group2)] = p_value
+
+# Filter p-values to only show those above 1e-4
+significance_threshold = 0.05
+significance_threshold = 1e-4
+filtered_p_values = {col: {groups: p for groups, p in group_p_values.items() if p > significance_threshold} for col, group_p_values in p_values.items()}
+
+# Print the sorted, filtered p-values
+for key in filtered_p_values.keys():
+    vals = filtered_p_values[key]
+    for key2 in vals.keys():
+        val2 = vals[key2]
+        if val2 >= significance_threshold:
+            print(key, key2, val2)
 
 
 # #################################### Categorical Analysis
@@ -143,7 +171,7 @@ for col in df_str.columns:
     filtered_df = filtered_df.sort_values(by="Porosity")
     g = sns.FacetGrid(filtered_df, row=col,
                       height=1.6, aspect=4, col_order=order)
-    g.map(sns.kdeplot, DataParser.target)
+    g.map(sns.kdeplot, parser.target)
     g.set_ylabels('Density')
     print(df_str[col].value_counts(), '\n')
     plt.savefig(f"images/Count Distribution of {col}.png", bbox_inches='tight')
@@ -216,7 +244,7 @@ pipeline = Pipeline([('scaling', StandardScaler()), ('pca', PCA(n_components=n_c
 pca = PCA(n_components=n_components)
 # X = df_num[df_num.columns.drop('Porosidade')]
 X = df_num[df_num.columns]
-y = DataParser.target
+y = parser.target
 
 # components = pca.fit_transform(df_num)
 # components = pipeline.fit_transform(df_num)
@@ -225,7 +253,7 @@ components = pca.fit_transform(X_scaled)
 # print(pd.DataFrame(pca.components_, columns=X_scaled.columns, index=['PC-1', 'PC-2', 'PC-3', 'PC-4', 'PC-5']))
 total_var = pca.explained_variance_ratio_.sum() * 100
 labels = {str(i): f"PC {i + 1}" for i in range(n_components)}
-labels['color'] = DataParser.target
+labels['color'] = parser.target
 fig = px.scatter_matrix(
     components,
     color=y,
