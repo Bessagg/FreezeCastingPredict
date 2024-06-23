@@ -1,374 +1,374 @@
-name_part1,material,name_part2,name_fluid1,technique,direction,material_group,name_mold_mat,name_disp_1,wf_disp_1,name_bind1,wf_bind_1,temp_cold,cooling_rate,time_sub,time_sinter_1,temp_sinter_1,vf_total,porosity
-HAP,HAP/SiO2,,water,,,Ceramic,"metal, NOI",polyacrylic acid,0.015,,,,0.0,48.0,4.0,1373.0,0.2671,0.582
-Al2O3,Al2O3/SiC,SiC,water,,,Ceramic,epoxy,,,,,77.0,0.0,0.0,1.0,773.0,0.55,0.075
-YSZ,YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,2.0,48.0,5.0,773.0,0.23,0.705
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,2.0,673.0,0.24,0.63
-HAP,HAP/Gelatin,,water,,,Ceramic/Polymer,,Darvan C,0.01,PVA,0.01,263.0,0.0,,2.0,1773.0,0.38,0.18
-TiO2,TiO2,,water,,,Ceramic,silicone,NH4PAA,0.087,Duramax B-1000,0.03,,,24.0,2.0,1573.0,0.4829,0.16
-SiC,SiC,,water,,,Ceramic,,,,PVA,0.085,,0.0,5.0,1.0,873.0,0.12,0.62
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.3925
-Al2O3,Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.625,0.32
-YSZ,YSZ,,water,,,Ceramic,silicone,,,PVA,0.06,255.0,0.0,24.0,2.0,873.0,0.3297,0.65
-chitosan,TCP/Chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.73
-Fe2O3,Fe,,camphene,,,Metal,aluminum,Zephrym PD,0.01,,,308.0,0.0,,12.0,873.0,0.05,0.812
-YSZ,YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,25.0,48.0,5.0,773.0,0.23,0.607
-HAP,HAP/TCP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,,0.0,20.0,1.0,1493.0,0.2,0.45
-CaP,CaP,,water,,,Ceramic,polyethylene,,,PVA,0.16,208.0,0.0,0.0,2.0,873.0,0.25,0.73
-LSM,LSM/YSZ,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,10.0,12.0,1.0,873.0,0.17,0.65
-PZT,PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1673.0,0.15,0.7
-HAP,Al2O3/HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.8259
-Al2O3,Al2O3,,water,,,Ceramic,,Darvan 811,0.03,,,258.0,0.0,24.0,5.0,1873.0,0.23,0.639
-Al2O3,Al2O3,,TBA,,,Ceramic,polyethylene,citric acid,,PVB,,,0.0,24.0,1.0,1473.0,0.1,0.82
-Al2O3,Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.55
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,1.0,1773.0,0.2,0.67
-HAP,HAP,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,0.06,PS,0.1,,0.0,,,1523.0,0.2,0.57
-Al2O3,Al2O3,,camphene,one-sided,vertical-up,Ceramic,,Hypermer KD 4,0.03,,,253.0,,,12.0,316.0,0.25,0.67
-PZT,PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1673.0,0.1,0.371
-Fe2O3,Fe,,camphene,,,Metal,aluminum,Zephrym PD,0.01,,,315.5,0.0,,12.0,873.0,0.05,0.814
-SiO2,Mullite,Mullite,water,one-sided,vertical-up,Ceramic,PTFE,,,,,223.0,0.0,12.0,3.0,1673.0,0.07,0.5
-HAP,HAP/Gelatin,,water,,,Ceramic/Polymer,,Darvan C,0.01,PVA,0.01,263.0,0.0,,2.0,1773.0,0.2,0.56
-kaolinite,Mullite,Al2O3,water,,,Ceramic,"plastic, noi",,,,,233.0,0.0,24.0,2.0,1773.0,0.05,0.9
-Yb2SiO5,Yb2SiO5,,TBA,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.03,PVA,0.01,,0.0,0.0,2.0,873.0,0.15,0.8215
-Mullite,Al2O3/Mullite,,camphene,,,Ceramic,polyethylene,Darvan C,0.01,PVB,0.01,77.0,0.0,,,873.0,0.153,0.672
-Al2O3,Al2O3,,camphene,,,Ceramic,,Hypermer KD 4,0.03,,,278.0,0.0,24.0,5.0,1873.0,0.22,0.609
-Al2O3,Al2O3,,water,,,Ceramic,"plastic, noi",Duramax D3005,0.008,PVA,0.02,,1.0,24.0,2.0,1823.0,0.35,0.426
-Si4Al2O2N6,Si4Al2O2N6,,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,3.0,823.0,0.1,0.713
-SiC,SiC,,camphene,,,Ceramic,polyethylene,,,,,276.0,0.0,,2.0,873.0,0.1,0.78
-TiH2,Ti,,camphene,,,Metal,aluminum,Hypermer KD 4,0.01,,,,0.0,,2.0,873.0,0.25,0.55
-TCP,TCP,,water,,,Ceramic,PTFE,polyacrylic acid,0.01,PVA,0.01,,0.0,48.0,,673.0,0.3,0.501
-polysiloxane,SiOC,,cyclohexane,one-sided,vertical-up,Polymer,,,,,,238.0,,48.0,4.0,1373.0,0.4,0.614
-Merwinite,Merwinite,,water,,,Ceramic,polyethylene,Dolapix,0.03,PVA,0.05,238.15,4.0,72.0,1.0,873.0,0.1,0.5607
-HAP,Al2O3/HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.8381
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.79
-HAP,HAP,HAP,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,48.0,2.0,1773.0,0.15,0.6725
-Mullite,Al2O3/Mullite,,camphene,,,Ceramic,polyethylene,,,,,,0.0,24.0,1.0,773.0,0.1655,0.38
-Fe2O3,Fe,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,258.0,,48.0,2.0,573.0,0.19,0.511
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.7909
-HAP,HAP/CP,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,963.0,0.1,0.84
-ZrB2,ZrB2,SiC,water,,,Ceramic,"plastic, noi",Dolapix,0.06,,,233.0,0.0,0.0,0.5,773.0,0.76,0.407
-HAP,HAP,,water,one-sided,vertical-up,Ceramic,PVC,Dispex A40,0.02,PVA,0.03,,,24.0,4.0,1573.0,0.2459,0.7
-SiC,SiC,,water,,,Ceramic,"plastic, noi",CH10,,,,,0.0,0.0,,,0.45,0.106
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,,1523.0,0.18,0.8
-YSZ,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,3.0,1173.0,0.357,0.213
-TiO2,TiO2,,water,,,Ceramic,,NH4PAA,0.02,PVA,0.025,255.0,0.0,,2.0,473.0,0.2083,0.74
-Al2O3,Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.55,0.2
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,72.0,1523.0,0.12,0.525
-Fe2O3,Fe,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,258.0,,48.0,2.0,573.0,0.141,0.605
-YSZ,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.365,0.116
-Si4Al2O2N6,Si4Al2O2N6,Al2O3,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,3.0,823.0,0.3,0.361
-PVA,PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.82
-SiO2,Kaolin/Silicate,kaolinite,water,,,Ceramic,,,,,,233.0,0.0,12.0,,,0.11,0.83
-HAP,HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,,0.0,24.0,3.0,1523.0,0.2,0.68
-SiO2,YSZ,,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
-Al2O3,Al2O3,,camphene,,,Ceramic,,Texaphor 963,0.02,,,253.0,0.0,24.0,1.0,873.0,0.08,0.82
-Mullite,Mullite,,TBA,,,Ceramic,,BYK-163,0.05,PVB,0.05,193.0,0.0,12.0,2.0,1873.0,0.4,0.53
-YSZ,Al2O3/ZrO2,Al2O3,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.11,0.79
-HAP,HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.45
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,0.0,,2.0,1473.0,0.36,0.45
-Al2O3,Al2O3/Mullite,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,0.056,,,,0.0,48.0,2.0,873.0,0.55,0.75
-HAP,HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,5.0,48.0,4.0,1573.0,0.2,0.763
-Y2O3,Y2SiO5,SiO2,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,12.0,1.0,973.0,0.0475,0.67
-HAP,HAP/TCP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,,0.0,20.0,1.0,1493.0,0.3,0.31
-Al2O3,Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.69
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.914
-NiTiNbO,BADCy/NiTiNbO4,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.2,0.7499
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,24.0,1523.0,0.18,0.625
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.82
-HAP,HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.62
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,,,0.1628,0.82
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.4,0.66
-PVA,PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.8
-chitin,Chitin,,water,,,Polymer,glass,,,PVA,0.012,,0.0,24.0,,,0.0027,0.988
-LSM,LSM/YSZ,YSZ,water,,,Ceramic,acrylic,Darvan CN,0.02,PEG,0.01,,5.0,12.0,1.0,873.0,0.23,0.596
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,0.5,723.0,0.15,0.75
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.81
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.68
-Bioglass,Bioglass,HAP,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.21,0.4
-SiO2,Kaolin/Silicate,kaolinite,water,,,Ceramic,,,,,,233.0,0.0,12.0,,,0.33,0.53
-HAP,HAP,PMMA,water,,,Ceramic,silicone,,,PVA,0.02,253.0,0.0,24.0,2.0,823.0,0.2406,0.6525
-Zeo,Zeolite,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2173.0,0.1892,0.7142
-Al2O3,Al2O3,,camphene,,,Ceramic,,Texaphor 963,0.02,,,253.0,0.0,24.0,1.0,873.0,0.15,0.718
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,,1523.0,0.12,0.86
-Al2O3,Al2O3,,TBA,,,Ceramic,PMMA,citric acid,0.05,,,,0.0,72.0,2.0,873.0,0.15,0.64
-Al2O3,Al2O3,,water,,,Ceramic,aluminum,Dolapix,0.0074,starch,0.02,123.0,0.0,14.0,2.0,1873.0,0.42,0.774
-chitosan,TCP/Chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.7
-Al2O3,Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.515
-LSCF,LSCF/CGO,GCO,water,,,Ceramic,,Alon A-6114,,,,193.0,0.0,,5.0,1173.0,0.27,0.682
-Al2O3,Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1773.0,0.28,0.558
-HAP,HAP/PMMA,,water,one-sided,vertical-up,Ceramic/Polymer,PTFE,Darvan 811,0.01,PVA,0.01,,5.0,,3.0,1625.0,0.3,0.6
-Al2O3,Al2O3/ZrO2,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.52
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,973.0,0.15,0.76
-HAP,BCP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1273.0,0.1091,0.79
-HAP,HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.65
-SiO2,Kaolinite/SiO2,,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,2.0,473.0,0.1628,0.79
-Al2O3,Al2O3,,water,,,Ceramic,polyethylene,Darvan 7-N,0.012,,,253.0,0.0,48.0,4.0,1773.0,0.2,0.639
-YSZ,YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.75
-Ti,Ti,,camphene,,,Metal,aluminum,,,,,,0.0,,2.0,1773.0,0.3,0.07
-Al2O3,Al2O3,,camphene,,,Ceramic,,Perfad9100,,,,,0.0,,4.0,1873.0,0.523,0.98
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,2.0,673.0,0.12,0.68
-Al2O3,Al2O3,,water,,,Ceramic,polymer,Darvan C,0.02,PVA,,203.0,0.0,,2.0,823.0,0.25,0.68
-SiC,SiC,Al2O3,water,,,Ceramic,polycarbonate,CMC,0.008,CMC,,263.0,0.0,24.0,2.0,673.0,0.3,0.69
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,193.0,0.0,24.0,,2123.0,0.2,0.696
-YSZ,YSZ,,water,,,Ceramic,silicone,,,PVA,0.04,255.0,0.0,24.0,2.0,873.0,0.3297,0.54
-Al2O3,Al2O3,,water,,,Ceramic,PDMS,HydroDisperser,0.01,PVA,0.01,83.0,0.0,24.0,3.0,1123.0,0.1,0.8
-Al2O3,Al2O3,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,,,,276.0,0.0,,3.0,1873.0,0.15,0.74
-Mullite,Mullite,,water,,,Ceramic,,,,,,253.0,0.0,,4.0,1873.0,0.0402,0.886
-Al2O3,Al2O3/SiC,SiC,water,,,Ceramic,epoxy,,,,,77.0,0.0,0.0,1.0,873.0,0.55,0.06
-SiO2,SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.16,0.26
-YSZ,YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,2.0,48.0,5.0,773.0,0.27,0.537
-kaolinite,Al2SiO5,,water,,,Ceramic,,,,sodium silicate,,77.0,0.0,12.0,,,0.1,0.8056
-Al2O3,Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1823.0,0.25,0.48
-WO3,W,,water,,,Metal,Teflon,,,,,258.0,0.0,,,1023.0,0.275,0.361
-HAP,BT/HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,173.0,5.0,24.0,3.0,873.0,0.1,0.66
-AlN,AlN,AlN,water,,,Ceramic,,Dolapix PC 33,0.03,,,233.0,0.0,,2.0,873.0,0.47,0.08
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.649
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.699
-PZT,PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1673.0,0.15,0.313
-HAP,Al2O3/HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.7873
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,1173.0,0.15,0.82
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.03,0.66
-SiO2,YSZ,,water,,,Ceramic,glass,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
-Mullite,Mullite,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,873.0,0.26,0.74
-chitosan,TCP/Chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.68
-BT,BT/Kaolinite,kaolinite,water,,,Ceramic,,,,PVA,0.002,243.0,0.0,0.0,,873.0,0.11,0.67
-Mullite,Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,173.0,0.0,12.0,2.0,1823.0,0.35,0.62
-YSZ,YSZ,,TBA,,,Ceramic,,,,,,,0.0,,2.0,1773.0,0.15,0.65
-SiC,SiC,,water,,,Ceramic,,,,,,,0.0,,,,0.47,0.102
-Al2O3,Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.52
-HAP,HAP,,water,,,Ceramic,polyethylene,SND 6800,0.02,,,,0.0,,2.0,1623.0,0.25,0.81
-SiO2,SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.13,0.634
-WO3,W,,water,,,Metal,Teflon,,,,,261.0,0.0,,,1023.0,0.3,0.595
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.06,0.625
-HAP,HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,1.0,48.0,4.0,1573.0,0.2,0.747
-Si4Al2O2N6,Si4Al2O2N6,Al2O3,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,2.0,873.0,0.3,0.231
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1173.0,0.15,0.81
-Al2O3,Al2O3,,water,,,Ceramic,,Darvan 811,0.03,,,238.0,0.0,24.0,5.0,1873.0,0.23,0.639
-YSZ,YSZ,,water,,,Ceramic,silicone,,,PVA,0.06,255.0,0.0,24.0,2.0,873.0,0.3297,0.52
-SiO2,SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,873.0,0.05,0.94
-Al2O3,Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.54
-Al2O3,Al2O3,,TBA,,,Ceramic,PMMA,citric acid,0.05,,,,0.0,72.0,1.0,873.0,0.25,0.48
-Ca3ZrSi2O9,Ca3ZrSi2O9,,water,,,Ceramic,polyethylene,Dolapix P62,0.03,PVA,0.05,,4.0,,1.0,873.0,0.125,0.6357
-Al2O3,Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1873.0,0.45,0.32
-Y2SiO5,Y2SiO5,,water,,,Ceramic,graphite,ammonium polymethacrylate anionic dispersant,0.003,,,,0.0,48.0,2.0,1773.0,0.2,0.66
-LSM,LSM/YSZ,YSZ,water,,,Ceramic,acrylic,Darvan CN,0.024,PEG,0.01,,5.0,12.0,1.0,873.0,0.23,0.596
-Al2O3,Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.53
-Fe2O3,Fe,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,173.0,,48.0,2.0,573.0,0.141,0.263
-Si3N4,Si3N4,Al2O3,TBA,,,Ceramic,polyethylene,PVP,0.04,,,,0.0,24.0,3.0,473.0,0.2252,0.48
-Al2O3,Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1873.0,0.333,0.458
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.755
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.336,0.094
-CaSiO3,CaSiO3,PCS,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.2,0.78
-Mullite,Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,233.0,0.0,12.0,2.0,1823.0,0.35,0.59
-YSZ,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,3.0,1173.0,0.357,0.065
-YSZ,YSZ,,camphene,,,Ceramic,polyethylene,,,,,278.0,0.0,,2.0,1823.0,0.2,0.67
-HAP,HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.0734,0.765
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,0.5,723.0,0.15,0.75
-Bioglass,Bioglass,,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.198,0.46
-Al2O3,Al2O3,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,,,,,0.0,0.0,5.0,1873.0,0.45,0.66
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.91
-Al2O3,Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.4,0.13
-Bioglass,Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1823.0,0.1,0.5
-HAP,BT/HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,,,0.0,36.0,3.0,1373.0,0.2,0.54
-Al2O3,Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.48,0.1
-LSM,LSM/YSZ,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,38.0,12.0,1.0,873.0,0.17,0.57
-theophylline,Theophyllinum/potato starch,starch,water,,,Pharmaceutical,"plastic, noi",citric acid,0.045,,,243.0,0.0,24.0,,,0.37,0.46
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.315,0.143
-chitin,Chitin,,water,,,Polymer,aluminum,,,,,253.0,0.0,,,,0.35,0.985
-HAP,Bioglass,,water,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,4.0,1373.0,0.1744,0.2
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,polyethylene,ammonium polymethacrylate anionic dispersant,,,,,0.0,,2.0,873.0,0.3,0.663
-Bioglass,Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1823.0,0.1,0.5
-Al2O3,Al2O3,,water,,,Ceramic,"plastic, noi",Duramax D3005,0.008,PVA,0.04,,1.0,24.0,2.0,1823.0,0.35,0.368
-HAP,HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,10.0,48.0,4.0,1573.0,0.2,0.743
-Al2O3,Al2O3,,camphene,,,Ceramic,polyurethane,Perfad9100,0.02,,,291.0,0.0,0.0,4.0,1873.0,0.3,0.22
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.8404
-YSZ,YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,25.0,48.0,5.0,773.0,0.2,0.652
-HAP,HAP,PMMA,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,8.0,2.0,873.0,0.2406,0.5628
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.2,0.82
-HAP,HAP,,water,,,Ceramic,PVC,,,,,253.0,0.0,,3.0,1623.0,0.2,0.46
-stainless steel,YSZ,,water,,,Ceramic,,CMC,,Fluka,,233.0,0.0,0.0,2.0,1773.0,0.56,0.21
-SiC,SiC,Al2O3,water,,,Ceramic,polycarbonate,CMC,0.008,CMC,,263.0,0.0,24.0,2.0,673.0,0.3,0.62
-Al2O3,Al2O3/ZrO2,ZrO2,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.278,0.5
-HAP,HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.05,,0.0,24.0,3.0,873.0,0.2,0.73
-Al2O3,Al2O3,,water,,,Ceramic,PDMS,HydroDisperser,0.05,PVA,0.01,83.0,0.0,24.0,3.0,1173.0,0.4,0.1
-PZT,PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1723.0,0.3,0.46
-PCS,Latex,,water,immersion,vertical-up,Polymer,glass,,,,,77.0,0.0,24.0,,,0.32,0.662
-Bioglass,Bioglass,,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.3571,0.15
-WO3,W,,water,,,Metal,Teflon,,,,,248.0,0.0,,,1023.0,0.275,0.433
-Y2SiO5,Y2SiO5,,TBA,,,Ceramic,polyethylene,citric acid,,PVB,,,0.0,,1.0,1473.0,0.2,0.45
-Mullite,Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,193.0,0.0,12.0,2.0,1823.0,0.35,0.6
-PVA,PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.78
-YSZ,YSZ,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
-HAP,HAP,,water,,,Ceramic,,Duramax D3005,0.003,gelatin,0.1,,0.0,0.0,1.0,873.0,0.23,0.1847
-HAP,BT/HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,,,,0.0,36.0,3.0,1373.0,0.3,0.5
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.5
-glass,Bioglass,,water,,,Ceramic,,Dolapix CE 64,,,,218.0,0.0,24.0,1.0,873.0,0.312,0.69
-SiO2,YSZ,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
-PU,PU,,dioxane,doctor-blade,vertical-up,Polymer,,,,,,77.0,0.0,24.0,,,0.09,0.83
-YSZ,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.357,0.259
-HAP,HAP,MgO,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.63
-HAP,HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.1,0.78
-Cordierite,Cordierite,,water,,,Ceramic,"plastic, noi",,,,,223.0,0.0,24.0,2.0,1473.0,0.5,0.92
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.345,0.098
-HAP,HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,,0.0,24.0,3.0,1523.0,0.4,0.48
-chitosan,Chitosan,,water,one-sided,vertical-up,Polymer,PTFE,acetic acid,0.02,,,,4.0,48.0,,,0.03,0.9643
-HAP,Bioglass,,water,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,4.0,1373.0,0.1744,0.4
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1073.0,0.15,0.775
-HAP,HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.0734,0.793
-HAP,HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.67
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,253.0,0.0,0.0,,873.0,0.15,0.75
-HAP,Bioglass,TCP,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1573.0,0.16,0.35
-Yb2SiO5,Y2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,823.0,0.1,0.884
-HAP,HAP,,water,,,Ceramic,polyethylene,SND 6800,0.02,,,,0.0,,2.0,1673.0,0.25,0.75
-Mullite,Mullite,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,873.0,0.26,0.68
-Bioglass,Bioglass,,water,,,Ceramic,PVC,Easysperse,0.005,PVA,0.01,253.0,0.0,,,773.0,0.2,0.35
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.1,0.58
-Al2O3,Al2O3/Mullite,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,0.056,,,,0.0,48.0,2.0,873.0,0.6,0.74
-Ti,Ti6Al4V,,camphene,,,Metal,,,,,,,,,2.0,1523.0,0.15,0.72
-PZT,PZT,,TBA,,,Ceramic,polyamide,acacia,0.012,PVB,0.015,,0.0,0.0,2.0,1723.0,0.4,0.32
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.53
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.902
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.541
-Mullite,Mullite,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,0.0,2.0,1773.0,0.0659,0.7
-HAP,BCP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.9
-HAP,HAP,,water,,,Ceramic,,Duramax D3005,0.003,gelatin,0.1,,0.0,0.0,1.0,873.0,0.18,0.3829
-HAP,HAP,,water,,,Ceramic,polyethylene,sodium polyacrylate,0.01,PVA,0.005,243.0,0.0,0.0,3.0,1623.0,0.1,0.64
-Cr2O3,Cr3C2,,camphene,,,Ceramic,polyurethane,Hypermer KD 4,0.01,,,298.0,0.0,24.0,15.0,1373.0,0.3,0.8
-Yb2SiO5,Yb2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,873.0,0.1,0.857
-HAP,HAP,,water,,,Ceramic,,,,,,,0.0,,,,0.35,0.581
-Al2O3,Al2O3,,water,,,Ceramic,,,,,,,10.0,48.0,,,0.27,0.916
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,243.0,0.0,0.0,0.5,723.0,0.15,0.77
-Zeo,Zeolite,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2173.0,0.1892,0.7017
-LSM,LSM/YSZ,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,2.0,12.0,1.0,873.0,0.17,0.57
-YSZ,YSZ,,water,,,Ceramic,silicone,,,,,255.0,0.0,24.0,2.0,873.0,0.3297,0.35
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.25,0.65
-HAP,HAP/TCP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,303.0,0.0,20.0,1.0,1493.0,0.1,0.73
-PZT,PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1623.0,0.15,0.239
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,,873.0,0.15,0.75
-Al2O3,Al2O3,TiO2,water,,,Ceramic,Teflon,ammonium polymethacrylate anionic dispersant,0.02,PVA,0.02,,0.0,24.0,0.5,773.0,0.05,0.667
-HAP,HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,5.0,48.0,4.0,1573.0,0.2,0.727
-PCS,Latex,,water,immersion,vertical-up,Polymer,glass,,,,,77.0,0.0,24.0,,,0.51,0.899
-Ti,Ti,,water,,,Metal,,NOI,,agar,0.002,256.0,0.0,24.0,,573.0,0.24,0.62
-PLLA,PLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,255.0,,,,,0.08,0.867
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.2,0.42
-ZrB2,ZrB2-SiC,SiC,camphene,,,Ceramic,,Duramax,0.01,,,233.0,0.0,0.0,1.0,873.0,0.38,0.39
-Al2O3,Al2O3,,water,,,Ceramic,PDMS,,,,,,0.0,24.0,2.0,1873.0,0.1,0.73
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.1,0.611
-Mullite,Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,173.0,0.0,12.0,2.0,1823.0,0.25,0.72
-PZT,PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1673.0,0.3,0.46
-Yb2SiO5,Y2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,823.0,0.25,0.733
-Y2SiO5,Y2SiO5,,water,,,Ceramic,graphite,ammonium polymethacrylate anionic dispersant,0.003,,,,0.0,48.0,2.0,1773.0,0.2,0.62
-kaolinite,Mullite,Al2O3,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,24.0,2.0,1773.0,0.06,0.892
-Y2O3,Y2SiO5,SiO2,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,12.0,1.0,1053.0,0.1174,0.5
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,0.0,,2.0,1473.0,0.08,0.88
-HAP,HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.1744,0.499
-YSZ,YSZ,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
-YSZ,YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.74
-Ni,Ni,,water,,,Metal,"plastic, noi",CMC,,,,263.0,0.0,,,773.0,0.05,0.91
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.345,0.077
-NiTiNbO,BADCy/NiTiNbO4,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.25,0.6866
-PVA,HAP/Cellulose/PVA,collagen,water,,,Ceramic/Polymer,,,,,,233.0,0.0,5.0,,,0.07,0.87
-chitosan,TCP/Chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.73
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.68
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.68
-CaSiO3,CaSiO3,,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.2,0.71
-Ti,Ti,,water,,,Metal,,NOI,,agar,0.002,256.0,0.0,24.0,,573.0,0.24,0.62
-HAP,HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,3.8,,4.0,1573.0,0.25,0.56
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.91
-HAP,BCP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.55
-SiC,Al-Si-Mg/SiC,,water,,,Metal/Ceramic,Teflon,CMC,0.008,CMC,,263.0,0.0,24.0,0.5,773.0,0.3,0.016
-Al2O3,Al2O3,,water,,,Ceramic,"plastic, noi",AFP,,,,233.0,0.0,,2.0,1573.0,0.1,0.86
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.2,0.422
-Al2O3,Al2O3,,water,,,Ceramic,,PAAS,0.02,CMC,0.01,77.0,0.0,0.0,0.5,723.0,0.2,0.45
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.76
-SiO2,SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,1573.0,0.1,0.89
-Si,Si3N4,,water,,,Ceramic,Polydimethylsiloxane,polyvinyl pyrrolidione,0.02,PVA,0.02,,0.0,24.0,16.5,1673.0,0.2,0.8
-SiO2,YSZ,,water,,,Ceramic,glass,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
-Bioglass,Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1773.0,0.1,0.5
-HAP,HAP,MgO,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.55
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.8466
-Si3N4,Si3N4,Y2O3,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,193.0,0.0,24.0,,1973.0,0.25,0.602
-YSZ,YSZ,,TBA,,,Ceramic,,,,PVB,0.005,243.0,0.0,0.0,,873.0,0.15,0.775
-Al2O3,Al2O3,,camphene,,,Ceramic,,Perfad9100,,,,,0.0,,4.0,1873.0,0.334,0.41
-ZrB2,ZrB2,SiC,water,,,Ceramic,"plastic, noi",Dolapix,0.06,,,233.0,0.0,0.0,0.5,723.0,0.76,0.387
-chitosan,HAP/Chitosan//PMMA,HAP,water,,,Polymer,,acetic acid,,,,,0.0,0.0,,,0.09,0.47
-Al2O3,Al2O3/ZrO2,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.4
-HAP,HAP,,water,one-sided,vertical-up,Ceramic,polytetrafluoroethylene,HydroDisper A160,0.02,,,243.0,,,1.0,1473.0,0.16,0.65
-HAP,HAP/Collagen,collagen,water,,,Ceramic/Polymer,polystyrene,,,,,,0.0,0.0,0.5,873.0,0.04,0.95
-Al2O3,Al2O3,,water,,,Ceramic,polymer,Darvan C,0.02,PVA,,203.0,0.0,,2.0,823.0,0.25,0.42
-SiO2,SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.07,0.52
-HAP,BCP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1373.0,0.1091,0.61
-HAP,HAP/Collagen,collagen,water,,,Ceramic/Polymer,silicone,,,,,243.0,0.0,0.0,0.5,873.0,0.04,0.95
-Ag,Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.02,77.0,0.0,48.0,,,0.0001,0.959
-HAP,HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.1,0.75
-Ag,Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.05,77.0,0.0,48.0,,,0.001,0.959
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.56
-HAP,BCP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1373.0,0.1091,0.61
-NiTiNbO,BADCy/NiTiNbO4,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.3,0.6236
-YSZ,YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,195.0,,,1.0,1723.0,0.15,0.75
-Si4Al2O2N6,Si4Al2O2N6,,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,77.0,0.0,96.0,3.0,823.0,0.3,0.381
-Zeo,Zeolite,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2373.0,0.1892,0.7124
-Al2O3,Al2O3,,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1823.0,0.25,0.58
-Al2O3,Al2O3/ZrO2,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.45
-YSZ,Al2O3/ZrO2,Al2O3,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.3,0.35
-Al2O3,Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.05,77.0,0.0,,3.0,1823.0,0.2,0.69
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.7805
-Mullite,Mullite,,TBA,,,Ceramic,,BYK-163,0.05,PVB,0.05,213.0,0.0,12.0,2.0,1873.0,0.4,0.55
-Ni,Ni,,water,,,Metal,"plastic, noi",CMC,,,,233.0,0.0,,,773.0,0.05,0.91
-SiC,SiC,,water,,,Ceramic,"plastic, noi",CH10,,,,,0.0,0.0,,,0.47,0.102
-TiO2,TiO2,,water,one-sided,vertical-up,Ceramic,PVC,Darvan 811,0.01,PVA,0.01,,10.0,72.0,3.0,1273.0,0.1,0.846
-Al2O3,Al2O3/ZrO2,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.55
-Si3N4,Si3N4,Al2O3,TBA,,,Ceramic,polyethylene,PVP,0.04,,,,0.0,24.0,3.0,473.0,0.1623,0.51
-Al2O3,Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.07,253.0,0.0,,3.0,1773.0,0.2,0.64
-Si,Si3N4,,water,,,Ceramic,Polydimethylsiloxane,polyvinyl pyrrolidione,0.02,PVA,0.02,,0.0,24.0,16.5,1673.0,0.2,0.7
-Ti,Ti6Al4V,,camphene,,,Metal,,,,,,,,,2.0,1523.0,0.2,0.6
-HAP,HAP,,water,,,Ceramic,silicone,Lopon 885,0.015,gelatin,,255.0,0.0,,3.0,873.0,0.23,0.4619
-Al2O3,Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.575,0.17
-HAP,HAP,,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,8.0,,823.0,0.2406,0.198
-YSZ,YSZ,,TBA,,,Ceramic,,fish oil,,PVB,,,0.0,,,,0.5,0.62
-BT,BT/Kaolinite,kaolinite,water,,,Ceramic,,,,PVA,0.002,243.0,0.0,0.0,,873.0,0.11,0.64
-CaSiO3,CaSiO3,PCS,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.15,0.78
-Ti,Ti,,camphene,,,Metal,aluminum,,,,,,0.0,,2.0,1773.0,0.3,0.19
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.1,0.58
-YSZ,YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,195.0,,,1.0,1723.0,0.15,0.75
-Al2O3,Al2O3,,water,,,Ceramic,"plastic, noi",,,,,233.0,0.0,,2.0,1573.0,0.1,0.86
-Al2O3,Al2O3,,water,,,Ceramic,,Darvan 7-N,0.01,PVA,0.01,,6.0,48.0,3.0,823.0,0.3,0.449
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.91
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1173.0,0.15,0.82
-YSZ,YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.06,0.546
-HAP,HAP,,water,,,Ceramic,silicone,,,,,255.0,0.0,24.0,2.0,873.0,0.2406,0.236
-HAP,HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,1173.0,0.15,0.825
-Bioglass,Bioglass,,camphene,,,Ceramic,,isostearic acid,,,,,0.0,24.0,1.0,1673.0,0.1,0.86
-YSZ,YSZ,,camphene,,,Ceramic,,Texaphor 963,0.05,,,,0.0,24.0,2.0,1823.0,0.2,0.67
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.91
-HAP,HAP/TCP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,277.0,0.0,20.0,1.0,1493.0,0.1,0.71
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.745
-PU,PU,,dioxane,doctor-blade,vertical-up,Polymer,,,,,,77.0,0.0,24.0,,,0.05,0.89
-SiO2,SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,1563.0,0.01,0.98
-Merwinite,Merwinite,,water,,,Ceramic,polyethylene,Dolapix,0.03,PVA,0.05,238.15,4.0,72.0,1.0,873.0,0.1,0.4661
-Al2O3,Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.56
-YSZ,YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.73
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.25,0.288
-Al2O3,Al2O3/ZrO2,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.1,0.64
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.78
-Bentonite,Bentonite,,water,,,Ceramic,PTFE,,,,,77.0,0.0,24.0,1.0,873.0,0.0235,0.97
-Al2O3,Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.4,0.01
-Ag,Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.05,77.0,0.0,48.0,,,0.0001,0.959
-Al2O3,Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.07,253.0,0.0,,3.0,1773.0,0.4,0.31
-PLLA,PLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,77.0,,,,,0.12,0.826
-HAP,HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,5.0,,4.0,1573.0,0.25,0.63
-SiO2,SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.13,0.68
-Bioglass,Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,276.0,0.0,,1.0,1823.0,0.1,0.5
-Al2O3,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1873.0,0.321,0.117
-HAP,BCP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.3
-ZrB2,ZrB2,,water,,,Ceramic,"metal, NOI",Duramax,0.029,,,233.0,0.0,0.0,0.5,723.0,0.08,0.57
-HAP,HAP,,water,,,Ceramic,PVC,,,,,253.0,0.0,,3.0,1623.0,0.2,0.538
-Al2O3,Al2O3,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,0.03,,,293.0,0.0,,,1673.0,0.2,0.66
-YSZ,YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.74
-PLLA,PLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,193.0,,,,,0.08,0.872
-Al2O3,Al2O3/ZrO2,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.55
-YSZ,ZrO2/Al,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.36,0.253
-SiO2,Kaolinite/SiO2,kaolinite,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,2.0,573.0,0.1628,0.82
-Al2O3,Al2O3,,water,,,Ceramic,PTFE,,,,,193.0,10.0,72.0,1.0,373.0,0.4,0.32
-HAP,HAP/SiO2,SiO2,water,,,Ceramic,"metal, NOI",polyacrylic acid,0.015,,,,0.0,48.0,4.0,1373.0,0.2674,0.652
-Al2O3,Al2O3/Chitosan/Gelatin,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.918
-HAP,HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,0.0,,,1573.0,0.17,0.68
+name_part1,name_part2,name_fluid1,technique,direction,material_group,name_mold_mat,name_disp_1,wf_disp_1,name_bind1,wf_bind_1,temp_cold,cooling_rate,time_sub,time_sinter_1,temp_sinter_1,vf_total,porosity
+HAP,,water,,,Ceramic,"metal, NOI",polyacrylic acid,0.015,,,,0.0,48.0,4.0,1373.0,0.2671,0.582
+Al2O3,SiC,water,,,Ceramic,epoxy,,,,,77.0,0.0,0.0,1.0,773.0,0.55,0.075
+YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,2.0,48.0,5.0,773.0,0.23,0.705
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,2.0,673.0,0.24,0.63
+HAP,,water,,,Ceramic/Polymer,,Darvan C,0.01,PVA,0.01,263.0,0.0,,2.0,1773.0,0.38,0.18
+TiO2,,water,,,Ceramic,silicone,NH4PAA,0.087,Duramax B-1000,0.03,,,24.0,2.0,1573.0,0.4829,0.16
+SiC,,water,,,Ceramic,,,,PVA,0.085,,0.0,5.0,1.0,873.0,0.12,0.62
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.3925
+Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.625,0.32
+YSZ,,water,,,Ceramic,silicone,,,PVA,0.06,255.0,0.0,24.0,2.0,873.0,0.3297,0.65
+chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.73
+Fe2O3,,camphene,,,Metal,aluminum,Zephrym PD,0.01,,,308.0,0.0,,12.0,873.0,0.05,0.812
+YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,25.0,48.0,5.0,773.0,0.23,0.607
+HAP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,,0.0,20.0,1.0,1493.0,0.2,0.45
+CaP,,water,,,Ceramic,polyethylene,,,PVA,0.16,208.0,0.0,0.0,2.0,873.0,0.25,0.73
+LSM,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,10.0,12.0,1.0,873.0,0.17,0.65
+PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1673.0,0.15,0.7
+HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.8259
+Al2O3,,water,,,Ceramic,,Darvan 811,0.03,,,258.0,0.0,24.0,5.0,1873.0,0.23,0.639
+Al2O3,,TBA,,,Ceramic,polyethylene,citric acid,,PVB,,,0.0,24.0,1.0,1473.0,0.1,0.82
+Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.55
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,1.0,1773.0,0.2,0.67
+HAP,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,0.06,PS,0.1,,0.0,,,1523.0,0.2,0.57
+Al2O3,,camphene,one-sided,vertical-up,Ceramic,,Hypermer KD 4,0.03,,,253.0,,,12.0,316.0,0.25,0.67
+PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1673.0,0.1,0.371
+Fe2O3,,camphene,,,Metal,aluminum,Zephrym PD,0.01,,,315.5,0.0,,12.0,873.0,0.05,0.814
+SiO2,Mullite,water,one-sided,vertical-up,Ceramic,PTFE,,,,,223.0,0.0,12.0,3.0,1673.0,0.07,0.5
+HAP,,water,,,Ceramic/Polymer,,Darvan C,0.01,PVA,0.01,263.0,0.0,,2.0,1773.0,0.2,0.56
+kaolinite,Al2O3,water,,,Ceramic,"plastic, noi",,,,,233.0,0.0,24.0,2.0,1773.0,0.05,0.9
+Yb2SiO5,,TBA,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.03,PVA,0.01,,0.0,0.0,2.0,873.0,0.15,0.8215
+Mullite,,camphene,,,Ceramic,polyethylene,Darvan C,0.01,PVB,0.01,77.0,0.0,,,873.0,0.153,0.672
+Al2O3,,camphene,,,Ceramic,,Hypermer KD 4,0.03,,,278.0,0.0,24.0,5.0,1873.0,0.22,0.609
+Al2O3,,water,,,Ceramic,"plastic, noi",Duramax D3005,0.008,PVA,0.02,,1.0,24.0,2.0,1823.0,0.35,0.426
+Si4Al2O2N6,,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,3.0,823.0,0.1,0.713
+SiC,,camphene,,,Ceramic,polyethylene,,,,,276.0,0.0,,2.0,873.0,0.1,0.78
+TiH2,,camphene,,,Metal,aluminum,Hypermer KD 4,0.01,,,,0.0,,2.0,873.0,0.25,0.55
+TCP,,water,,,Ceramic,PTFE,polyacrylic acid,0.01,PVA,0.01,,0.0,48.0,,673.0,0.3,0.501
+polysiloxane,,cyclohexane,one-sided,vertical-up,Polymer,,,,,,238.0,,48.0,4.0,1373.0,0.4,0.614
+Merwinite,,water,,,Ceramic,polyethylene,Dolapix,0.03,PVA,0.05,238.15,4.0,72.0,1.0,873.0,0.1,0.5607
+HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.8381
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.79
+HAP,HAP,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,48.0,2.0,1773.0,0.15,0.6725
+Mullite,,camphene,,,Ceramic,polyethylene,,,,,,0.0,24.0,1.0,773.0,0.1655,0.38
+Fe2O3,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,258.0,,48.0,2.0,573.0,0.19,0.511
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.7909
+HAP,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,963.0,0.1,0.84
+ZrB2,SiC,water,,,Ceramic,"plastic, noi",Dolapix,0.06,,,233.0,0.0,0.0,0.5,773.0,0.76,0.407
+HAP,,water,one-sided,vertical-up,Ceramic,PVC,Dispex A40,0.02,PVA,0.03,,,24.0,4.0,1573.0,0.2459,0.7
+SiC,,water,,,Ceramic,"plastic, noi",CH10,,,,,0.0,0.0,,,0.45,0.106
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,,1523.0,0.18,0.8
+YSZ,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,3.0,1173.0,0.357,0.213
+TiO2,,water,,,Ceramic,,NH4PAA,0.02,PVA,0.025,255.0,0.0,,2.0,473.0,0.2083,0.74
+Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.55,0.2
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,72.0,1523.0,0.12,0.525
+Fe2O3,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,258.0,,48.0,2.0,573.0,0.141,0.605
+YSZ,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.365,0.116
+Si4Al2O2N6,Al2O3,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,3.0,823.0,0.3,0.361
+PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.82
+SiO2,kaolinite,water,,,Ceramic,,,,,,233.0,0.0,12.0,,,0.11,0.83
+HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,,0.0,24.0,3.0,1523.0,0.2,0.68
+SiO2,,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
+Al2O3,,camphene,,,Ceramic,,Texaphor 963,0.02,,,253.0,0.0,24.0,1.0,873.0,0.08,0.82
+Mullite,,TBA,,,Ceramic,,BYK-163,0.05,PVB,0.05,193.0,0.0,12.0,2.0,1873.0,0.4,0.53
+YSZ,Al2O3,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.11,0.79
+HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.45
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,0.0,,2.0,1473.0,0.36,0.45
+Al2O3,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,0.056,,,,0.0,48.0,2.0,873.0,0.55,0.75
+HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,5.0,48.0,4.0,1573.0,0.2,0.763
+Y2O3,SiO2,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,12.0,1.0,973.0,0.0475,0.67
+HAP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,,0.0,20.0,1.0,1493.0,0.3,0.31
+Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.69
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.914
+NiTiNbO,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.2,0.7499
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,24.0,1523.0,0.18,0.625
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.82
+HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.62
+SiO2,kaolinite,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,,,0.1628,0.82
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.4,0.66
+PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.8
+chitin,,water,,,Polymer,glass,,,PVA,0.012,,0.0,24.0,,,0.0027,0.988
+LSM,YSZ,water,,,Ceramic,acrylic,Darvan CN,0.02,PEG,0.01,,5.0,12.0,1.0,873.0,0.23,0.596
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,0.5,723.0,0.15,0.75
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.15,0.81
+Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.68
+Bioglass,HAP,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.21,0.4
+SiO2,kaolinite,water,,,Ceramic,,,,,,233.0,0.0,12.0,,,0.33,0.53
+HAP,PMMA,water,,,Ceramic,silicone,,,PVA,0.02,253.0,0.0,24.0,2.0,823.0,0.2406,0.6525
+Zeo,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2173.0,0.1892,0.7142
+Al2O3,,camphene,,,Ceramic,,Texaphor 963,0.02,,,253.0,0.0,24.0,1.0,873.0,0.15,0.718
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,,1523.0,0.12,0.86
+Al2O3,,TBA,,,Ceramic,PMMA,citric acid,0.05,,,,0.0,72.0,2.0,873.0,0.15,0.64
+Al2O3,,water,,,Ceramic,aluminum,Dolapix,0.0074,starch,0.02,123.0,0.0,14.0,2.0,1873.0,0.42,0.774
+chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.7
+Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.515
+LSCF,GCO,water,,,Ceramic,,Alon A-6114,,,,193.0,0.0,,5.0,1173.0,0.27,0.682
+Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1773.0,0.28,0.558
+HAP,,water,one-sided,vertical-up,Ceramic/Polymer,PTFE,Darvan 811,0.01,PVA,0.01,,5.0,,3.0,1625.0,0.3,0.6
+Al2O3,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.52
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,973.0,0.15,0.76
+HAP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1273.0,0.1091,0.79
+HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.65
+SiO2,,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,2.0,473.0,0.1628,0.79
+Al2O3,,water,,,Ceramic,polyethylene,Darvan 7-N,0.012,,,253.0,0.0,48.0,4.0,1773.0,0.2,0.639
+YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.75
+Ti,,camphene,,,Metal,aluminum,,,,,,0.0,,2.0,1773.0,0.3,0.07
+Al2O3,,camphene,,,Ceramic,,Perfad9100,,,,,0.0,,4.0,1873.0,0.523,0.98
+SiO2,kaolinite,water,,,Ceramic,rubber,,,,,238.0,0.0,,2.0,673.0,0.12,0.68
+Al2O3,,water,,,Ceramic,polymer,Darvan C,0.02,PVA,,203.0,0.0,,2.0,823.0,0.25,0.68
+SiC,Al2O3,water,,,Ceramic,polycarbonate,CMC,0.008,CMC,,263.0,0.0,24.0,2.0,673.0,0.3,0.69
+Si3N4,Y2O3,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,193.0,0.0,24.0,,2123.0,0.2,0.696
+YSZ,,water,,,Ceramic,silicone,,,PVA,0.04,255.0,0.0,24.0,2.0,873.0,0.3297,0.54
+Al2O3,,water,,,Ceramic,PDMS,HydroDisperser,0.01,PVA,0.01,83.0,0.0,24.0,3.0,1123.0,0.1,0.8
+Al2O3,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,,,,276.0,0.0,,3.0,1873.0,0.15,0.74
+Mullite,,water,,,Ceramic,,,,,,253.0,0.0,,4.0,1873.0,0.0402,0.886
+Al2O3,SiC,water,,,Ceramic,epoxy,,,,,77.0,0.0,0.0,1.0,873.0,0.55,0.06
+SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.16,0.26
+YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,2.0,48.0,5.0,773.0,0.27,0.537
+kaolinite,,water,,,Ceramic,,,,sodium silicate,,77.0,0.0,12.0,,,0.1,0.8056
+Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1823.0,0.25,0.48
+WO3,,water,,,Metal,Teflon,,,,,258.0,0.0,,,1023.0,0.275,0.361
+HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,173.0,5.0,24.0,3.0,873.0,0.1,0.66
+AlN,AlN,water,,,Ceramic,,Dolapix PC 33,0.03,,,233.0,0.0,,2.0,873.0,0.47,0.08
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.649
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.699
+PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1673.0,0.15,0.313
+HAP,Al2O3,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.7873
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,1173.0,0.15,0.82
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.03,0.66
+SiO2,,water,,,Ceramic,glass,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
+Mullite,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,873.0,0.26,0.74
+chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.68
+BT,kaolinite,water,,,Ceramic,,,,PVA,0.002,243.0,0.0,0.0,,873.0,0.11,0.67
+Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,173.0,0.0,12.0,2.0,1823.0,0.35,0.62
+YSZ,,TBA,,,Ceramic,,,,,,,0.0,,2.0,1773.0,0.15,0.65
+SiC,,water,,,Ceramic,,,,,,,0.0,,,,0.47,0.102
+Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.52
+HAP,,water,,,Ceramic,polyethylene,SND 6800,0.02,,,,0.0,,2.0,1623.0,0.25,0.81
+SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.13,0.634
+WO3,,water,,,Metal,Teflon,,,,,261.0,0.0,,,1023.0,0.3,0.595
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.06,0.625
+HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,1.0,48.0,4.0,1573.0,0.2,0.747
+Si4Al2O2N6,Al2O3,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,273.0,0.0,96.0,2.0,873.0,0.3,0.231
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1173.0,0.15,0.81
+Al2O3,,water,,,Ceramic,,Darvan 811,0.03,,,238.0,0.0,24.0,5.0,1873.0,0.23,0.639
+YSZ,,water,,,Ceramic,silicone,,,PVA,0.06,255.0,0.0,24.0,2.0,873.0,0.3297,0.52
+SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,873.0,0.05,0.94
+Al2O3,TiO2,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1773.0,0.25,0.54
+Al2O3,,TBA,,,Ceramic,PMMA,citric acid,0.05,,,,0.0,72.0,1.0,873.0,0.25,0.48
+Ca3ZrSi2O9,,water,,,Ceramic,polyethylene,Dolapix P62,0.03,PVA,0.05,,4.0,,1.0,873.0,0.125,0.6357
+Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1873.0,0.45,0.32
+Y2SiO5,,water,,,Ceramic,graphite,ammonium polymethacrylate anionic dispersant,0.003,,,,0.0,48.0,2.0,1773.0,0.2,0.66
+LSM,YSZ,water,,,Ceramic,acrylic,Darvan CN,0.024,PEG,0.01,,5.0,12.0,1.0,873.0,0.23,0.596
+Al2O3,CuO,water,,,Ceramic,polyethylene,sodium polymethacrylate,0.01,,,253.0,0.0,48.0,1.0,873.0,0.3,0.53
+Fe2O3,,water,one-sided,vertical-up,Metal,Teflon,,,PVA,0.04,173.0,,48.0,2.0,573.0,0.141,0.263
+Si3N4,Al2O3,TBA,,,Ceramic,polyethylene,PVP,0.04,,,,0.0,24.0,3.0,473.0,0.2252,0.48
+Al2O3,,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,,0.0,24.0,,1873.0,0.333,0.458
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.755
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.336,0.094
+CaSiO3,PCS,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.2,0.78
+Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,233.0,0.0,12.0,2.0,1823.0,0.35,0.59
+YSZ,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,3.0,1173.0,0.357,0.065
+YSZ,,camphene,,,Ceramic,polyethylene,,,,,278.0,0.0,,2.0,1823.0,0.2,0.67
+HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.0734,0.765
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,0.5,723.0,0.15,0.75
+Bioglass,,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.198,0.46
+Al2O3,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,,,,,0.0,0.0,5.0,1873.0,0.45,0.66
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.91
+Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.4,0.13
+Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1823.0,0.1,0.5
+HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,,,0.0,36.0,3.0,1373.0,0.2,0.54
+Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.48,0.1
+LSM,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,38.0,12.0,1.0,873.0,0.17,0.57
+theophylline,starch,water,,,Pharmaceutical,"plastic, noi",citric acid,0.045,,,243.0,0.0,24.0,,,0.37,0.46
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.315,0.143
+chitin,,water,,,Polymer,aluminum,,,,,253.0,0.0,,,,0.35,0.985
+HAP,,water,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,4.0,1373.0,0.1744,0.2
+Si3N4,Y2O3,water,,,Ceramic,polyethylene,ammonium polymethacrylate anionic dispersant,,,,,0.0,,2.0,873.0,0.3,0.663
+Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1823.0,0.1,0.5
+Al2O3,,water,,,Ceramic,"plastic, noi",Duramax D3005,0.008,PVA,0.04,,1.0,24.0,2.0,1823.0,0.35,0.368
+HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,10.0,48.0,4.0,1573.0,0.2,0.743
+Al2O3,,camphene,,,Ceramic,polyurethane,Perfad9100,0.02,,,291.0,0.0,0.0,4.0,1873.0,0.3,0.22
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.8404
+YSZ,,water,,,Ceramic,PTFE,Prox B03,0.0075,PVA,0.03,,25.0,48.0,5.0,773.0,0.2,0.652
+HAP,PMMA,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,8.0,2.0,873.0,0.2406,0.5628
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.2,0.82
+HAP,,water,,,Ceramic,PVC,,,,,253.0,0.0,,3.0,1623.0,0.2,0.46
+stainless steel,,water,,,Ceramic,,CMC,,Fluka,,233.0,0.0,0.0,2.0,1773.0,0.56,0.21
+SiC,Al2O3,water,,,Ceramic,polycarbonate,CMC,0.008,CMC,,263.0,0.0,24.0,2.0,673.0,0.3,0.62
+Al2O3,ZrO2,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.278,0.5
+HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.05,,0.0,24.0,3.0,873.0,0.2,0.73
+Al2O3,,water,,,Ceramic,PDMS,HydroDisperser,0.05,PVA,0.01,83.0,0.0,24.0,3.0,1173.0,0.4,0.1
+PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1723.0,0.3,0.46
+PCS,,water,immersion,vertical-up,Polymer,glass,,,,,77.0,0.0,24.0,,,0.32,0.662
+Bioglass,,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1523.0,0.3571,0.15
+WO3,,water,,,Metal,Teflon,,,,,248.0,0.0,,,1023.0,0.275,0.433
+Y2SiO5,,TBA,,,Ceramic,polyethylene,citric acid,,PVB,,,0.0,,1.0,1473.0,0.2,0.45
+Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,193.0,0.0,12.0,2.0,1823.0,0.35,0.6
+PVA,,water,immersion,vertical-up,Polymer,polyproplyene,,,,,77.0,0.0,,,,0.0657,0.78
+YSZ,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
+HAP,,water,,,Ceramic,,Duramax D3005,0.003,gelatin,0.1,,0.0,0.0,1.0,873.0,0.23,0.1847
+HAP,BT,water,,,Ceramic,PDMS,HydroDisper A160,0.01,,,,0.0,36.0,3.0,1373.0,0.3,0.5
+Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.5
+glass,,water,,,Ceramic,,Dolapix CE 64,,,,218.0,0.0,24.0,1.0,873.0,0.312,0.69
+SiO2,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
+PU,,dioxane,doctor-blade,vertical-up,Polymer,,,,,,77.0,0.0,24.0,,,0.09,0.83
+YSZ,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.357,0.259
+HAP,MgO,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.63
+HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.1,0.78
+Cordierite,,water,,,Ceramic,"plastic, noi",,,,,223.0,0.0,24.0,2.0,1473.0,0.5,0.92
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.345,0.098
+HAP,,water,,,Ceramic,PDMS,HydroDisper A160,0.01,PVA,0.01,,0.0,24.0,3.0,1523.0,0.4,0.48
+chitosan,,water,one-sided,vertical-up,Polymer,PTFE,acetic acid,0.02,,,,4.0,48.0,,,0.03,0.9643
+HAP,,water,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,4.0,1373.0,0.1744,0.4
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1073.0,0.15,0.775
+HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.0734,0.793
+HAP,,water,,,Ceramic,PVC,Dynol 604,0.0075,PVA,0.015,253.0,0.0,,3.0,1623.0,0.1,0.67
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,253.0,0.0,0.0,,873.0,0.15,0.75
+HAP,TCP,camphene,,,Ceramic,,Dolapix CE 64,0.06,,,,0.0,,3.0,1573.0,0.16,0.35
+Yb2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,823.0,0.1,0.884
+HAP,,water,,,Ceramic,polyethylene,SND 6800,0.02,,,,0.0,,2.0,1673.0,0.25,0.75
+Mullite,,TBA,,,Ceramic,polyurethane,citric acid,0.01,,,,0.0,0.0,1.0,873.0,0.26,0.68
+Bioglass,,water,,,Ceramic,PVC,Easysperse,0.005,PVA,0.01,253.0,0.0,,,773.0,0.2,0.35
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.1,0.58
+Al2O3,Mullite,water,,,Ceramic,aluminum,polyacrylic acid,0.056,,,,0.0,48.0,2.0,873.0,0.6,0.74
+Ti,,camphene,,,Metal,,,,,,,,,2.0,1523.0,0.15,0.72
+PZT,,TBA,,,Ceramic,polyamide,acacia,0.012,PVB,0.015,,0.0,0.0,2.0,1723.0,0.4,0.32
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.53
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.902
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.05,0.541
+Mullite,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,0.0,2.0,1773.0,0.0659,0.7
+HAP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.9
+HAP,,water,,,Ceramic,,Duramax D3005,0.003,gelatin,0.1,,0.0,0.0,1.0,873.0,0.18,0.3829
+HAP,,water,,,Ceramic,polyethylene,sodium polyacrylate,0.01,PVA,0.005,243.0,0.0,0.0,3.0,1623.0,0.1,0.64
+Cr2O3,,camphene,,,Ceramic,polyurethane,Hypermer KD 4,0.01,,,298.0,0.0,24.0,15.0,1373.0,0.3,0.8
+Yb2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,873.0,0.1,0.857
+HAP,,water,,,Ceramic,,,,,,,0.0,,,,0.35,0.581
+Al2O3,,water,,,Ceramic,,,,,,,10.0,48.0,,,0.27,0.916
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,243.0,0.0,0.0,0.5,723.0,0.15,0.77
+Zeo,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2173.0,0.1892,0.7017
+LSM,YSZ,water,,,Ceramic,,Darvan CN,0.02,PEG,0.01,,2.0,12.0,1.0,873.0,0.17,0.57
+YSZ,,water,,,Ceramic,silicone,,,,,255.0,0.0,24.0,2.0,873.0,0.3297,0.35
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.25,0.65
+HAP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,303.0,0.0,20.0,1.0,1493.0,0.1,0.73
+PZT,,TBA,,,Ceramic,,,,,,,0.0,0.0,2.0,1623.0,0.15,0.239
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,195.0,0.0,0.0,,873.0,0.15,0.75
+Al2O3,TiO2,water,,,Ceramic,Teflon,ammonium polymethacrylate anionic dispersant,0.02,PVA,0.02,,0.0,24.0,0.5,773.0,0.05,0.667
+HAP,,water,,,Ceramic,Teflon,Darvan 811,0.01,Aquazol,0.02,,5.0,48.0,4.0,1573.0,0.2,0.727
+PCS,,water,immersion,vertical-up,Polymer,glass,,,,,77.0,0.0,24.0,,,0.51,0.899
+Ti,,water,,,Metal,,NOI,,agar,0.002,256.0,0.0,24.0,,573.0,0.24,0.62
+PLLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,255.0,,,,,0.08,0.867
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.2,0.42
+ZrB2,SiC,camphene,,,Ceramic,,Duramax,0.01,,,233.0,0.0,0.0,1.0,873.0,0.38,0.39
+Al2O3,,water,,,Ceramic,PDMS,,,,,,0.0,24.0,2.0,1873.0,0.1,0.73
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.1,0.611
+Mullite,,TBA,radial,radial-in,Ceramic,PTFE,BYK-163,0.05,PVB,0.005,173.0,0.0,12.0,2.0,1823.0,0.25,0.72
+PZT,,TBA,,,Ceramic,,acacia,0.012,PVB,0.015,243.0,0.0,48.0,2.0,1673.0,0.3,0.46
+Yb2SiO5,,water,,,Ceramic,,ammonium polymethacrylate anionic dispersant,0.003,PVA,0.01,77.0,0.0,48.0,2.0,823.0,0.25,0.733
+Y2SiO5,,water,,,Ceramic,graphite,ammonium polymethacrylate anionic dispersant,0.003,,,,0.0,48.0,2.0,1773.0,0.2,0.62
+kaolinite,Al2O3,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,24.0,2.0,1773.0,0.06,0.892
+Y2O3,SiO2,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,12.0,1.0,1053.0,0.1174,0.5
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,0.0,,2.0,1473.0,0.08,0.88
+HAP,,TBA,,,Ceramic,polyethylene,citric acid,0.01,,,,0.0,,1.0,873.0,0.1744,0.499
+YSZ,,water,bridgman,horizontal,Ceramic,glass,,,PVA,0.02,253.0,0.0,24.0,2.0,873.0,0.3297,0.5
+YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.74
+Ni,,water,,,Metal,"plastic, noi",CMC,,,,263.0,0.0,,,773.0,0.05,0.91
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1273.0,0.345,0.077
+NiTiNbO,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.25,0.6866
+PVA,collagen,water,,,Ceramic/Polymer,,,,,,233.0,0.0,5.0,,,0.07,0.87
+chitosan,TCP,water,,,Ceramic/Polymer,"plastic, noi",acetic acid,,,,253.0,0.0,6.0,,,0.1468,0.73
+Si3N4,Y2O3,water,,,Ceramic,"metal, NOI",NH4PAA,0.02,,,75.0,0.0,,3.0,873.0,0.2252,0.68
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.68
+CaSiO3,,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.2,0.71
+Ti,,water,,,Metal,,NOI,,agar,0.002,256.0,0.0,24.0,,573.0,0.24,0.62
+HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,3.8,,4.0,1573.0,0.25,0.56
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.91
+HAP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.55
+SiC,,water,,,Metal/Ceramic,Teflon,CMC,0.008,CMC,,263.0,0.0,24.0,0.5,773.0,0.3,0.016
+Al2O3,,water,,,Ceramic,"plastic, noi",AFP,,,,233.0,0.0,,2.0,1573.0,0.1,0.86
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.2,0.422
+Al2O3,,water,,,Ceramic,,PAAS,0.02,CMC,0.01,77.0,0.0,0.0,0.5,723.0,0.2,0.45
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.76
+SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,1573.0,0.1,0.89
+Si,,water,,,Ceramic,Polydimethylsiloxane,polyvinyl pyrrolidione,0.02,PVA,0.02,,0.0,24.0,16.5,1673.0,0.2,0.8
+SiO2,,water,,,Ceramic,glass,,,PVA,0.02,255.0,0.0,24.0,2.0,873.0,0.3297,0.5
+Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,,0.0,,1.0,1773.0,0.1,0.5
+HAP,MgO,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.15,0.55
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.8466
+Si3N4,Y2O3,water,,,Ceramic,fluorocarbon,Alon A-6114,,,,193.0,0.0,24.0,,1973.0,0.25,0.602
+YSZ,,TBA,,,Ceramic,,,,PVB,0.005,243.0,0.0,0.0,,873.0,0.15,0.775
+Al2O3,,camphene,,,Ceramic,,Perfad9100,,,,,0.0,,4.0,1873.0,0.334,0.41
+ZrB2,SiC,water,,,Ceramic,"plastic, noi",Dolapix,0.06,,,233.0,0.0,0.0,0.5,723.0,0.76,0.387
+chitosan,HAP,water,,,Polymer,,acetic acid,,,,,0.0,0.0,,,0.09,0.47
+Al2O3,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.4
+HAP,,water,one-sided,vertical-up,Ceramic,polytetrafluoroethylene,HydroDisper A160,0.02,,,243.0,,,1.0,1473.0,0.16,0.65
+HAP,collagen,water,,,Ceramic/Polymer,polystyrene,,,,,,0.0,0.0,0.5,873.0,0.04,0.95
+Al2O3,,water,,,Ceramic,polymer,Darvan C,0.02,PVA,,203.0,0.0,,2.0,823.0,0.25,0.42
+SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.07,0.52
+HAP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1373.0,0.1091,0.61
+HAP,collagen,water,,,Ceramic/Polymer,silicone,,,,,243.0,0.0,0.0,0.5,873.0,0.04,0.95
+Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.02,77.0,0.0,48.0,,,0.0001,0.959
+HAP,,TBA,,,Ceramic,,citric acid,0.01,,,,0.0,,1.0,1673.0,0.1,0.75
+Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.05,77.0,0.0,48.0,,,0.001,0.959
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.56
+HAP,TCP,water,,,Ceramic,glass,,,sodium alginate,0.02,,0.0,0.0,2.0,1373.0,0.1091,0.61
+NiTiNbO,,water,,,Metal/Ceramic,,polyacrylic acid,0.001,PVA,0.01,203.0,0.0,96.0,0.5,873.0,0.3,0.6236
+YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,195.0,,,1.0,1723.0,0.15,0.75
+Si4Al2O2N6,,camphene,,,Ceramic,polyethylene,HAO Fast 923,0.01,,,77.0,0.0,96.0,3.0,823.0,0.3,0.381
+Zeo,,water,,,Ceramic,aluminum,PEG,0.1,Bentonite,0.1,123.0,0.0,48.0,1.0,2373.0,0.1892,0.7124
+Al2O3,,camphene,,,Ceramic,PTFE,Texaphor 963,0.018,,,,0.0,72.0,2.0,1823.0,0.25,0.58
+Al2O3,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.45
+YSZ,Al2O3,water,,,Ceramic,silicone,NH4PAA,0.0065,Duramax B-1000,0.03,,0.0,24.0,,773.0,0.3,0.35
+Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.05,77.0,0.0,,3.0,1823.0,0.2,0.69
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,1.0,,24.0,873.0,0.15,0.7805
+Mullite,,TBA,,,Ceramic,,BYK-163,0.05,PVB,0.05,213.0,0.0,12.0,2.0,1873.0,0.4,0.55
+Ni,,water,,,Metal,"plastic, noi",CMC,,,,233.0,0.0,,,773.0,0.05,0.91
+SiC,,water,,,Ceramic,"plastic, noi",CH10,,,,,0.0,0.0,,,0.47,0.102
+TiO2,,water,one-sided,vertical-up,Ceramic,PVC,Darvan 811,0.01,PVA,0.01,,10.0,72.0,3.0,1273.0,0.1,0.846
+Al2O3,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.55
+Si3N4,Al2O3,TBA,,,Ceramic,polyethylene,PVP,0.04,,,,0.0,24.0,3.0,473.0,0.1623,0.51
+Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.07,253.0,0.0,,3.0,1773.0,0.2,0.64
+Si,,water,,,Ceramic,Polydimethylsiloxane,polyvinyl pyrrolidione,0.02,PVA,0.02,,0.0,24.0,16.5,1673.0,0.2,0.7
+Ti,,camphene,,,Metal,,,,,,,,,2.0,1523.0,0.2,0.6
+HAP,,water,,,Ceramic,silicone,Lopon 885,0.015,gelatin,,255.0,0.0,,3.0,873.0,0.23,0.4619
+Al2O3,,water,,,Ceramic,silicone,Darvan C,0.012,Duramax B-1001,0.02,238.0,0.0,,5.0,1923.0,0.575,0.17
+HAP,,water,,,Ceramic,silicone,,,PVA,0.02,255.0,0.0,8.0,,823.0,0.2406,0.198
+YSZ,,TBA,,,Ceramic,,fish oil,,PVB,,,0.0,,,,0.5,0.62
+BT,kaolinite,water,,,Ceramic,,,,PVA,0.002,243.0,0.0,0.0,,873.0,0.11,0.64
+CaSiO3,PCS,water,,,Ceramic,polytetrafluoroethylene,HydroDisperser,0.02,,,243.0,0.0,,3.0,1623.0,0.15,0.78
+Ti,,camphene,,,Metal,aluminum,,,,,,0.0,,2.0,1773.0,0.3,0.19
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.1,0.58
+YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,195.0,,,1.0,1723.0,0.15,0.75
+Al2O3,,water,,,Ceramic,"plastic, noi",,,,,233.0,0.0,,2.0,1573.0,0.1,0.86
+Al2O3,,water,,,Ceramic,,Darvan 7-N,0.01,PVA,0.01,,6.0,48.0,3.0,823.0,0.3,0.449
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.91
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,,2.0,1173.0,0.15,0.82
+YSZ,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.06,0.546
+HAP,,water,,,Ceramic,silicone,,,,,255.0,0.0,24.0,2.0,873.0,0.2406,0.236
+HAP,,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,8.0,72.0,2.0,1173.0,0.15,0.825
+Bioglass,,camphene,,,Ceramic,,isostearic acid,,,,,0.0,24.0,1.0,1673.0,0.1,0.86
+YSZ,,camphene,,,Ceramic,,Texaphor 963,0.05,,,,0.0,24.0,2.0,1823.0,0.2,0.67
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,1.0,,,,0.27,0.91
+HAP,,camphene,,,Ceramic,"metal, NOI",Texaphor 963,0.06,,,277.0,0.0,20.0,1.0,1493.0,0.1,0.71
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.745
+PU,,dioxane,doctor-blade,vertical-up,Polymer,,,,,,77.0,0.0,24.0,,,0.05,0.89
+SiO2,,water,,,Ceramic,"plastic, noi",,,,,193.0,0.0,12.0,2.0,1563.0,0.01,0.98
+Merwinite,,water,,,Ceramic,polyethylene,Dolapix,0.03,PVA,0.05,238.15,4.0,72.0,1.0,873.0,0.1,0.4661
+Al2O3,,water,one-sided,vertical-up,Ceramic,PTFE,Darvan C,0.005,poly-(2-ethyl-2-oxazoline,0.05,,0.0,96.0,4.0,723.0,0.35,0.56
+YSZ,,TBA,one-sided,vertical-up,Ceramic,,,,PVB,0.005,77.0,,,1.0,1723.0,0.15,0.73
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1773.0,0.25,0.288
+Al2O3,ZrO2,TBA,,,Ceramic,epoxy,citric acid,0.01,PVB,,77.0,0.0,,,1673.0,0.1,0.64
+HAP,SiO2,water,,,Ceramic,PTFE,Dolapix CE 64,0.04,PVA,0.04,,4.0,,24.0,873.0,0.15,0.78
+Bentonite,,water,,,Ceramic,PTFE,,,,,77.0,0.0,24.0,1.0,873.0,0.0235,0.97
+Al2O3,,naphthalene,,,Ceramic,polyurethane,Perfad9100,0.03,,,291.0,0.0,60.0,4.0,1873.0,0.4,0.01
+Ag,,water,one-sided,vertical-up,Metal,"plastic, noi",,,PVA,0.05,77.0,0.0,48.0,,,0.0001,0.959
+Al2O3,,Glycerine Ether,,,Ceramic,,,,polyethylene-imine,0.07,253.0,0.0,,3.0,1773.0,0.4,0.31
+PLLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,77.0,,,,,0.12,0.826
+HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,5.0,,4.0,1573.0,0.25,0.63
+SiO2,,TBA,,,Ceramic,,citric acid,0.02,,,,0.0,12.0,1.0,873.0,0.13,0.68
+Bioglass,,camphene,,,Ceramic,polytetrafluoroethylene,isostearic acid,0.02,,,276.0,0.0,,1.0,1823.0,0.1,0.5
+Al2O3,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,2.0,1873.0,0.321,0.117
+HAP,TCP,water,,,Ceramic,cpc,,,sodium alginate,0.02,243.0,0.0,168.0,,,0.1091,0.3
+ZrB2,,water,,,Ceramic,"metal, NOI",Duramax,0.029,,,233.0,0.0,0.0,0.5,723.0,0.08,0.57
+HAP,,water,,,Ceramic,PVC,,,,,253.0,0.0,,3.0,1623.0,0.2,0.538
+Al2O3,,camphene,,,Ceramic,polyethylene,Hypermer KD 4,0.03,,,293.0,0.0,,,1673.0,0.2,0.66
+YSZ,,water,,,Ceramic,,Darvan C,,Duramax B-1001,,,0.0,,,,0.3,0.74
+PLLA,,DMSO,one-sided,vertical-up,Polymer,,,,,,193.0,,,,,0.08,0.872
+Al2O3,YSZ,water,,,Ceramic,Teflon,,,sodium polymethacrylate,0.005,253.0,0.0,48.0,30.0,773.0,0.3,0.55
+YSZ,,water,,,Metal/Ceramic,Teflon,Dolapix CE 64,,PEG,,,1.0,48.0,12.0,413.0,0.36,0.253
+SiO2,kaolinite,water,,,Ceramic,silicone,,,,,238.0,2.0,0.0,2.0,573.0,0.1628,0.82
+Al2O3,,water,,,Ceramic,PTFE,,,,,193.0,10.0,72.0,1.0,373.0,0.4,0.32
+HAP,SiO2,water,,,Ceramic,"metal, NOI",polyacrylic acid,0.015,,,,0.0,48.0,4.0,1373.0,0.2674,0.652
+Al2O3,chitosan,acetic acid,,,Ceramic,PTFE,,,,,,10.0,,,,0.27,0.918
+HAP,,water,,,Ceramic,PTFE,Darvan 811,0.01,PVA,0.01,,0.0,,,1573.0,0.17,0.68
