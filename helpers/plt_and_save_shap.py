@@ -20,7 +20,7 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     plt.close('all')
     n_cols_all = len(X.columns)
     singles_plots_n = 40
-    zoomed_display = 30  # number of variables to show in zoomed summary plot
+    zoomed_display = 15  # number of variables to show in zoomed summary plot
     dest_path = f"{model_results_path}/shap/{results_name}"
     dest_path_single = dest_path + "/single"
     dest_path_dependence = dest_path + "/dependence"
