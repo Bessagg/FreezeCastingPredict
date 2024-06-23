@@ -16,8 +16,8 @@ def save_list_to_txt(lst, filename):
 
 def get_regression_metrics(preds, y, opt_print=True):
     r2 = "{:.02f}".format(r2_score(y, preds))
-    mse = "{:.02f}".format(mean_squared_error(y, preds))
-    mae = "{:.02f}".format(mean_absolute_error(y, preds))
+    mse = "{:.03f}".format(mean_squared_error(y, preds))
+    mae = "{:.03f}".format(mean_absolute_error(y, preds))
     if opt_print:
         print('r2:', r2_score(y, preds))
         print(f"mse:", mse, "mae", mae)
