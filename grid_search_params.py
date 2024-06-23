@@ -1,7 +1,7 @@
 param_grid_catb = [
     {
-        'model__n_estimators': [2000],  # 50, 100, 200
-        'model__depth': [10],  # best:8
+        'model__n_estimators': [500],  # best:500 50, 100, 200
+        'model__depth': [8],  # best:8
         # 'model__loss_function': ['Logloss'],
         'model__eval_metric': ['MAE'],  # mae mape, poisson, rmse
         # 'model__subsample': [0.9, 1],  # 0.5, 0.8 , 0.2
@@ -54,7 +54,7 @@ param_grid_rf = [{
 # Define param_grid_nn for MLPRegressor (optional)
 param_grid_nn = [
     {
-        'model__hidden_layer_sizes': [(1000, 800, 400,100, 10)],
+        'model__hidden_layer_sizes': [(100, 50, 25), (500, 250, 100), (1000, 800, 400, 100, 10)],
         'model__activation': ['tanh'],
         # 'model__solver': ['adam'],
         # 'model__alpha': [0.0001],
