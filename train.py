@@ -30,7 +30,7 @@ k = 50  # number of featured to be reduced to with shap
 # selected_preprocessor = Preprocessors.opd()
 
 """Fetch dataset"""
-feats_name_input = input("\n Which features to use? [all, mid, reduced]")
+feats_name_input = input("\n Which features to use? [all, mid, reduced, simplest]")
 feats_name = feats_name_input + "_cols"
 print("Loading Data...")
 try:
@@ -72,6 +72,8 @@ grid = GridSearchCV(estimator=pipe, param_grid=search_space, cv=cv, verbose=0, s
 grid = grid.fit(df_train[selected_cols], df_train[target])
 best_clf = grid.best_estimator_
 best_clf.name = model_name
+best_clf.cat_cols = cat_cols
+best_clf.num_cols = num_cols
 best_clf.feats_name = feats_name
 best_clf.cv_results_ = grid.cv_results_
 best_clf.selected_cols = selected_cols  # save selected cols inside model
@@ -113,19 +115,23 @@ test_X_p = pd.DataFrame(preprocessor.transform(df_test[selected_cols]), columns=
 train_X_p.columns, test_X_p.columns = cols_p, cols_p
 print("Count of created preprocessed columns: ", len(cols_p))
 
-"""Generate shap"""
-print("Running Shap")
-shap_start = time.time()
-explainer = shap.TreeExplainer(estimator, feature_perturbation='interventional')
-preds = best_clf.predict(df_test[selected_cols])
-shap_dict = plt_and_save_shap.plt_and_save_shap(explainer, test_X_p, df_test[target], preds,
-                                                model_results_path, model_name, train_name,
-                                                'test', check_additivity=True)
-print("Elapsed Shap:", (time.time() - shap_start) / 60, 'min')
-shap_values, varimps_sorted_cols, varimps = shap_dict['shap_values'], shap_dict["varimps_sorted_cols"], shap_dict[
-    "varimps"]
-top_shap_indices = varimps.index[0:k]
-top_shap_col_names = varimps.values[:k, 0]
+
+run_shap = input("Run shap? [1 or 0]")
+if run_shap:
+    """Generate shap"""
+    print("Running Shap")
+    shap_start = time.time()
+    explainer = shap.TreeExplainer(estimator, feature_perturbation='interventional')
+    preds = best_clf.predict(df_test[selected_cols])
+    shap_dict = plt_and_save_shap.plt_and_save_shap(explainer, test_X_p, df_test[target], preds,
+                                                    model_results_path, model_name, train_name,
+                                                    'test', check_additivity=True)
+    print("Elapsed Shap:", (time.time() - shap_start) / 60, 'min')
+    shap_values, varimps_sorted_cols, varimps = shap_dict['shap_values'], shap_dict["varimps_sorted_cols"], shap_dict[
+        "varimps"]
+    top_shap_indices = varimps.index[0:k]
+    top_shap_col_names = varimps.values[:k, 0]
+    plt.close('all')
 
 #  ############################## Retrain with shapley feature selection
 
