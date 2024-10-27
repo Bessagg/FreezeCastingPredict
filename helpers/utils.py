@@ -6,7 +6,7 @@ import shutil
 import pickle
 from pathlib import Path
 import pandas as pd
-
+import numpy as np
 
 def save_list_to_txt(lst, filename):
     with open(filename, 'w') as f:
@@ -14,14 +14,21 @@ def save_list_to_txt(lst, filename):
             f.write('%s\n' % item)
 
 
+def mean_absolute_percentage_error(y_true, y_pred):
+    y_true, y_pred = np.array(y_true), np.array(y_pred)
+    return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
+
+
 def get_regression_metrics(preds, y, opt_print=True):
     r2 = "{:.02f}".format(r2_score(y, preds))
     mse = "{:.03f}".format(mean_squared_error(y, preds))
     mae = "{:.03f}".format(mean_absolute_error(y, preds))
+    mape = "{:.03f}".format(mean_absolute_percentage_error(y, preds))
+
     if opt_print:
         print('r2:', r2_score(y, preds))
-        print(f"mse:", mse, "mae", mae)
-    return r2, mae, mse
+        print(f"mse:", mse, "mae", mae, 'mape', mape)
+    return r2, mae, mse, mape
 
 
 def save_pipeline_reg(clf, seed, models_folder, model_name, train_name, r2_train, r2, mae, mse):
@@ -43,15 +50,15 @@ def save_pipeline_reg(clf, seed, models_folder, model_name, train_name, r2_train
     return model_results_path, model_filename
 
 
-def save_artifacts(model_results_path, selected_cols=None, data_parser_filepath=None):
+def save_artifacts(model_results_path, selected_feats=None, data_parser_filepath=None):
     # Save selected cols to .txt
-    if selected_cols:
-        save_list_to_txt(selected_cols, f"{model_results_path}/selected_cols.txt")
-        print("saved selected cols to", f"{model_results_path}/selected_cols.txt")
+    if selected_feats:
+        save_list_to_txt(selected_feats, f"{model_results_path}/selected_feats.txt")
+        print("saved selected cols to", f"{model_results_path}/selected_feats.txt")
     # Save dataparser
     if data_parser_filepath:
         shutil.copy2(data_parser_filepath, f"{model_results_path}/{Path(data_parser_filepath).name}")
-        print("saved data_parser file to", f"{model_results_path}/selected_cols.txt")
+        print("saved data_parser file to", f"{model_results_path}/selected_feats.txt")
 
 
 def load_pipeline(model_path):
