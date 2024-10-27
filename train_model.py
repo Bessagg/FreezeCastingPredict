@@ -20,8 +20,8 @@ pd.set_option('display.width', 600)
 
 """General Setup"""
 print("Parsing data...")
-data_parser = DataParser()
-target = data_parser.target
+parser = DataParser()
+target = parser.target
 
 """ Opts """
 seed = 6
@@ -31,20 +31,22 @@ k = 50  # number of featured to be reduced to with shap
 
 """Fetch dataset"""
 feats_name_input = input("\n Which features to use? [all, mid, reduced, simplest]")
-feats_name = feats_name_input + "_cols"
+feats_name = feats_name_input + "_feats"
 print("Loading Data...")
+selected_feats = parser.feats_dict[feats_name]
+selected_feats.remove(target)
+encode_min_frequency = 0.2  #
+num_cols = [x for x in parser.all_num_cols if x in selected_feats and x != target]
+cat_cols = [x for x in parser.all_cat_cols if x in selected_feats and x != target]
 try:
     df_train = pd.read_csv(f"data/{feats_name}/train.csv")
     df_test = pd.read_csv(f"data/{feats_name}/test.csv")
     models_folder = f"pipe/{feats_name}"
 except FileNotFoundError:
-    print(f'train and test file not found in data/{feats_name}_cols')
+    print(f'train and test file not found in data/{feats_name}_feats')
     sys.exit(1)
-selected_cols = data_parser.feats_dict[feats_name]
-selected_cols.remove(target)
-encode_min_frequency = 0.2  #
-num_cols = [x for x in data_parser.all_num_cols if x in selected_cols and x != target]
-cat_cols = [x for x in data_parser.all_cat_cols if x in selected_cols and x != target]
+df_train[cat_cols] = df_train[cat_cols].fillna('missing')
+df_test[cat_cols] = df_test[cat_cols].fillna('missing')
 # if model_name == 'lr':
 #     df_train, df_test = df_train.dropna(subset='vf_total'), df_test.dropna(subset='vf_total')
 #     df_train, df_test = utils.handle_outliers(df_train), utils.handle_outliers(df_test)
@@ -53,37 +55,39 @@ cat_cols = [x for x in data_parser.all_cat_cols if x in selected_cols and x != t
 # df_train = data_parser.rename_columns_df(df_train)
 # df_test = data_parser.rename_columns_df(df_test)
 
-print("Selected_cols", df_train.columns)
+print("selected_feats", df_train.columns)
 
 """Prepare models"""
-model, search_space, selected_preprocessor, model_name = select_model.get_model_by_name(seed, cat_cols, selected_cols, target, encode_min_frequency)
+from grid_search_params import *
+search_space = param_grid_catb_single
+
 # tree_method="hist", device="cuda" for gpu. But raises warning in deployment
-pipe = Pipeline([('preprocess', selected_preprocessor),
+from catboost import CatBoostRegressor
+pipe = Pipeline([
                  # ('selector', sel1),  # better just adjust min_frequency in one hot encode or drop manually
-                 ('model', model
+                 ('model', CatBoostRegressor(random_state=seed, logging_level='Silent', cat_features=cat_cols)
                   )])  # task_type="GPU", devices='0'
-train_name = f"{selected_preprocessor.name}"
+train_name = f"catb_single"
+
 
 """Grid search"""
 print("Search space:", search_space)
 print('Fitting Grid...')
 start = time.time()
 grid = GridSearchCV(estimator=pipe, param_grid=search_space, cv=cv, verbose=0, scoring='r2')  # r2, neg_mean_absolute_error, explained_variance, neg_mean_squared_error
-grid = grid.fit(df_train[selected_cols], df_train[target])
+grid = grid.fit(df_train[selected_feats], df_train[target])
 best_clf = grid.best_estimator_
-best_clf.name = model_name
+best_clf.name = 'catbs'
 best_clf.cat_cols = cat_cols
 best_clf.num_cols = num_cols
 best_clf.feats_name = feats_name
 best_clf.cv_results_ = grid.cv_results_
-best_clf.selected_cols = selected_cols  # save selected cols inside model
-best_clf.preprocessor_name = selected_preprocessor.name  # save preprocessor name inside model
+best_clf.selected_feats = selected_feats  # save selected cols inside model
 
 estimator = grid.best_estimator_[-1]  # last step in pipeline
-preprocessor = grid.best_estimator_[0]  # first step in pipeline
 print("Elapsed", (time.time() - start) / 60, 'min')
-train_preds = best_clf.predict(df_train[selected_cols])
-test_preds = best_clf.predict(df_test[selected_cols])
+train_preds = best_clf.predict(df_train[selected_feats])
+test_preds = best_clf.predict(df_test[selected_feats])
 
 print("CV results")
 print(grid.cv_results_)
@@ -108,21 +112,20 @@ model_results_path, model_filename = utils.save_pipeline_reg(best_clf, seed, mod
                                                              r2_train, r2, mae, mse)
 
 """Create preprocessed frames"""
-cols_p = np.array([str(item) for item in preprocessor.get_feature_names_out()])
-cols_p = np.char.replace(cols_p, 'remainder__', '')
-train_X_p = pd.DataFrame(preprocessor.transform(df_train[selected_cols]), columns=cols_p)
-test_X_p = pd.DataFrame(preprocessor.transform(df_test[selected_cols]), columns=cols_p)
+cols_p = selected_feats
+train_X_p = df_train[selected_feats]
+test_X_p = df_test[selected_feats]
 train_X_p.columns, test_X_p.columns = cols_p, cols_p
 print("Count of created preprocessed columns: ", len(cols_p))
 
 
 run_shap = input("Run shap? [1 or 0]")
-if run_shap:
+if int(run_shap) == 1:
     """Generate shap"""
     print("Running Shap")
     shap_start = time.time()
     explainer = shap.TreeExplainer(estimator, feature_perturbation='interventional')
-    preds = best_clf.predict(df_test[selected_cols])
+    preds = best_clf.predict(df_test[selected_feats])
     shap_dict = plt_and_save_shap.plt_and_save_shap(explainer, test_X_p, df_test[target], preds,
                                                     model_results_path, model_name, train_name,
                                                     'test', check_additivity=True)
@@ -144,12 +147,12 @@ if run_shap:
 #         ('selected', 'passthrough', top_shap_indices)])),  # Keep only the selected top features
 #     ('model', CatBoostRegressor(logging_level='Silent'))])
 # grid_clf2 = GridSearchCV(pipe2, search_space, cv=cv, verbose=1, scoring='f1')
-# grid_clf2 = grid_clf2.fit(df_train[selected_cols], df_train[target])
+# grid_clf2 = grid_clf2.fit(df_train[selected_feats], df_train[target])
 # best_clf2 = grid_clf2.best_estimator_
 # best_clf2.name = model_name + "_k"
 # best_clf2.preprocessor_name = best_clf.preprocessor_name
 # pipe2.name = model_name + "_k"
-# best_clf.selected_cols = selected_cols
+# best_clf.selected_feats = selected_feats
 # best_clf.selected_cols_k = varimps.values[0:k, 0]
 # best_clf.preprocessor_name = selected_preprocessor.name  # save name from custom preprocessor
 #
