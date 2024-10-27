@@ -24,10 +24,48 @@ class Preprocessors:
         name = '1h'  # 1 hot encode
         """Define preprocessing steps"""
         preprocessor = ColumnTransformer(
-            verbose_feature_names_out=False,  # removes remainder__ and cat__ prefix
+            # verbose_feature_names_out=False,  # removes remainder__ and cat__ prefix
             transformers=[
                 ('cat',
                  OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False), cat_cols),
+            ],
+            remainder='passthrough'
+        )
+        preprocessor.name = name
+        return preprocessor
+
+    @staticmethod
+    def impute_missing(cat_cols):
+        name = 'Imiss'
+        """Define preprocessing steps"""
+
+        # Define a pipeline for categorical columns
+        cat_transformer = Pipeline([
+            ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+        ])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('cat', cat_transformer, cat_cols)
+            ],
+            remainder='passthrough'
+        )
+        preprocessor.name = name
+        return preprocessor
+
+    @staticmethod
+    def pass_all():
+        name = 'pass'
+        """Define preprocessing steps"""
+
+        # Define a pipeline for categorical columns
+        cat_transformer = Pipeline([
+            ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
+        ])
+
+        preprocessor = ColumnTransformer(
+            transformers=[
+                ('cat', cat_transformer, [])
             ],
             remainder='passthrough'
         )
