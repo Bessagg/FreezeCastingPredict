@@ -347,16 +347,16 @@ def db_to_df():
     #          'props_part_ID1', 'props_fluid_ID1', 'props_part_ID1', 'props_disp1_ID', 'material_ID', 'country', 'long',
     #          'lat', 'email', 'last_updated_y', 'last_update', 'mold_ID'], axis=1, inplace=True)
     # Usable cols
-    selected_cols = ['pore_structure', 'name_part1', 'name_fluid1', 'sublimated', 'material', 'technique', 'direction',
+    selected_feats = ['pore_structure', 'name_part1', 'name_fluid1', 'sublimated', 'material', 'technique', 'direction',
                      'material_group',
                      'temp_cold', 'cooling_rate',
                      'time_sub',
                      'time_sinter_1', 'temp_sinter_1', 'vf_part_1', 'vf_fluid_1', 'porosity', 'pore']
 
-    selected_cols.remove('sublimated'), selected_cols.remove('technique'), selected_cols.remove('pore'),
-    selected_cols.remove('pore_structure'), selected_cols.remove('direction')
+    selected_feats.remove('sublimated'), selected_feats.remove('technique'), selected_feats.remove('pore'),
+    selected_feats.remove('pore_structure'), selected_feats.remove('direction')
     # 'technique', 'sublimated' only have one value, direction' only has 600 rows. Hence, these columns were dropped.
-    # data = data[selected_cols]
+    # data = data[selected_feats]
 
     # data.drop('temp_cold', axis=1, inplace=True)  #  Highest corr with porosity of 14%, sadly only has 545 rows
 
