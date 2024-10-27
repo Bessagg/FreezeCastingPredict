@@ -7,14 +7,21 @@ from custom_preprocessors import Preprocessors
 from sklearn.neural_network import MLPRegressor  # Import MLPRegressor
 
 
-def get_model_by_name(seed, cat_cols, selected_cols, target, encode_min_frequency=0.1):
+def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequency=0.1):
     """Select Model"""
-    model_name = input('\n Type model name: [catb, xgb, lr, rf, nn]\n')
+    model_name = input('\n Type model name: [catb, catb2, xgb, lr, rf, nn]\n')
     if model_name.lower() == "catb":
         # model = CatBoostRegressor(logging_level='Silent', random_state=seed)
         model = CatBoostRegressor(random_state=seed, logging_level='Silent')
         search_space = param_grid_catb
         selected_preprocessor = Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
+
+    elif model_name.lower() == "catb2":
+
+        # model = CatBoostRegressor(logging_level='Silent', random_state=seed)
+        model = CatBoostRegressor(random_state=seed, logging_level='Silent')  # n_jobs=-1, tree_method="gpu_hist",
+        search_space = param_grid_catb_single
+        selected_preprocessor = Preprocessors.opd()
 
     elif model_name.lower() == "xgb":
         model = XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1")
@@ -24,23 +31,24 @@ def get_model_by_name(seed, cat_cols, selected_cols, target, encode_min_frequenc
     elif model_name.lower() == "lr":
         model = LinearRegression()
         search_space = param_grid_lr
-        selected_cols[:] = [col for col in selected_cols if col == "vf_total"]
+        selected_feats[:] = [col for col in selected_feats if col == "vf_total"]
+        # only consider vf_total
         selected_preprocessor = Preprocessors.impute_1hot(
-            impute_cols=[element for element in selected_cols if element not in cat_cols + [target]],
-            cat_cols=[col for col in cat_cols if col in selected_cols],
+            impute_cols=[element for element in selected_feats if element not in cat_cols + [target]],
+            cat_cols=[col for col in cat_cols if col in selected_feats],
             encode_min_frequency=encode_min_frequency)
 
     elif model_name.lower() == "rf":
         model = RandomForestRegressor(random_state=seed)
         search_space = param_grid_rf
-        selected_preprocessor = Preprocessors.impute_1hot(impute_cols=[element for element in selected_cols if element not in cat_cols + [target]],
+        selected_preprocessor = Preprocessors.impute_1hot(impute_cols=[element for element in selected_feats if element not in cat_cols + [target]],
                                                           cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
 
     elif model_name.lower() == "nn":
         model = MLPRegressor(random_state=seed)  # Create MLPRegressor object
         search_space = param_grid_nn
         selected_preprocessor = Preprocessors.impute_1hot(
-            impute_cols=[element for element in selected_cols if element not in cat_cols + [target]],
+            impute_cols=[element for element in selected_feats if element not in cat_cols + [target]],
             cat_cols=cat_cols, encode_min_frequency=0.01)
 
     else:
