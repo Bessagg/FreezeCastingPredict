@@ -19,7 +19,7 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     X_raw = X.copy()  # for debug
     plt.close('all')
     n_cols_all = len(X.columns)
-    singles_plots_n = 40
+    singles_plots_n = 10
     zoomed_display = 15  # number of variables to show in zoomed summary plot
     dest_path = f"{model_results_path}/shap/{results_name}"
     dest_path_single = dest_path + "/single"
@@ -39,9 +39,10 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     plt_fmt = 'png'
     n_samples_all = 500
     n_samples = 100
-    reduced_cols_n = 15  # number of columns in varimp to be selected for dependence plots
+    reduced_cols_n = 15
     n_plots_force = 20
     heatmap_n = 100
+    fontsize = 20
 
     # Save Explainer
     pickle.dump(explainer, open(dest_path_explainer, 'wb'))
@@ -55,24 +56,46 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     varimps_sorted_cols = varimps['col_name']
 
     # Varimp plot
-    plt.clf()
+    plt.close()
     shap.summary_plot(shap_values, plot_type="bar", features=X, feature_names=X.columns,
                       cmap=cmap)  # Use column names
-    plt.title(train_name + ' Varimp on training data')
+    # plt.title(train_name + ' Varimp on training data')
+    plt.tight_layout()
+    plt.xlabel('Importance', fontsize=14)
+    plt.ylabel('Features', fontsize=14)
+    plt.xlabel('')
+
+    # Adjusting font sizes for ticks
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=14)
+    plt.xlabel("Importance: mean (|SHAP value|)")
+
+    plt.tight_layout()
     plt.savefig(f"{dest_path}/SHAP_varimp_{model_name}_{train_name}.{plt_fmt}")
 
     # Summary plot
-    plt.clf()
+    plt.close()
     plt_shap = shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_size=(18, 8),
                                  max_display=X.shape[1])
-    plt.title(f"train_name - {results_name}")
+    plt.xlabel('SHAP value', fontsize=fontsize)
+
+    # Adjusting font sizes for ticks
+    plt.xticks(fontsize=fontsize)
+    plt.yticks(fontsize=fontsize)
+    plt.tight_layout()
+
     plt.savefig(f"{dest_path}/SHAP__Summary_{model_name}_{train_name}.{plt_fmt}")
 
     # Summary plot Zoomed
-    plt.clf()
+    plt.close()
     plt_shap = shap.summary_plot(shap_values, features=X, feature_names=X.columns, plot_size=(18, 8),
                                  max_display=int(zoomed_display))
-    plt.title(train_name + f'{results_name}')
+    plt.xlabel('SHAP value', fontsize=fontsize)
+
+    # Adjusting font sizes for ticks
+    plt.xticks(fontsize=fontsize)
+    plt.yticks(fontsize=fontsize)
+    plt.tight_layout()
     plt.savefig(f"{dest_path}/SHAP__SummaryZoomed_{model_name}_{train_name}.{plt_fmt}")
 
     # Last n decision plot with logit
@@ -97,12 +120,12 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
                            feature_names=X.columns.values[0:n_cols_all], ignore_warnings=True, link='logit',
                            new_base_value=new_base_value, feature_order=importance_sorted_index,
                            feature_display_range=range(n_cols_all, -1, -1))
-        plt.title(f"{n_samples} - {model_name}_{train_name}")
+        plt.tight_layout()
         plt.savefig(f"{dest_path}/SHAP_decision_{n}.{plt_fmt}", bbox_inches='tight')
 
     """Single sample plots"""
     for i in range(singles_plots_n):
-        plt.clf()
+        plt.close()
         T = X[slice(-2 - i, -1 - i, 1)]  # get last samples
         sh = shap_values[slice(-2 - i, -1 - i, 1)]
         with open(f"{dest_path_single}/SHAP_Single_decision{i}.txt", "w") as f:  # Save preprocessed input as text
@@ -116,11 +139,11 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
                            # highlight=true_y[T.index],
                            feature_display_range=range(n_cols_all, -1, -1)
                            )  # logit changes model output to probability
-        plt.title(f"{model_name}_{train_name}")
+        plt.tight_layout()
         plt.savefig(f"{dest_path_single}/SHAP_full_decision_{i}.{plt_fmt}", bbox_inches='tight')
 
         # Single reduced decision plot : only positive shapley values
-        plt.clf()
+        plt.close()
         positive_indices = np.where(sh[0] > 0.11)[0]  # Get the indices of columns with positive values
         other_indices = np.where(sh[0] <= 0.11)[0]
         T['OUTRAS FEATURES'] = round(sh[0][other_indices].sum(), 1)
@@ -135,11 +158,11 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
                            # highlight=true_y[T.index],
                            feature_display_range=range(n_cols_all, -1, -1)
                            )  # logit changes model output to probability
-        plt.title(f"Positive Impact variables for Patient - {model_name}_{train_name}")
+        plt.tight_layout()
         plt.savefig(f"{dest_path_single}/SHAP_reduced_decision_{i}.{plt_fmt}", bbox_inches='tight')
 
         # # Single Force plot
-        # # plt.clf()
+        # # plt.close()
         # shap.getjs()
         # T = X[(preds == 1) & (true_y == 1)]  # TP
         # T = T[slice(-2 - i, -1 - i, 1)]
@@ -157,12 +180,12 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     # plt.savefig(f"{dest_path_single}/Single_waterfall.{plt_fmt}", bbox_inches='tight')
 
     """Dependence plots"""
-    n_plots_force = 15
+    n_plots_force = 6
     plt.close('all')
     plt.rcParams.update({'font.size': 8})  # Change the font size to 8
     fig, axs = plt.subplots(nrows=len(varimps_sorted_cols[:reduced_cols_n]), ncols=n_plots_force,
                             figsize=(60, 30))
-    for i, col in enumerate(varimps_sorted_cols[:reduced_cols_n]):
+    for i, col in enumerate(varimps_sorted_cols[:reduced_cols_n].to_list()):
         inds = shap.approximate_interactions(col, shap_values, X)  # index of high interactions with col
         for j in range(n_plots_force):
             ind_name = X.columns[inds[j]]
@@ -189,49 +212,49 @@ def plt_and_save_shap(explainer, X, true_y, preds, model_results_path, model_nam
     print("Ended shapley plots")
     return {"shap_values": shap_values, "varimps_sorted_cols": varimps_sorted_cols, "varimps": feature_importance}
 
-
-def simple_shap_plot(explainer, X, true_y, check_additivity):
-    """Generate shap results. Explainer should be built from train frame."""
-    plt.close('all')
-    n_cols = len(X.columns)
-    # Reset indexes
-    cols = X.columns
-    X.reset_index(inplace=True, drop=True)
-    true_y.reset_index(inplace=True, drop=True)
-    if len(X) > 10000:
-        X = shap.sample(X, nsamples=10000)  # sampled shap values
-        shap_values = explainer.shap_values(X, check_additivity=check_additivity)
-
-    else:
-        shap_values = explainer.shap_values(X, check_additivity=check_additivity)
-    new_base_value = np.log(0.08 / (1 - 0.08))
-    plt_fmts = ['png', 'svg']
-    n_samples_all = 1000
-    n_samples = 1000
-    n_cols_force = 20  # 10
-    max_dependences_plots = 20  # 10
-    heatmap_n = 100  # number of samples for heatmap
-    cmap = None
-
-    # Varimp name
-    vals = np.abs(shap_values).mean(0)
-    feature_importance = pd.DataFrame(list(zip(X.columns, vals)), columns=['col_name', 'feature_importance_vals'])
-    feature_importance.sort_values(by=['feature_importance_vals'], ascending=False, inplace=True)
-    varimps = feature_importance.head(n_cols_force)
-    varimps_sorted_cols = varimps['col_name']
-    print("Varimps:\n", varimps_sorted_cols)
-
-    # Summary plot
-    plt_shap = shap.summary_plot(shap_values, features=X, feature_names=cols, plot_size=(18, 8),
-                                 max_display=X.shape[1], cmap=cmap)
-
-    # Summary plot Zoomed
-    plt.plot()
-    plt_shap = shap.summary_plot(shap_values, features=X, feature_names=cols, plot_size=(18, 8),
-                                 max_display=int(X.shape[1] / 10), cmap=cmap)  # max_display=X.shape[1] / 4
-
-    # Varimp plot
-    plt.plot()
-    shap.summary_plot(shap_values, plot_type="bar", features=X, feature_names=cols, cmap=cmap)  # Use column names
-    plt.title('Varimp on training data')
-    return {"shap_values": shap_values, "varimps_sorted_cols": varimps_sorted_cols, "varimps": feature_importance}
+#
+# def simple_shap_plot(explainer, X, true_y, check_additivity):
+#     """Generate shap results. Explainer should be built from train frame."""
+#     plt.close('all')
+#     n_cols = len(X.columns)
+#     # Reset indexes
+#     cols = X.columns
+#     X.reset_index(inplace=True, drop=True)
+#     true_y.reset_index(inplace=True, drop=True)
+#     if len(X) > 10000:
+#         X = shap.sample(X, nsamples=10000)  # sampled shap values
+#         shap_values = explainer.shap_values(X, check_additivity=check_additivity)
+#
+#     else:
+#         shap_values = explainer.shap_values(X, check_additivity=check_additivity)
+#     new_base_value = np.log(0.08 / (1 - 0.08))
+#     plt_fmts = ['png', 'svg']
+#     n_samples_all = 1000
+#     n_samples = 1000
+#     n_cols_force = 20  # 10
+#     max_dependences_plots = 20  # 10
+#     heatmap_n = 100  # number of samples for heatmap
+#     cmap = None
+#
+#     # Varimp name
+#     vals = np.abs(shap_values).mean(0)
+#     feature_importance = pd.DataFrame(list(zip(X.columns, vals)), columns=['col_name', 'feature_importance_vals'])
+#     feature_importance.sort_values(by=['feature_importance_vals'], ascending=False, inplace=True)
+#     varimps = feature_importance.head(n_cols_force)
+#     varimps_sorted_cols = varimps['col_name']
+#     print("Varimps:\n", varimps_sorted_cols)
+#
+#     # Summary plot
+#     plt_shap = shap.summary_plot(shap_values, features=X, feature_names=cols, plot_size=(18, 8),
+#                                  max_display=X.shape[1], cmap=cmap)
+#
+#     # Summary plot Zoomed
+#     plt.plot()
+#     plt_shap = shap.summary_plot(shap_values, features=X, feature_names=cols, plot_size=(18, 8),
+#                                  max_display=int(X.shape[1] / 10), cmap=cmap)  # max_display=X.shape[1] / 4
+#
+#     # Varimp plot
+#     plt.plot()
+#     shap.summary_plot(shap_values, plot_type="bar", features=X, feature_names=cols, cmap=cmap)  # Use column names
+#     plt.tight_layout()
+#     return {"shap_values": shap_values, "varimps_sorted_cols": varimps_sorted_cols, "varimps": feature_importance}
