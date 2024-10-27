@@ -21,21 +21,24 @@ import data_parser
 import matplotlib
 import squarify
 from scipy.stats import ks_2samp  # Kolmogorov-Smirnov test
+from scipy.stats import kruskal
+from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
+from factor_analyzer.factor_analyzer import calculate_kmo
 pio.renderers.default = "browser"
 
 # Load Data
 parser = data_parser.DataParser()
-df_raw = parser.load_complete_data_from_pickle()
-df_raw = parser.preprocess_drop_not_sublimated(df_raw)
-df = df_raw[parser.all_cols]
+df = pd.read_csv("data/all_feats/df_selected_feats.csv")  # dataframe for analysis
 df = parser.rename_columns_df(df)
-df_raw_porosity = parser.preprocess_dropna(df_raw)  # df with all columns and all rows that have porosity
+df_all = pd.read_csv(f'data/df_all_feats.csv')
 pallete = "summer"
 
 # Samples per paper
-samples_per_paper = df_raw_porosity.groupby('paper_ID').size()
+samples_per_paper = df_all.groupby('paper_ID').size()
 samples_per_paper = pd.DataFrame(samples_per_paper.sort_values(ascending=False), columns=['values'])
-print("Distinct papers", df_raw_porosity['paper_ID'].nunique())
+top3_paper_ids = samples_per_paper.index[0:3]
+top3_papers_doi = df_all[df_all['paper_ID'].isin(top3_paper_ids)].drop_duplicates(subset='paper_ID')[['paper_ID', 'doi']]
+print("Distinct papers", df_all['paper_ID'].nunique())
 # Plot the TreeMap
 plt.figure(figsize=(10, 6))
 ths = 2  # count ths
@@ -47,8 +50,19 @@ plt.axis('off')
 plt.show()
 plt.savefig(f"images/samples_per_paper.png")
 
+
+# Temp sinter
+max_temp_sinter1_row = df_all[df_all['temp_sinter_1'] == df_all['temp_sinter_1'].max()]
+doi_with_max_temp_sinter1 = max_temp_sinter1_row['doi'].values[0]
+print("DOI with the maximum 'temp_sinter1':", doi_with_max_temp_sinter1)
+
+# Null counts
 print(df.head())
-print(f"Count of Null values out of {len(df)} rows \n", df.isnull().sum())
+print(f"Count of Null values out of {len(df_all)} rows \n", df_all.isnull().sum())
+nulls = round(df_all.isnull().mean() * 100, 2)
+selected_nulls = nulls[parser.all_feats]
+print(f"\nPercentage of Null Values:\n", round(df_all.isnull().mean() * 100, 2), "%")
+
 # # Drop columns with less than min_n_rows as not null values
 # for col in df.columns:
 #     print(f'{col}_rows: {df[col].count()}')
@@ -67,12 +81,17 @@ df_num = df.select_dtypes(include=['number', 'float64'])
 plt.show()
 plt.subplots_adjust(left=0.21, right=1.05, top=0.95, bottom=0.3)
 corr = df_num.corr()
+
+# null_percentages = df_num.isnull().mean() * 100
+# columns_with_nulls_above_50 = null_percentages[null_percentages < 50].index.tolist()
+# corr = df_num[columns_with_nulls_above_50].corr()
+
 mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
 heatmap = sns.heatmap(corr, vmin=-1, vmax=1, mask=mask, annot=True, cmap='BrBG', fmt=".2%", annot_kws={"fontsize": 20})
 heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize=28)
 heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize=28)
 heatmap.set_xticklabels(heatmap.get_xticklabels(), rotation=38, horizontalalignment='right')
-heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=20, horizontalalignment='right')
+heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignment='right')
 # heatmap.set_title('Matriz de Correlação', fontdict={'fontsize': 18}, pad=12)
 print("Correlation matrix \n")
 plt.savefig(f"images/Correlation.png")
@@ -121,8 +140,8 @@ for key in filtered_p_values.keys():
     vals = filtered_p_values[key]
     for key2 in vals.keys():
         val2 = vals[key2]
-        if val2 >= significance_threshold:
-            print(key, key2, val2)
+        i# f val2 >= significance_threshold:
+            # print(key, key2, val2)
 
 
 # #################################### Categorical Analysis
@@ -157,6 +176,7 @@ for col in df_str.columns:
 
 
 # Categorical data Porosity Distribution
+kruskal_pvals = []
 for col in df_str.columns:
     sns.set(font_scale=1.5)
     filtered_df = df[df[col].notnull()]  # Remove null in column
@@ -165,15 +185,25 @@ for col in df_str.columns:
     count_filter = df.groupby(col).filter(lambda x: len(x) > count_filter_n)[col].unique()
     selected_filter = rank_filter  # change here for count or rank filtering
     filtered_df = filtered_df[filtered_df[col].isin(selected_filter)]
-    df.groupby(col).count().sort_values(by='Porosity', ascending=False)
+    df.groupby(col).count().sort_values(by=parser.target_renamed, ascending=False)
 
-    order = df.groupby(col).count().sort_values(by='Porosity', ascending=False).index[0:rank_filter_n]  # order by count
-    filtered_df = filtered_df.sort_values(by="Porosity")
+    # Perform Kruskal-Wallis test
+    groups = [filtered_df[filtered_df[col] == val][parser.target_renamed] for val in selected_filter]
+    kruskal_statistic, pval = kruskal(*groups)
+    kruskal_pvals.append({'pval': pval, 'col': col})
+    order = df.groupby(col).count().sort_values(by=parser.target_renamed, ascending=False).index[0:rank_filter_n]  # order by count
+    filtered_df = filtered_df.sort_values(by=parser.target_renamed)
     g = sns.FacetGrid(filtered_df, row=col,
                       height=1.6, aspect=4, col_order=order)
-    g.map(sns.kdeplot, parser.target)
+    # g.map(sns.kdeplot, parser.target_renamed)
+    g.map(sns.histplot, parser.target_renamed, kde=True)
     g.set_ylabels('Density')
-    print(df_str[col].value_counts(), '\n')
+    # Add annotation with p-value
+    g.fig.suptitle(f'\n Kruskal p-value: {pval:.3e}', fontsize=16, y=1.02)
+    plt.subplots_adjust(top=0.8)  # Adjust this value as needed to move the plots down and create space at the top
+    print(f'Kruskal p-value: {pval:.3e} for top {rank_filter_n} categories in {col}')
+    g.set(yticks=[], ylabel='Count')
+
     plt.savefig(f"images/Count Distribution of {col}.png", bbox_inches='tight')
 
     # rank_filter = df_str[col].value_counts().head(5)  # list to filter by rank
@@ -182,23 +212,23 @@ plt.show()
 # plt.close("all")
 
 
-mca = prince.MCA()
-X = df_str.dropna()
-fig, ax = plt.subplots()
-mc = prince.MCA(n_components=2, n_iter=10, copy=True, check_input=True, engine='auto', random_state=42).fit(X)
-mc.plot_coordinates(
-    X=X,
-    ax=None,
-    figsize=(6, 6),
-    show_row_points=True,
-    row_points_size=10,
-    show_row_labels=False,
-    show_column_points=True,
-    column_points_size=30,
-    show_column_labels=False,
-    legend_n_cols=1
-)
-print("MC eigen values", mc.eigenvalues_)
+# mca = prince.MCA()
+# X = df_str.dropna()
+# fig, ax = plt.subplots()
+# mc = prince.MCA(n_components=2, n_iter=10, copy=True, check_input=True, engine='auto', random_state=42).fit(X)
+# mc.plot_coordinates(
+#     X=X,
+#     ax=None,
+#     figsize=(6, 6),
+#     show_row_points=True,
+#     row_points_size=10,
+#     show_row_labels=False,
+#     show_column_points=True,
+#     column_points_size=30,
+#     show_column_labels=False,
+#     legend_n_cols=1
+# )
+# print("MC eigen values", mc.eigenvalues_)
 
 encoder = OneHotEncoder(handle_unknown='ignore')
 
@@ -212,16 +242,15 @@ here are two methods to check the factorability or sampling adequacy:
 Bartlett’s Test
 Kaiser-Meyer-Olkin Test
 """
-num_cols = df.select_dtypes(include=[float]).columns
-df_num = df[num_cols].dropna()  #
-count_filter_n = 50
+# num_cols = df.select_dtypes(include=[float]).columns
+# df_num = df[num_cols].dropna()  #
+# count_filter_n = 50
 
 """
 Bartlett's test
 In this Bartlett ’s test, the p-value is 0. 
 The test was statistically significant, indicating that the observed correlation matrix is not an identity matrix.
 """
-from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
 
 chi_square_value, p_value = calculate_bartlett_sphericity(df_num)
 print(chi_square_value, p_value)
@@ -233,36 +262,36 @@ KMO estimates the proportion of variance among all the observed variable.
 Lower proportion id more suitable for factor analysis. KMO values range between 0 and 1. 
 Value of KMO less than 0.6 is considered inadequate.
 """
-from factor_analyzer.factor_analyzer import calculate_kmo
 
-kmo_all, kmo_model = calculate_kmo(df_num)
-print(kmo_model)
 
-# ########### PCA Analysis Principal component Analysis
-n_components = 3
-pipeline = Pipeline([('scaling', StandardScaler()), ('pca', PCA(n_components=n_components))])
-pca = PCA(n_components=n_components)
-# X = df_num[df_num.columns.drop('Porosidade')]
-X = df_num[df_num.columns]
-y = parser.target
+# kmo_all, kmo_model = calculate_kmo(df_num)
+# print(kmo_model)
 
-# components = pca.fit_transform(df_num)
-# components = pipeline.fit_transform(df_num)
-X_scaled = pd.DataFrame(preprocessing.scale(X), columns=X.columns)  # normalize data
-components = pca.fit_transform(X_scaled)
-# print(pd.DataFrame(pca.components_, columns=X_scaled.columns, index=['PC-1', 'PC-2', 'PC-3', 'PC-4', 'PC-5']))
-total_var = pca.explained_variance_ratio_.sum() * 100
-labels = {str(i): f"PC {i + 1}" for i in range(n_components)}
-labels['color'] = parser.target
-fig = px.scatter_matrix(
-    components,
-    color=y,
-    dimensions=range(n_components),
-    labels=labels,
-    title=f'Total Explained Variance: {total_var:.2f}%',
-)
-fig.update_traces(diagonal_visible=False)
-fig.show()
+# # ########### PCA Analysis Principal component Analysis
+# n_components = 3
+# pipeline = Pipeline([('scaling', StandardScaler()), ('pca', PCA(n_components=n_components))])
+# pca = PCA(n_components=n_components)
+# # X = df_num[df_num.columns.drop('Porosidade')]
+# X = df_num[df_num.columns]
+# y = parser.target
+#
+# # components = pca.fit_transform(df_num)
+# # components = pipeline.fit_transform(df_num)
+# X_scaled = pd.DataFrame(preprocessing.scale(X), columns=X.columns)  # normalize data
+# components = pca.fit_transform(X_scaled)
+# # print(pd.DataFrame(pca.components_, columns=X_scaled.columns, index=['PC-1', 'PC-2', 'PC-3', 'PC-4', 'PC-5']))
+# total_var = pca.explained_variance_ratio_.sum() * 100
+# labels = {str(i): f"PC {i + 1}" for i in range(n_components)}
+# labels['color'] = parser.target
+# fig = px.scatter_matrix(
+#     components,
+#     color=y,
+#     dimensions=range(n_components),
+#     labels=labels,
+#     title=f'Total Explained Variance: {total_var:.2f}%',
+# )
+# fig.update_traces(diagonal_visible=False)
+# fig.show()
 
 # # 3D plot Variance
 # fig = px.scatter_3d(
