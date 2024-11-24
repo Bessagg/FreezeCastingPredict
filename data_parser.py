@@ -8,7 +8,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+from sklearn.model_selection import GroupShuffleSplit
 warnings.filterwarnings("ignore")
 
 
@@ -169,21 +169,36 @@ if __name__ == '__main__':
         df_dir = f'data/{key}'
         feats = parser.feats_dict[key]
         df.to_csv(f'data/df_all_feats.csv', index=False)
-        df_selected = df[feats]
-        X_train, X_test, y_train, y_test = train_test_split(df_selected[feats], df['porosity'],
+        paper_ids = df['paper_ID']
+
+        # Grouped split: Does not work, bad results: model overfits by paper in train?
+        # splitter = GroupShuffleSplit(test_size=1 - parser.ratios[0], n_splits=2, random_state=parser.seed)
+        # split = splitter.split(df, groups=df['paper_ID'])
+        # train_inds, test_inds = next(split)
+        # train = df.iloc[train_inds][feats]
+        # test = df.iloc[test_inds][feats]
+
+        X_train, X_test, y_train, y_test = train_test_split(df, df['porosity'],
                                                             test_size=1 - parser.ratios[0],
-                                                            random_state=parser.seed)
+                                                            random_state=parser.seed,
+                                                            )
         train = X_train.copy()
         train['porosity'] = y_train
         test = X_test.copy()
         test['porosity'] = y_test
 
+        df_selected = df[feats]
         if not os.path.isdir(df_dir):
             os.makedirs(df_dir)
         # df_complete.to_csv(f'{df_dir}/df_complete.csv', index=False)
         df_selected.to_csv(f'{df_dir}/df_selected_feats.csv', index=False)
         train.to_csv(f'{df_dir}/train.csv', index=False)
         test.to_csv(f'{df_dir}/test.csv', index=False)
+        # Save the list of selected features to a text file
+        with open(f'{df_dir}/selected_features.txt', 'w') as f:
+            for feat in feats:
+                f.write(f"{feat}\n")
+        print("saved frames", df_dir)
 
     # plot vf_total vs porosity
     # plot vf_total vs porosity
@@ -193,4 +208,4 @@ if __name__ == '__main__':
     legend.get_frame().set_facecolor('lightgrey')
     plt.show()
 
-    print("saved frames")
+    print("Finished")
