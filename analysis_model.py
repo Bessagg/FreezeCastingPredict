@@ -12,6 +12,7 @@ import seaborn as sns
 import statsmodels.api as sm
 from scipy.stats import pearsonr, chi2_contingency
 from scipy.stats import chi2_contingency, kruskal
+
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
@@ -19,6 +20,46 @@ pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
 
 im_path = 'images/model_analysis'
+
+
+def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=str):
+    pallete = sns.color_palette("hls", 3)
+    # Model performance plot
+    plt.figure(figsize=(18, 12))
+    ax = sns.scatterplot(x=true_y, y=prediction, hue=error,
+                         palette=pallete)
+    norm = plt.Normalize(0, 0.4)  # set min and max for color_bar
+    sm = plt.cm.ScalarMappable(cmap=pallete, norm=norm)
+    sm.set_array([])
+    ax.set_xlabel("True Porosity", fontsize=20)
+    ax.set_ylabel(f"Predicted Porosity - {title}", fontsize=20)
+    ax.get_legend().remove()
+    ax.figure.colorbar(sm)
+    ax.set(ylim=(0.01, 1.01))
+    ax.set(xlim=(0.01, 1.01))
+    ax.tick_params(labelsize=20)
+    # sns.move_legend(ax, "lower center", bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False)
+    plt.show()
+    plt.savefig(f'images/results/{title}_perf', bbox_inches='tight')
+
+
+def plot_error_distribution(df, error: pd.Series, title=str):
+    plt.figure(figsize=(18, 12))
+    bx = sns.histplot(data=df, x=error,  # hue="Group",
+                      bins=20,
+                      palette=sns.color_palette("hls", 3))
+    bx.set_xlabel("Error", fontsize=20)
+    bx.set_ylabel(f"Sample count - {title} - seed 42", fontsize=20)
+    bx.tick_params(labelsize=20)
+    bx.set(xlim=(-0.4, 0.4))
+    x_axis = [round(num, 2) for num in np.linspace(-0.4, 0.4, 7)]
+    plt.show()
+    plt.savefig(f'images/results/{title}_error', bbox_inches='tight')
+
+
+def filter_topn_categories(df, column_name, n=3):
+    top3_group = df[column_name].value_counts().iloc[:n].index.to_list()
+    return df[(df[column_name].isin(top3_group))]
 
 
 def ks_test_group(group_df, column, distribution='norm'):
@@ -49,10 +90,8 @@ for pipe_path in pickle_pipeline_paths:
     selected_pipes.append(pipe)
 
 """Evaluate models"""
-results_models = []
+results_models_dict_list = []
 results_importances = []
-results_train = pd.DataFrame()
-results_test = pd.DataFrame()
 results_groups = []
 for pipe in selected_pipes:
     print(pipe.name, pipe.feats_name)
@@ -71,14 +110,15 @@ for pipe in selected_pipes:
             else:
                 df_test_nulls[col] = ""
     test_preds_n = pipe.predict(df_test_nulls)
-    r2_test_n, mae_test_n, mse_test_n, mape_test_n = utils.get_regression_metrics(test_preds_n, df_test[target])
+    r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = utils.get_regression_metrics(test_preds_n, df_test[target])
 
     # Add model results
-    result_model = {'name': pipe.name, 'r2_train': r2_train, 'mae_train': mae_train, 'mse_train': mse_train,
-                    'r2_test': r2_test, 'mae_test': mae_test, 'mse_test': mse_test}
-    results_models.append(result_model)
+    result_model_dict = {'name': pipe.name, 'r2_train': r2_train, 'mae_train': mae_train, 'mse_train': mse_train,
+                         'r2_test': r2_test, 'mae_test': mae_test, 'mse_test': mse_test}
+    results_models_dict_list.append(result_model_dict)
     preds_train, preds_test = pipe.predict(df_train), pipe.predict(df_test)
-    results_train = {'name': pipe.name, 'feats': pipe.feats_name, 'prediction_train': preds_train, 'prediction_test': preds_test,
+    results_train = {'name': pipe.name, 'feats': pipe.feats_name, 'prediction_train': preds_train,
+                     'prediction_test': preds_test,
                      'train_true': df_train[target], 'test_true': df_test[target],
                      'model_type': '-', }
 
@@ -138,39 +178,30 @@ for pipe in selected_pipes:
 
     print('\n')
 
-
 """Plots"""
 selected_model = 'catb'
 df_results = pd.DataFrame(results_groups)
 df_imps = pd.DataFrame(results_importances)
 df_groups = pd.DataFrame(results_groups)
-df_groups_filtered = df_groups.query("model == 'catb' and top5 == True").sort_values(by=['groupby_feature', 'train samples'], ascending=False)
+
+# Filter metrics of top5 most frequent categories
+df_groups_filtered = df_groups.query("model == 'catb' and top5 == True").sort_values(
+    by=['groupby_feature', 'train samples'], ascending=False)
 print("Selected model results by group:")
 print(df_groups_filtered)
 
-
-print("Relationship between R2 and STD")
-df_groups_filtered['variance'] = df_groups_filtered['r2'].astype(float)
+print("Relationship between STD")
+metric = 'train samples'
+df_groups_filtered['variance'] = df_groups_filtered[metric].astype(float)
 df_groups_filtered['std'] = df_groups_filtered['std'].astype(float)
+corr = df_groups_filtered['variance'].corr(df_groups_filtered['std'])
 plt.scatter(df_groups_filtered['r2'].astype(float), df_groups_filtered['std'].astype(float))
 plt.xlabel(r'$R^2$ value')
 plt.ylabel("STD")
-from sklearn.linear_model import LinearRegression
-X = df_groups_filtered[['std']].values.reshape(-1, 1)  # Independent variable
-# X = X.flatten().astype(float).tolist()
-y = df_groups_filtered['r2'].values  # Dependent variable
-y = y.astype(float)
-# Fit the linear regression model
-model = LinearRegression()
-model.fit(X, y)
-# Predict y values
-y_pred = model.predict(X)
-# Calculate the R^2 score
-r2 = r2_score(y, y_pred)
-# Plot the results
+X = df_groups_filtered[metric]
+y = df_groups_filtered['r2']
 plt.clf()
 plt.scatter(X, y, color='blue', label='Grouped data')
-plt.plot(X, y_pred, color='red', linewidth=2, label=f'Linear regression (R² = {r2:.2f})')
 plt.xlabel('Standard Deviation of true porosity')
 plt.ylabel(r'$R^2$ Value')
 plt.title('Linear Regression between STD and $R^2$')
