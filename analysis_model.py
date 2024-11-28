@@ -23,11 +23,70 @@ warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
-
 im_path = 'images/model_analysis'
 
 
-def plot_prediction_performance_by_material_group(true_values, predicted_values, group_column):
+def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
+    # Create a save directory for images
+    save_dir = f'images/results/{title}_error_by_group.png'
+
+    # Create a figure with 3 subplots (1 column, 3 rows)
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(18, 18), sharex=True)
+
+    # Define group names and their corresponding colors
+    if group_column == "name_fluid1":
+        groups = ['water', 'TBA', 'camphene']
+    else:
+        groups = ['Ceramic', 'Metal', 'Polymer']
+
+    colors = ['blue', 'red', 'green']
+
+    # Define custom bin edges with a step of 0.01
+    bins = np.arange(-0.4, 0.401, 0.01)  # Bins from -0.4 to 0.4 with step size of 0.01
+
+    # Loop through the groups to plot error distribution for each group
+    for i, group in enumerate(groups):
+        # Filter the dataframe for the current group
+        group_df = df[df[group_column] == group]
+
+        # Get the error values for the current group
+        group_error = error[group_df.index]  # Use the error values for the current group
+
+        # Plot the histogram on the corresponding subplot
+        sns.histplot(group_error, bins=bins, color=colors[i], ax=axes[i], kde=False)
+
+        # Set labels and title for the subplot
+        axes[i].set_xlabel("Error", fontsize=12)
+        axes[i].set_ylabel("Sample Count", fontsize=12)
+        axes[i].tick_params(labelsize=12)
+        axes[i].set_title(f"Error Distribution for {group}", fontsize=12)
+        axes[i].set_xlim(-0.4, 0.4)  # Limit x-axis to match the range
+
+        # Calculate mean and standard deviation for the current group
+        mean_error = np.mean(group_error)
+        std_error = np.std(group_error)
+
+        # Add mean and std dev as text labels on the plot
+        axes[i].text(0.1, 0.85, f'Mean: {mean_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
+                     fontsize=12)
+        axes[i].text(0.1, 0.75, f'±1 Std Dev: {std_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
+                     fontsize=12)
+
+    # Adjust spacing between subplots
+    plt.subplots_adjust(hspace=0.3)  # Increase vertical spacing
+
+    # Tight layout to avoid overlap of titles and labels
+    plt.tight_layout()
+
+    # Show and save the plot
+    plt.show()
+
+    # Save the plot to the specified directory
+    os.makedirs(os.path.dirname(save_dir), exist_ok=True)
+    plt.savefig(save_dir, bbox_inches='tight')
+
+
+def plot_prediction_performance_by_group(true_values, predicted_values, group_column):
     # Create a dataframe for easier plotting with seaborn
     df = pd.DataFrame({
         'True': true_values,
@@ -325,5 +384,8 @@ true_y = df_test[parser.target]
 error = df_test[f"{selected_model_name}_prediction"] - df_test[parser.target]
 plot_prediction_performance(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test[f"{selected_model_name}_mae"], title=selected_model_name)
 plot_error_distribution(df_test, error)
+plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['material_group'])
+plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['fluid_name1'])
+plot_error_distribution_by_group(df_test, error, 'name_fluid1')
 
-top_groups = df_test['material_group'].value_counts().nlargest(3).index
+
