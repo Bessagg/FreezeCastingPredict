@@ -23,11 +23,11 @@ class Preprocessors:
     def onehot(cat_cols, encode_min_frequency):
         name = '1h'  # 1 hot encode
         """Define preprocessing steps"""
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             # verbose_feature_names_out=False,  # removes remainder__ and cat__ prefix
             transformers=[
                 ('cat',
-                 OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False), cat_cols),
+                 OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency), cat_cols),
             ],
             remainder='passthrough'
         )
@@ -44,7 +44,7 @@ class Preprocessors:
             ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ])
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('cat', cat_transformer, cat_cols)
             ],
@@ -63,7 +63,7 @@ class Preprocessors:
             ('imputer', SimpleImputer(strategy='constant', fill_value='missing')),
         ])
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('cat', cat_transformer, [])
             ],
@@ -89,7 +89,7 @@ class Preprocessors:
                                              ('num', num_transformer, impute_cols),
                                              ('cat',
                                               OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency,
-                                                            sparse=False),
+                                                            ),
                                               cat_cols)
                                          ],
                                          remainder='passthrough'
@@ -109,10 +109,10 @@ class Preprocessors:
         # column transformer to combine the numerical and categorical pipelines
         # # min_frequency: if value is int categories with a smaller cardinality will be considered infrequent. If float categories with a smaller cardinality than min_frequency * n_samples will be considered infrequent # handle_unkown: 'ignore' or , ‘infrequent_if_exist’
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('num', num_transformer, num_cols),
-                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False),
+                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, ),
                  cat_cols)
             ],
             remainder='passthrough'
@@ -143,10 +143,10 @@ class Preprocessors:
         # column transformer to combine the numerical and categorical pipelines
         # # min_frequency: if value is int categories with a smaller cardinality will be considered infrequent. If float categories with a smaller cardinality than min_frequency * n_samples will be considered infrequent # handle_unkown: 'ignore' or , ‘infrequent_if_exist’
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('num', num_transformer, num_cols),
-                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False),
+                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, ),
                  cat_cols)
             ],
             remainder='passthrough'
@@ -168,10 +168,10 @@ class Preprocessors:
         # cardinality than min_frequency * n_samples will be considered infrequent # handle_unkown: 'ignore' or ,
         # ‘infrequent_if_exist’
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('num', num_transformer, num_cols),
-                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False),
+                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, ),
                  cat_cols)
             ],
             remainder='passthrough'
@@ -191,10 +191,10 @@ class Preprocessors:
         # column transformer to combine the numerical and categorical pipelines
         # # min_frequency: if value is int categories with a smaller cardinality will be considered infrequent. If float categories with a smaller cardinality than min_frequency * n_samples will be considered infrequent # handle_unkown: 'ignore' or , ‘infrequent_if_exist’
 
-        preprocessor = ColumnTransformer(
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
             transformers=[
                 ('num', num_transformer, num_cols),
-                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False),
+                ('cat', OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, ),
                  cat_cols),
             ],
             remainder='passthrough'
@@ -209,7 +209,7 @@ class Preprocessors:
         name = '1h_var'  # 1 hot encode
         """Define preprocessing steps"""
         cat_transformer = Pipeline([
-            ('onehot',  OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, sparse=False)),  # Impute missing values with mean. Best mean
+            ('onehot',  OneHotEncoder(handle_unknown='ignore', min_frequency=encode_min_frequency, )),  # Impute missing values with mean. Best mean
             ('var_ths', VarianceThreshold(ths)),  # Scale the numerical values
         ])
         preprocessor = ColumnTransformer(

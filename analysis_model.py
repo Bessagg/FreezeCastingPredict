@@ -28,7 +28,7 @@ im_path = 'images/model_analysis'
 
 def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
     # Create a save directory for images
-    save_dir = f'images/results/{title}_error_by_group.png'
+    save_dir = f'images/results/{title}_error_by_group_{group_column}.png'
 
     # Create a figure with 3 subplots (1 column, 3 rows)
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(18, 18), sharex=True)
@@ -56,10 +56,10 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
         sns.histplot(group_error, bins=bins, color=colors[i], ax=axes[i], kde=False)
 
         # Set labels and title for the subplot
-        axes[i].set_xlabel("Error", fontsize=12)
-        axes[i].set_ylabel("Sample Count", fontsize=12)
-        axes[i].tick_params(labelsize=12)
-        axes[i].set_title(f"Error Distribution for {group}", fontsize=12)
+        axes[i].set_xlabel("Error", fontsize=32)
+        axes[i].set_ylabel("Sample Count", fontsize=32)
+        axes[i].tick_params(labelsize=22)
+        axes[i].set_title(f"Error Distribution: {group}", fontsize=32)
         axes[i].set_xlim(-0.4, 0.4)  # Limit x-axis to match the range
 
         # Calculate mean and standard deviation for the current group
@@ -68,13 +68,13 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
 
         # Add mean and std dev as text labels on the plot
         axes[i].text(0.1, 0.85, f'Mean: {mean_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
-                     fontsize=12)
+                     fontsize=32)
         axes[i].text(0.1, 0.75, f'±1 Std Dev: {std_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
-                     fontsize=12)
+                     fontsize=32)
 
     # Adjust spacing between subplots
     plt.subplots_adjust(hspace=0.3)  # Increase vertical spacing
-
+    plt.tick_params(labelsize=28)  # Set font size for tick labels
     # Tight layout to avoid overlap of titles and labels
     plt.tight_layout()
 
@@ -87,6 +87,7 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
 
 
 def plot_prediction_performance_by_group(true_values, predicted_values, group_column):
+    save_dir = f'images/results/perf_by_group.png'
     # Create a dataframe for easier plotting with seaborn
     df = pd.DataFrame({
         'True': true_values,
@@ -103,7 +104,7 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     cmap = LinearSegmentedColormap.from_list('green_yellow_red', colors, N=n_bins)
 
     # Create the plot
-    plt.figure(figsize=(14, 10))
+    plt.figure(figsize=(18, 18))
 
     # Create a grid of points
     xi = np.linspace(-0.1, 1.1, 50)
@@ -152,9 +153,9 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
              label='Perfect Prediction')
 
     # Add labels and title
-    plt.xlabel('True Values', fontsize=12)
-    plt.ylabel('Predicted Values', fontsize=12)
-    plt.title('True vs Predicted Values by Group', fontsize=14)
+    plt.xlabel('True Values', fontsize=32)
+    plt.ylabel('Predicted Values', fontsize=32)
+    plt.title('True vs Predicted Values by Group', fontsize=32)
 
     # Set x and y axis limits
     plt.xlim(-0.1, 1.1)
@@ -164,18 +165,19 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     ticks = np.arange(0, 1.1, 0.1)
     plt.xticks(ticks)
     plt.yticks(ticks)
+    plt.tick_params(labelsize=28)  # Set font size for tick labels
 
     # Add color bar to indicate error levels
     plt.colorbar(im, label='Prediction Error')
 
     # Add legend and adjust its properties
-    plt.legend(title='Groups', title_fontsize=10, fontsize=8, loc='best')
-
+    plt.legend(title='Groups', title_fontsize=32, fontsize=32, loc='best')
     # Tight layout to prevent cutting off labels
     plt.tight_layout()
 
     # Display the plot
     plt.show()
+    plt.savefig(save_dir, bbox_inches='tight')
 
 
 def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=""):
@@ -183,7 +185,7 @@ def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series,
     palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
  # Red-focused colormap
     # Model performance plot
-    plt.figure(figsize=(18, 12))
+    plt.figure(figsize=(14, 10))
     plt.clf()
     ax = sns.scatterplot(x=true_y, y=prediction, hue=error,
                          palette=palette)
@@ -196,7 +198,7 @@ def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series,
     ax.figure.colorbar(sm)
     ax.set(ylim=(-0.1, 1.11))
     ax.set(xlim=(-0.1, 1.1))
-    ax.tick_params(labelsize=20)
+    ax.tick_params(labelsize=28)
     # sns.move_legend(ax, "lower center", bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False)
     plt.show()
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -211,7 +213,7 @@ def plot_error_distribution(df, error: pd.Series, title=""):
                       palette=sns.color_palette("hls", 3))
     bx.set_xlabel("Error", fontsize=20)
     bx.set_ylabel(f"Sample count", fontsize=20)
-    bx.tick_params(labelsize=20)
+    bx.tick_params(labelsize=28)
     bx.set(xlim=(-0.4, 0.4))
     x_axis = [round(num, 2) for num in np.linspace(-0.4, 0.4, 7)]
     plt.show()
@@ -384,8 +386,9 @@ true_y = df_test[parser.target]
 error = df_test[f"{selected_model_name}_prediction"] - df_test[parser.target]
 plot_prediction_performance(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test[f"{selected_model_name}_mae"], title=selected_model_name)
 plot_error_distribution(df_test, error)
+plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['name_fluid1'])
 plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['material_group'])
-plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['fluid_name1'])
+
 plot_error_distribution_by_group(df_test, error, 'name_fluid1')
-
-
+plot_error_distribution_by_group(df_test, error, 'material_group')
+plt.close('all')

@@ -1,7 +1,7 @@
 import time
 import shap
 import pandas as pd
-from helpers import utils, plt_and_save_shap
+from helpers import utils, shap_explainer
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
 from data_parser import DataParser
@@ -151,26 +151,29 @@ cols_p = np.char.replace(cols_p, 'remainder__', '')
 train_X_p = pd.DataFrame(preprocessor.transform(df_train[selected_feats]), columns=cols_p)
 test_X_p = pd.DataFrame(preprocessor.transform(df_test[selected_feats]), columns=cols_p)
 train_X_p.columns, test_X_p.columns = cols_p, cols_p
+
 print("Count of created preprocessed columns: ", len(cols_p))
 
 run_shap = input("Run shap? [1 or 0]")
 if int(run_shap) == 1:
-    """Generate shap"""
-    print("Running Shap")
-    shap_start = time.time()
-    explainer = shap.TreeExplainer(estimator, feature_perturbation='interventional')
-    preds = best_clf.predict(df_test[selected_feats])
-    test_X_p.columns = rename_columns_if_contains(test_X_p.columns, parser.col_rename)
-    shap_dict = plt_and_save_shap.plt_and_save_shap(explainer, test_X_p, df_test[target], preds,
-                                                    model_results_path, model_name, train_name,
-                                                    'test', check_additivity=True)
-    print("Elapsed Shap:", (time.time() - shap_start) / 60, 'min')
-    shap_values, varimps_sorted_cols, varimps = shap_dict['shap_values'], shap_dict["varimps_sorted_cols"], shap_dict[
-        "varimps"]
-    top_shap_indices = varimps.index[0:k]
-    top_shap_col_names = varimps.values[:k, 0]
-    plt.close('all')
-    print("Finished shap")
+    prevalence = df_train[target].mean()
+    predicted_label = best_clf.predict(df_test)
+
+    explainer, preprocessed_X, shap_values, shap_confusion_matrix_dict = (
+        shap_explainer.get_shap_plotter_inputs(estimator, preprocessor, df_test,
+                                               selected_feats, predicted_label, prevalence,
+                                              df_test[parser.target]))
+
+    shap_plotter = shap_explainer.ShapPlotter(
+        explainer, preprocessed_X, shap_values,
+        shap_confusion_matrix_dict,
+        save_dirpath=model_results_path + "/shap",
+        dataframe_subdir_name="test",
+        plots_title=f'{model_name}_test'
+    )
+    shap_explainer.save_explainer(explainer, shap_plotter.filepath_explainer)
+    # TODO: add artifacts from shapley
+    shap_plotter.run_all_plots()
 
 # catb = parser.load_pipeline(rf"D:\MyGoogleDrive\PythonScripts2\FreezeCastingPredict\selected_models\all_feats\catb-1h-190640-6-r0.91-r0.82-ma0.059-ms0.008\model\catb-1h-190640-6-r0.91-r0.82-ma0.059-ms0.008.pickle")
 # df_test2[['name_part2', 'name_mold_mat', 'name_bind1'] ] = np.nan

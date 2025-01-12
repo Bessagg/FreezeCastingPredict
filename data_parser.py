@@ -21,6 +21,7 @@ class DataParser:
         # 19 columns. All chosen columns that might be relevant for porosity prediction.
         self.all_feats = ['name_part1', 'name_part2',  # 'material',
                           'name_fluid1',
+                          'dia_part_1',
                           # 'technique', 'direction',  # mostly empty
                           'material_group',
                           # 'name_mold_mat',  # should not be considered
@@ -57,6 +58,7 @@ class DataParser:
 
         # Selected Cols:
         self.col_dtypes = {'material': 'enum', 'name_part1': 'enum', 'name_part2': 'enum', 'name_fluid1': 'enum',
+                           'dia_part_1': 'numeric',
                            'technique': 'enum', 'direction': 'enum', 'sublimated': 'enum',
                            'name_mold_mat': 'enum',
                            'name_disp_1': 'enum', 'wf_disp_1': 'numeric', 'name_bind1': 'enum', 'wf_bind_1': 'numeric',
@@ -66,6 +68,7 @@ class DataParser:
                            'porosity': 'numeric'}
 
         self.col_dtypes_renamed = {'Material Name': 'enum', 'Solid Name': 'enum', 'Solid Name 2': 'enum',
+                                   'Solid Diameter': 'numeric',
                                    'Fluid Name': 'enum',
                                    'Mold Material Name': 'enum',
                                    'Direction': 'enum', 'Technique': 'enum',
@@ -77,6 +80,7 @@ class DataParser:
                                    'Porosity': 'numeric'}
 
         self.col_rename = {'material': 'Material', 'name_part1': 'Solid Name', 'name_part2': 'Solid Name 2',
+                           'dia_part_1': "Solid Diameter",
                            'name_fluid1': 'Fluid Name',
                            'name_mold_mat': 'Mold Material Name',
                            'direction': 'Direction', 'technique': 'Technique',
