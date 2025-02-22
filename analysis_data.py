@@ -25,6 +25,11 @@ from scipy.stats import kruskal
 from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
 from factor_analyzer.factor_analyzer import calculate_kmo
 pio.renderers.default = "browser"
+# Show all columns
+pd.set_option('display.max_columns', None)
+pd.set_option('display.width', 0)
+pd.set_option('display.expand_frame_repr', False)
+
 
 # Load Data
 parser = data_parser.DataParser()

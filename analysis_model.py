@@ -5,9 +5,12 @@ import glob
 import os
 from scipy.stats import kstest
 import matplotlib
+from scipy.stats import pearsonr
 matplotlib.use("Tkagg")
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score
+from scipy.stats import pearsonr
+
 import seaborn as sns
 import statsmodels.api as sm
 from scipy.stats import pearsonr, chi2_contingency
@@ -266,8 +269,14 @@ for pipe in selected_pipes:
     df_test[f'{pipe.name}_mae'] = mae_test
     print("Train results")
     r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
+    p_train = r2_score(df_train[target], train_preds)
+    formatted_p_train = f"{p_train:.2f}" if p_train >= 0.001 else "<0.001"
+
     print("Test results")
     r2_test, mae_test, mse_test, mape_test = utils.get_regression_metrics(test_preds, df_test[target])
+    p_test = r2_score(df_test[target], test_preds)
+    formatted_p_test = f"{p_test:.2f}" if p_test >= 0.001 else "<0.001"
+
     print("Test nulls results")
     columns_not_null = ['name_part1', 'name_fluid1', 'vf_total', 'material_group', target]
     df_test_nulls = df_test.copy()
@@ -283,8 +292,9 @@ for pipe in selected_pipes:
     r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = utils.get_regression_metrics(test_preds_nulls, df_test[target])
 
     # Add model results
-    result_model_dict = {'name': pipe.name, 'r2_train': r2_train, 'mae_train': mae_train, 'mse_train': mse_train,
-                         'r2_test': r2_test, 'mae_test': mae_test, 'mse_test': mse_test}
+    result_model_dict = {'name': pipe.name,
+                         'r2_train': r2_train, 'p_train': formatted_p_train, 'mae_train': mae_train, 'mse_train': mse_train,
+                         'r2_test': r2_test, 'p_test': formatted_p_test, 'mae_test': mae_test, 'mse_test': mse_test}
     results_models_dict_list.append(result_model_dict)
     preds_train, preds_test = pipe.predict(df_train), pipe.predict(df_test)
     results_train = {'name': pipe.name, 'feats': pipe.feats_name, 'prediction_train': preds_train,
@@ -311,8 +321,8 @@ for pipe in selected_pipes:
     # Calculate metrics grouped by the specified feature
     groupby_features = ['material_group', 'name_part1', 'name_fluid1']
     for groupby_feature in groupby_features:
-        grouped = df_test.groupby(groupby_feature)
-        grouped_train = df_train.groupby(groupby_feature)
+        grouped = df_test.groupby(groupby_feature)  # to get metrics
+        grouped_train = df_train.groupby(groupby_feature)  # to get most frequent groups
         category_counts = grouped_train[groupby_feature].value_counts().sort_values(ascending=False)
         # Determine top 5 most frequent categories
         top_categories = category_counts[0:5]
@@ -327,6 +337,9 @@ for pipe in selected_pipes:
             group_y_pred = preds_test[category_indices]
             grouped_r2, grouped_mae, grouped_mse, grouped_mape = (
                 utils.get_regression_metrics(group_y_pred, group_y_true, opt_print=False))
+            grouped_p = r2_score( group_y_true, group_y_pred)
+            formatted_grouped_p = f"{grouped_p:.2f}" if grouped_p >= 0.001 else "<0.001"
+
             group_variance = round(np.var(group_y_pred), 3)
             group_std = round(np.std(group_y_true), 2)  # true porosity std
             # append results
