@@ -1,24 +1,10 @@
-# Enables inline-plot rendering
-# Utilized to create and work with dataframes
-import sys
-import time
 import pandas as pd
 import numpy as np
-import math as m
-# MATPLOTLIB
 import matplotlib.pyplot as plt
-# matplotlib parameters for Latex
-import plotly.express as px
-from sklearn.preprocessing import StandardScaler
-from sklearn import preprocessing
-from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import OneHotEncoder
-from sklearn.decomposition import PCA
 import seaborn as sns
-import prince
 import plotly.io as pio
 import data_parser
-import matplotlib
 import squarify
 from scipy.stats import ks_2samp  # Kolmogorov-Smirnov test
 from scipy.stats import kruskal
@@ -68,38 +54,46 @@ nulls = round(df_all.isnull().mean() * 100, 2)
 selected_nulls = nulls[parser.all_feats]
 print(f"\nPercentage of Null Values:\n", round(df_all.isnull().mean() * 100, 2), "%")
 
-# # Drop columns with less than min_n_rows as not null values
-# for col in df.columns:
-#     print(f'{col}_rows: {df[col].count()}')
-#     if df[col].count() < min_n_rows:
-#         df.drop(columns=col, axis=1, inplace=True)
-#         print(f"*dropped {col}, less than {min_n_rows} rows")
-#
-# """technique and direction only have 610 rows and temp_cold 1643 :c """
-# print(f'Selected columns with more than {min_n_rows}: \n{df.columns}')
-#
+#%% Correlation heatmap Numerical only
+plt.figure(figsize=(20, 12))
 
-# #################################### Correlation heatmap Numerical only
-plt.figure(figsize=(18, 12))
+# Set the style to 'white' to remove grid and background
+sns.set(style="white")
+
+# Calculate the correlation matrix
 df_num = df.select_dtypes(include=['number', 'float64'])
-# plt.tight_layout()
-plt.show()
-plt.subplots_adjust(left=0.21, right=1.05, top=0.95, bottom=0.3)
 corr = df_num.corr()
+corr = round(corr * 100, 0)
 
-# null_percentages = df_num.isnull().mean() * 100
-# columns_with_nulls_above_50 = null_percentages[null_percentages < 50].index.tolist()
-# corr = df_num[columns_with_nulls_above_50].corr()
-
+# Masking the upper triangle
 mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
-heatmap = sns.heatmap(corr, vmin=-1, vmax=1, mask=mask, annot=True, cmap='BrBG', fmt=".2%", annot_kws={"fontsize": 20})
+
+# Plotting the heatmap
+heatmap = sns.heatmap(corr,
+                      vmin=-100, vmax=100,
+                      mask=mask,
+                      annot=True,
+                      cmap='BrBG',
+                      fmt=".0f",  # Display values as integers
+                      annot_kws={"fontsize": 20},
+                      cbar_kws={'shrink': 0.8})  # Adjust colorbar size
+
+# Remove grid and background
+heatmap.grid(False)
+# Increase colorbar fontsize
+colorbar = heatmap.collections[0].colorbar
+colorbar.ax.tick_params(labelsize=28)  # Increase colorbar fontsize
+# Adjust tick labels' font size and rotation
 heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize=28)
 heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize=28)
 heatmap.set_xticklabels(heatmap.get_xticklabels(), rotation=38, horizontalalignment='right')
 heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignment='right')
-# heatmap.set_title('Matriz de Correlação', fontdict={'fontsize': 18}, pad=12)
-print("Correlation matrix \n")
+
+# Tight layout and show
+plt.tight_layout()
+plt.show()
 plt.savefig(f"images/Correlation.png")
+
 # df.corr()['porosity']
 
 # Dis Plot Numerical
@@ -137,7 +131,7 @@ for col in df_num:
 
 # Filter p-values to only show those above 1e-4
 significance_threshold = 0.05
-significance_threshold = 1e-4
+# significance_threshold = 1e-4
 filtered_p_values = {col: {groups: p for groups, p in group_p_values.items() if p > significance_threshold} for col, group_p_values in p_values.items()}
 
 # Print the sorted, filtered p-values
@@ -149,7 +143,7 @@ for key in filtered_p_values.keys():
             # print(key, key2, val2)
 
 
-# #################################### Categorical Analysis
+#%% Categorical Analysis
 # Plot porosidade against string columns
 df_str = (df.select_dtypes(include=[object]))
 # df_str = (df.select_dtypes(include=[object])).dropna()
@@ -164,8 +158,6 @@ for col in df_str.columns:
     plt.suptitle(col, fontsize=48)
     top_n = 5
     top_samples = df.groupby(col)[col].count().sort_values(ascending=False)[0:top_n]
-    # top_samples_columns = top_samples.axes[0].values
-    # top_10_samples_columns = ['Al2O3', 'HAP', 'YSZ', 'Mullite', 'PZT', 'Bioglass', 'Si3N4', 'Al2O3/ZrO2', 'TiO2', 'SiO2']
     ax = top_samples.iloc[0:top_n].sort_values(ascending=False).plot(kind="bar", fontsize=38)
     for tick in ax.get_xticklabels():
         tick.set_rotation(45)
@@ -179,132 +171,68 @@ for col in df_str.columns:
     plt.show()
 # plt.close("all")
 
+#%% Categorical data Porosity Distribution
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import f_oneway, ttest_ind, ks_1samp  # For One-way ANOVA (which will compare groups in pairs)
 
-# Categorical data Porosity Distribution
-kruskal_pvals = []
-for col in df_str.columns:
-    sns.set(font_scale=1.5)
-    filtered_df = df[df[col].notnull()]  # Remove null in column
-    rank_filter_n = 3
-    rank_filter = df_str[col].value_counts().head(rank_filter_n).axes[0]  # Filter top 5 in column
-    count_filter = df.groupby(col).filter(lambda x: len(x) > count_filter_n)[col].unique()
-    selected_filter = rank_filter  # change here for count or rank filtering
-    filtered_df = filtered_df[filtered_df[col].isin(selected_filter)]
-    df.groupby(col).count().sort_values(by=parser.target_renamed, ascending=False)
+# Define statistical test function
+stat_test = ttest_ind  # One-way ANOVA
 
-    # Perform Kruskal-Wallis test
-    groups = [filtered_df[filtered_df[col] == val][parser.target_renamed] for val in selected_filter]
-    kruskal_statistic, pval = kruskal(*groups)
-    kruskal_pvals.append({'pval': pval, 'col': col})
-    order = df.groupby(col).count().sort_values(by=parser.target_renamed, ascending=False).index[0:rank_filter_n]  # order by count
-    filtered_df = filtered_df.sort_values(by=parser.target_renamed)
-    g = sns.FacetGrid(filtered_df, row=col,
-                      height=1.6, aspect=4, col_order=order)
-    # g.map(sns.kdeplot, parser.target_renamed)
-    g.map(sns.histplot, parser.target_renamed, kde=True)
-    g.set_ylabels('Density')
-    # Add annotation with p-value
-    g.fig.suptitle(f'\n Kruskal p-value: {pval:.3e}', fontsize=16, y=1.02)
-    plt.subplots_adjust(top=0.8)  # Adjust this value as needed to move the plots down and create space at the top
-    print(f'Kruskal p-value: {pval:.3e} for top {rank_filter_n} categories in {col}')
-    g.set(yticks=[], ylabel='Count')
+# Set the name of the statistical test for display purposes
+stat_test_name = "T-test"  # Default name for ANOVA (can be changed accordingly)
 
-    plt.savefig(f"images/Count Distribution of {col}.png", bbox_inches='tight')
+# List of categorical columns to use as the group
+df_str = (df.select_dtypes(include=[object]))
+categorical_columns = df_str.columns
 
-    # rank_filter = df_str[col].value_counts().head(5)  # list to filter by rank
+# Initialize dictionary to store results
+p_values_dict = {}
 
-plt.show()
-# plt.close("all")
+# Iterate over different group variables
+for group_col in categorical_columns:
+    # Get the top 3 most frequent groups in this categorical column
+    top_groups = df[group_col].value_counts().index[:3]
 
+    # Filter dataset to only include these top groups
+    df_filtered = df[df[group_col].isin(top_groups)]
 
-# mca = prince.MCA()
-# X = df_str.dropna()
-# fig, ax = plt.subplots()
-# mc = prince.MCA(n_components=2, n_iter=10, copy=True, check_input=True, engine='auto', random_state=42).fit(X)
-# mc.plot_coordinates(
-#     X=X,
-#     ax=None,
-#     figsize=(6, 6),
-#     show_row_points=True,
-#     row_points_size=10,
-#     show_row_labels=False,
-#     show_column_points=True,
-#     column_points_size=30,
-#     show_column_labels=False,
-#     legend_n_cols=1
-# )
-# print("MC eigen values", mc.eigenvalues_)
+    # Prepare data for the chosen statistical test
+    group_data = [df_filtered[df_filtered[group_col] == group]['Porosity'].dropna() for group in top_groups]
+    group_data = [g for g in group_data if len(g) > 0]  # Remove empty groups
 
-encoder = OneHotEncoder(handle_unknown='ignore')
+    # Compute p-values for all pairs of groups
+    p_values = []
+    for i in range(len(group_data)):
+        for j in range(i + 1, len(group_data)):
+            stat, p_value = stat_test(group_data[i], group_data[j])
+            p_values.append((top_groups[i], top_groups[j], p_value))
 
-# # #################################### Numerical Analysis
+    # Sort p-values to find the minimum p-value pair
+    p_values_sorted = sorted(p_values, key=lambda x: x[2])
 
-"""
-Before you perform factor analysis, you need to evaluate the “factorability” of our dataset. 
-Factorability means "can we found the factors in the dataset?". 
-here are two methods to check the factorability or sampling adequacy:
+    # Get the pair with the smallest p-value
+    category1, category2, min_p_value = p_values_sorted[0]
 
-Bartlett’s Test
-Kaiser-Meyer-Olkin Test
-"""
-# num_cols = df.select_dtypes(include=[float]).columns
-# df_num = df[num_cols].dropna()  #
-# count_filter_n = 50
+    # Save the result for this group
+    p_values_dict[group_col] = (category1, category2, min_p_value)
 
-"""
-Bartlett's test
-In this Bartlett ’s test, the p-value is 0. 
-The test was statistically significant, indicating that the observed correlation matrix is not an identity matrix.
-"""
+    # Prepare the title for the plot with the smallest p-value
+    title = f'{category1} vs {category2} | {stat_test_name} p-value: {min_p_value:.0e}'
 
-chi_square_value, p_value = calculate_bartlett_sphericity(df_num)
-print(chi_square_value, p_value)
+    # Create FacetGrid plot using histogram (bin plot) and KDE
+    g = sns.FacetGrid(df_filtered, row=group_col, height=1.6, aspect=4)
+    g.map(sns.histplot, 'Porosity', bins=5, kde=True)  # Use a consistent bin count
 
-"""
-Kaiser-Meyer-Olkin (KMO) Test measures the suitability of data for factor analysis. 
-It determines the adequacy for each observed variable and for the complete model. 
-KMO estimates the proportion of variance among all the observed variable. 
-Lower proportion id more suitable for factor analysis. KMO values range between 0 and 1. 
-Value of KMO less than 0.6 is considered inadequate.
-"""
+    # Set the title with line breaks
+    g.fig.suptitle(title, fontsize=16)
 
+    # Adjust spacing to ensure title doesn't overlap
+    g.fig.subplots_adjust(top=0.80)  # Increase space above plot for title
+    plt.show()
+    plt.savefig(f"images/Count of {group_col}.png")
 
-# kmo_all, kmo_model = calculate_kmo(df_num)
-# print(kmo_model)
-
-# # ########### PCA Analysis Principal component Analysis
-# n_components = 3
-# pipeline = Pipeline([('scaling', StandardScaler()), ('pca', PCA(n_components=n_components))])
-# pca = PCA(n_components=n_components)
-# # X = df_num[df_num.columns.drop('Porosidade')]
-# X = df_num[df_num.columns]
-# y = parser.target
-#
-# # components = pca.fit_transform(df_num)
-# # components = pipeline.fit_transform(df_num)
-# X_scaled = pd.DataFrame(preprocessing.scale(X), columns=X.columns)  # normalize data
-# components = pca.fit_transform(X_scaled)
-# # print(pd.DataFrame(pca.components_, columns=X_scaled.columns, index=['PC-1', 'PC-2', 'PC-3', 'PC-4', 'PC-5']))
-# total_var = pca.explained_variance_ratio_.sum() * 100
-# labels = {str(i): f"PC {i + 1}" for i in range(n_components)}
-# labels['color'] = parser.target
-# fig = px.scatter_matrix(
-#     components,
-#     color=y,
-#     dimensions=range(n_components),
-#     labels=labels,
-#     title=f'Total Explained Variance: {total_var:.2f}%',
-# )
-# fig.update_traces(diagonal_visible=False)
-# fig.show()
-
-# # 3D plot Variance
-# fig = px.scatter_3d(
-#     components, x=0, y=1, z=2, color=DataParser.target, title=f'Total Explained Variance: {total_var:.2f}%',
-#     labels=labels
-# )
-# fig.show()
-# exp_var_cumul = np.cumsum(pca.explained_variance_ratio_)
-# px.area(x=range(1, exp_var_cumul.shape[0] + 1), y=exp_var_cumul,
-#         labels={"x": "# Components", "y": "Explained Variance"})
-# plt.close('all')
+# Print out the results for all categorical columns
+for group_col, (cat1, cat2, p_value) in p_values_dict.items():
+    print(f"For {group_col}, the pair with the smallest p-value is {cat1} vs {cat2} with p-value: {p_value:.2e}")
