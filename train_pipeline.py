@@ -183,7 +183,11 @@ if int(run_shap) == 1:
     )
     shap_explainer.save_explainer(explainer, shap_plotter.filepath_explainer)
     # TODO: add artifacts from shapley
-    shap_plotter.run_all_plots()
+    shap_plotter.run_all_plots(feature_list=shap_plotter.X.columns.to_list(), color_feature="material_group_Ceramic")
+    shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Solid Loading")
+    shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
+
+print("Finished")
 
 # catb = parser.load_pipeline(rf"D:\MyGoogleDrive\PythonScripts2\FreezeCastingPredict\selected_models\all_feats\catb-1h-190640-6-r0.91-r0.82-ma0.059-ms0.008\model\catb-1h-190640-6-r0.91-r0.82-ma0.059-ms0.008.pickle")
 # df_test2[['name_part2', 'name_mold_mat', 'name_bind1'] ] = np.nan

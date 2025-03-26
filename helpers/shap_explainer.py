@@ -157,6 +157,7 @@ class ShapPlotter:
 
     def __init__(self, explainer, preprocessed_X, shap_values,
                  shap_confusion_matrix_dict,
+                 color_feature=None,
                  col_rename_dict=None,
                  save_dirpath=None, dataframe_subdir_name="", plots_title="",
                  check_additivity=False, is_regression=True):
@@ -338,12 +339,13 @@ class ShapPlotter:
 
         return
 
-    def plot_dependence_for_features(self, feature_list):
+    def plot_dependence_for_features(self, feature_list, color_feature=None):
         """
         Generate SHAP dependence plots for a given list of features.
 
         Parameters:
             feature_list (list): List of feature names to plot.
+            color_feature (str): column name of feature that will be used as colorbar.
         """
         if not feature_list:
             print("Feature list is empty. Please provide feature names.")
@@ -356,21 +358,27 @@ class ShapPlotter:
                 continue
 
             plt.figure(figsize=(8, 6))
-            shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=None)
+            interaction_index = color_feature if color_feature in self.X.columns else None
+            shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=interaction_index)
             plt.title(f"SHAP Dependence Plot: {feature}")
 
             if self.dirpath_dependence:
-                save_path = f"{self.dirpath_dependence}/{feature}.{self.plt_fmt}"
+                dirpath = f"{self.dirpath_dependence}/{color_feature}"
+                if not os.path.isdir(dirpath):
+                    os.makedirs(dirpath)
+                save_path = f"{dirpath}/{feature}.{self.plt_fmt}"
                 plt.savefig(save_path, bbox_inches="tight", dpi=600)
                 print(f"Saved: {save_path}")
             else:
                 plt.show()
 
-    def run_all_plots(self):
+    def run_all_plots(self, feature_list=None,  color_feature=None):
         self.plot_varimp()
         self.plot_summary()
         self.plot_summary_zoomed()
-        # self.plot_dependence()
+        if feature_list:
+            self.plot_dependence_for_features(feature_list, color_feature)
+
         if not self.is_regression:
             self.single_decision_plots(self.shap_confusion_matrix_dict)
             self.multiple_decision_plots(self.shap_confusion_matrix_dict)
