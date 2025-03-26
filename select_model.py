@@ -17,10 +17,10 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
         selected_preprocessor = Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
 
     elif model_name.lower() == "catb2":
-
+        "catboost with native categorical handling"
         # model = CatBoostRegressor(logging_level='Silent', random_state=seed)
         model = CatBoostRegressor(random_state=seed, logging_level='Silent')  # n_jobs=-1, tree_method="gpu_hist",
-        search_space = param_grid_catb_single
+        search_space = param_grid_catb
         selected_preprocessor = Preprocessors.opd()
 
     elif model_name.lower() == "xgb":
