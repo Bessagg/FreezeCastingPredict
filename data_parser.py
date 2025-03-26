@@ -1,5 +1,5 @@
 import os.path
-
+import joblib
 from database2dataframe import db_to_df
 import pickle
 import warnings
@@ -21,7 +21,7 @@ class DataParser:
         # 19 columns. All chosen columns that might be relevant for porosity prediction.
         self.all_feats = ['name_part1', 'name_part2',  # 'material',
                           'name_fluid1',
-                          'dia_part_1',
+                          'dia_part_1',  # could be used. discarded for simplification.
                           # 'technique', 'direction',  # mostly empty
                           'material_group',
                           # 'name_mold_mat',  # should not be considered
@@ -43,7 +43,7 @@ class DataParser:
              # 'name_mold_mat',  # should not be considered
              # 'name_disp_1',
              'wf_disp_1',  # low importance
-             'name_bind1',  # removed : missing data >50%
+             # 'name_bind1',  # removed : missing data >50%
              'wf_bind_1',  # high importance
              'temp_cold',   # hard to measure
              # 'cooling_rate',  # low importance
@@ -129,7 +129,6 @@ class DataParser:
         return h2o_data.rename(self.col_rename)
 
     def load_pipeline(self, model_path):
-        import joblib
         with open(model_path, 'rb') as f:
             pipeline = joblib.load(model_path)
         return pipeline
