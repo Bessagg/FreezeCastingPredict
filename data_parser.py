@@ -38,6 +38,7 @@ class DataParser:
             ['name_part1',
              # 'name_part2',   # removed : missing data >50%
              'name_fluid1',
+             'dia_part_1',
              # 'technique', 'direction',  # 'sublimated'   # removed : missing data >50%
              'material_group',
              # 'name_mold_mat',  # should not be considered
@@ -79,7 +80,7 @@ class DataParser:
                                    'Time Sinter.': 'numeric', 'Temp Sinter': 'numeric', 'Solid Loading': 'numeric',
                                    'Porosity': 'numeric'}
 
-        self.col_rename = {'material': 'Material', 'name_part1': 'Solid Name', 'name_part2': 'Solid Name 2',
+        self.col_rename_dict = {'material': 'Material', 'name_part1': 'Solid Name', 'name_part2': 'Solid Name 2',
                            'dia_part_1': "Solid Diameter",
                            'name_fluid1': 'Fluid Name',
                            'name_mold_mat': 'Mold Material Name',
@@ -123,10 +124,10 @@ class DataParser:
         return df
 
     def rename_columns_df(self, df):
-        return df.rename(columns=self.col_rename)
+        return df.rename(columns=self.col_rename_dict)
 
     def rename_columns_h2o(self, h2o_data):
-        return h2o_data.rename(self.col_rename)
+        return h2o_data.rename(self.col_rename_dict)
 
     def load_pipeline(self, model_path):
         with open(model_path, 'rb') as f:

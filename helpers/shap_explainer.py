@@ -7,8 +7,22 @@ import pickle
 import numpy as np
 import time
 from matplotlib.ticker import MaxNLocator
+import re
 matplotlib.use('Agg')  # hide plots
 
+
+# Function to clean and rename columns
+def rename_columns(columns, rename_dict):
+    new_columns = []
+    for col in columns:
+        # Remove _sklearn and any prefix before it (like infrequent_sklearn_)
+        clean_col = re.sub(r'\b\w*_sklearn_', '', col)  # Remove prefix ending with "_sklearn_"
+        clean_col = re.sub(r'_sklearn$', '', clean_col)  # Remove _sklearn at the end if present
+
+        # Rename using dictionary, if present
+        new_columns.append(rename_dict.get(clean_col, clean_col))
+
+    return new_columns
 
 def get_shap_confusion_matrix_dict(X, predicted_label, true_y, shap_values):
     X.reset_index(inplace=True, drop=True)
@@ -143,6 +157,7 @@ class ShapPlotter:
 
     def __init__(self, explainer, preprocessed_X, shap_values,
                  shap_confusion_matrix_dict,
+                 col_rename_dict=None,
                  save_dirpath=None, dataframe_subdir_name="", plots_title="",
                  check_additivity=False, is_regression=True):
 
@@ -165,7 +180,8 @@ class ShapPlotter:
 
         # Get dataframe preprocessed by the pipeline (for example: one-hot-encoded/scaled dataframe)
         self.X = preprocessed_X  # preprocess_and_cast(preprocessor, df, selected_cols)
-
+        if col_rename_dict:
+            self.X.columns = rename_columns(self.X.columns, col_rename_dict)
         self.check_additivity = check_additivity
         self.cmap = 'RdBu'  # plasma, RdBu
         self.X_raw = self.X.copy()  # for debug
@@ -213,7 +229,7 @@ class ShapPlotter:
         shap.summary_plot(self.shap_values, plot_type="bar", features=self.X, feature_names=self.X.columns,
                           cmap=self.cmap)
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP_varimp.{self.plt_fmt}")
+            plt.savefig(f"{self.dirpath_root}/SHAP_varimp.{self.plt_fmt}", dpi=600)
 
     def plot_summary(self):
         plt.clf()
@@ -221,7 +237,7 @@ class ShapPlotter:
                           max_display=self.X.shape[1])
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP__Summary.{self.plt_fmt}")
+            plt.savefig(f"{self.dirpath_root}/SHAP__Summary.{self.plt_fmt}", dpi=600)
 
     def plot_summary_zoomed(self):
         plt.clf()
@@ -229,7 +245,7 @@ class ShapPlotter:
                           max_display=self.zoomed_display)
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP__SummaryZoomed.{self.plt_fmt}")
+            plt.savefig(f"{self.dirpath_root}/SHAP__SummaryZoomed.{self.plt_fmt}", dpi=600)
 
     def plot_dependence(self):
         plt.clf()
@@ -248,7 +264,7 @@ class ShapPlotter:
         plt.tight_layout()
         plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=10))
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_dependence}/Dependence_Plots.{self.plt_fmt}", bbox_inches='tight')
+            plt.savefig(f"{self.dirpath_dependence}/Dependence_Plots.{self.plt_fmt}", bbox_inches='tight', dpi=600)
 
     def plot_heatmap(self):
         print("Plotting Shap Heatmap...")
@@ -257,7 +273,7 @@ class ShapPlotter:
         shap.plots.heatmap(self.explainer(self.X), max_display=self.max_features,
                            instance_order=self.explainer(self.X).sum(1), plot_width=30)
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight')
+            plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight', dpi=600)
 
     def plot_decision(self, T, sh, subdir=None, title=None, max_features=None):
         """
@@ -292,7 +308,7 @@ class ShapPlotter:
         if self.dirpath_root:
             dirpath = f"{self.dirpath_root}/{subdir}"
             os.makedirs(dirpath, exist_ok=True)
-            plt.savefig(f"{dirpath}/{T.index[0]}.{self.plt_fmt}", bbox_inches='tight')
+            plt.savefig(f"{dirpath}/{T.index[0]}.{self.plt_fmt}", bbox_inches='tight', dpi=600)
 
     def single_decision_plots(self, shap_confusion_matrix_dict, n_samples=100):
         # single decision plots
@@ -321,6 +337,34 @@ class ShapPlotter:
     def binned_preds_plots(self, preds, true_y):
 
         return
+
+    def plot_dependence_for_features(self, feature_list):
+        """
+        Generate SHAP dependence plots for a given list of features.
+
+        Parameters:
+            feature_list (list): List of feature names to plot.
+        """
+        if not feature_list:
+            print("Feature list is empty. Please provide feature names.")
+            return
+
+        plt.clf()
+        for feature in feature_list:
+            if feature not in self.X.columns:
+                print(f"Feature '{feature}' not found in dataset. Skipping...")
+                continue
+
+            plt.figure(figsize=(8, 6))
+            shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=None)
+            plt.title(f"SHAP Dependence Plot: {feature}")
+
+            if self.dirpath_dependence:
+                save_path = f"{self.dirpath_dependence}/{feature}.{self.plt_fmt}"
+                plt.savefig(save_path, bbox_inches="tight", dpi=600)
+                print(f"Saved: {save_path}")
+            else:
+                plt.show()
 
     def run_all_plots(self):
         self.plot_varimp()

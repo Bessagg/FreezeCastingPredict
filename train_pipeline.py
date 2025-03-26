@@ -108,6 +108,19 @@ if model_name == 'catb2':
                         model__cat_features=cat_feature_indices)
 else:
     grid = grid.fit(df_train[selected_feats], df_train[target])
+
+ # Grid results
+print("CV results")
+print(grid.cv_results_)
+# Print leaderboard
+print("\nLeaderboard:")
+cv_results = pd.DataFrame(grid.cv_results_)
+cv_results = cv_results.sort_values(by="mean_test_score", ascending=False)
+print(cv_results)
+
+print("Best params \n", grid.best_params_)
+
+# Save attributes in pipeline model
 best_clf = grid.best_estimator_
 best_clf.name = model_name
 best_clf.cat_cols = cat_cols
@@ -122,10 +135,6 @@ preprocessor = grid.best_estimator_[0]  # first step in pipeline
 print("Elapsed", (time.time() - start) / 60, 'min')
 train_preds = best_clf.predict(df_train[selected_feats])
 test_preds = best_clf.predict(df_test[selected_feats])
-
-print("CV results")
-print(grid.cv_results_)
-print("Best params \n", grid.best_params_)
 
 print("Training Results")
 r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
@@ -167,6 +176,7 @@ if int(run_shap) == 1:
     shap_plotter = shap_explainer.ShapPlotter(
         explainer, preprocessed_X, shap_values,
         shap_confusion_matrix_dict,
+        col_rename_dict=parser.col_rename_dict,
         save_dirpath=model_results_path + "/shap",
         dataframe_subdir_name="test",
         plots_title=f'{model_name}_test'
