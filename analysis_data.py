@@ -6,6 +6,8 @@ import seaborn as sns
 import plotly.io as pio
 import data_parser
 import squarify
+import matplotlib.pyplot as plt
+from scipy.stats import f_oneway, ttest_ind, ks_1samp, spearmanr  # For One-way ANOVA (which will compare groups in pairs)
 from scipy.stats import ks_2samp  # Kolmogorov-Smirnov test
 from scipy.stats import kruskal
 from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
@@ -55,19 +57,28 @@ selected_nulls = nulls[parser.all_feats]
 print(f"\nPercentage of Null Values:\n", round(df_all.isnull().mean() * 100, 2), "%")
 
 #%% Correlation heatmap Numerical only
-plt.figure(figsize=(20, 12))
 
-# Set the style to 'white' to remove grid and background
-sns.set(style="white")
 
 # Calculate the correlation matrix
-df_num = df.select_dtypes(include=['number', 'float64'])
+df_num = df.select_dtypes(include=['number', 'float64']).copy()
+
+# Option 2: Fill NaN values with the mean of each column (uncomment this line if you prefer filling NaNs)
+df_num = df_num.fillna(df_num.mean())
+
 corr = df_num.corr()
-corr = round(corr * 100, 0)
+# Optional, use spearmans correlation
+# corr, _ = spearmanr(df_num)  # Calculate Spearman correlation, the second value is p-values
+
+corr = np.round(corr * 100, 0)  # Use np.round to round values to the nearest integer
+
 
 # Masking the upper triangle
 mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
 
+# Plot
+plt.figure(figsize=(20, 12))
+# Set the style to 'white' to remove grid and background
+sns.set(style="white")
 # Plotting the heatmap
 heatmap = sns.heatmap(corr,
                       vmin=-100, vmax=100,
@@ -75,14 +86,15 @@ heatmap = sns.heatmap(corr,
                       annot=True,
                       cmap='BrBG',
                       fmt=".0f",  # Display values as integers
-                      annot_kws={"fontsize": 20},
+                      annot_kws={"fontsize": 28},
                       cbar_kws={'shrink': 0.8})  # Adjust colorbar size
 
 # Remove grid and background
 heatmap.grid(False)
 # Increase colorbar fontsize
 colorbar = heatmap.collections[0].colorbar
-colorbar.ax.tick_params(labelsize=28)  # Increase colorbar fontsize
+colorbar.ax.tick_params(labelsize=36)  # Increase colorbar fontsize
+
 # Adjust tick labels' font size and rotation
 heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize=28)
 heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize=28)
@@ -94,14 +106,51 @@ plt.tight_layout()
 plt.show()
 plt.savefig(f"images/Correlation.png")
 
-# df.corr()['porosity']
 
-# Dis Plot Numerical
-# for col in df_num:
-#     sns.displot(df, x=col, hue='Group', multiple="stack", stat="density", common_norm=False)
-#     plt.savefig(f"images/Num_dist_{col}.png")
-#
-#
+#%% Correlation heatmap of Missing Values
+plt.figure(figsize=(20, 12))
+
+# Set the style to 'white' to remove grid and background
+sns.set(style="white")
+
+# Calculate the missing values correlation matrix
+df_missing = df.isnull()  # Create a boolean DataFrame of missing values
+corr_missing = df_missing.corr()  # Correlation of missing values
+corr_missing = round(corr_missing * 100, 0)  # Multiply by 100 to get percentage
+
+# Masking the upper triangle
+mask = np.triu(np.ones_like(corr_missing, dtype=bool), k=1)
+
+# Plotting the heatmap for missing values correlation
+heatmap = sns.heatmap(corr_missing,
+                      vmin=-100, vmax=100,
+                      mask=mask,
+                      annot=True,
+                      cmap='BrBG',
+                      fmt=".0f",  # Display values as integers
+                      annot_kws={"fontsize": 28},
+                      cbar_kws={'shrink': 0.8})  # Adjust colorbar size
+
+# Remove grid and background
+heatmap.grid(False)
+
+# Increase colorbar fontsize
+colorbar = heatmap.collections[0].colorbar
+colorbar.ax.tick_params(labelsize=36)  # Increase colorbar fontsize
+
+# Adjust tick labels' font size and rotation
+heatmap.set_xticklabels(heatmap.get_xmajorticklabels(), fontsize=28)
+heatmap.set_yticklabels(heatmap.get_ymajorticklabels(), fontsize=28)
+heatmap.set_xticklabels(heatmap.get_xticklabels(), rotation=38, horizontalalignment='right')
+heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignment='right')
+
+# Tight layout and show
+plt.tight_layout()
+plt.show()
+plt.savefig(f"images/Correlation_missing.png")
+
+#%% Numerical Dist
+
 plt.close('all')
 # Dist Plot Numerical
 order = df['Group'].value_counts().index.to_list()
@@ -142,7 +191,6 @@ for key in filtered_p_values.keys():
         i# f val2 >= significance_threshold:
             # print(key, key2, val2)
 
-
 #%% Categorical Analysis
 # Plot porosidade against string columns
 df_str = (df.select_dtypes(include=[object]))
@@ -172,11 +220,6 @@ for col in df_str.columns:
 # plt.close("all")
 
 #%% Categorical data Porosity Distribution
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from scipy.stats import f_oneway, ttest_ind, ks_1samp  # For One-way ANOVA (which will compare groups in pairs)
-
 # Define statistical test function
 stat_test = ttest_ind  # One-way ANOVA
 
