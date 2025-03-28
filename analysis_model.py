@@ -6,8 +6,7 @@ import os
 from scipy.stats import kstest
 import matplotlib
 from scipy.stats import pearsonr
-matplotlib.use("Tkagg")
-import matplotlib.pyplot as plt
+# matplotlib.use("Tkagg")
 from sklearn.metrics import r2_score
 from scipy.stats import pearsonr
 
@@ -27,14 +26,16 @@ pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
 im_path = 'images/model_analysis'
-
+palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
+colors = ["#505050", "#56B4E9","#A066C2"]
+colors = ["#939393", "#00427d", "#00652e"]
 
 def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
     # Create a save directory for images
     save_dir = f'images/results/{title}_error_by_group_{group_column}.png'
 
     # Create a figure with 3 subplots (1 column, 3 rows)
-    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(18, 18), sharex=True)
+    fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(24, 12), sharex=True)
 
     # Define group names and their corresponding colors
     if group_column == "name_fluid1":
@@ -42,10 +43,11 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
     else:
         groups = ['Ceramic', 'Metal', 'Polymer']
 
-    colors = ['blue', 'red', 'green']
+    # colors = ['blue', 'red', 'green']
+    # colors =  ["#505050", "#56B4E9", "#D55E00"]
 
     # Define custom bin edges with a step of 0.01
-    bins = np.arange(-0.4, 0.401, 0.01)  # Bins from -0.4 to 0.4 with step size of 0.01
+    bins = np.arange(-25, 25, 2.5)  # Bins from -0.4 to 0.4 with step size of 0.01
 
     # Loop through the groups to plot error distribution for each group
     for i, group in enumerate(groups):
@@ -59,169 +61,161 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
         sns.histplot(group_error, bins=bins, color=colors[i], ax=axes[i], kde=False)
 
         # Set labels and title for the subplot
-        axes[i].set_xlabel("Error", fontsize=32)
-        axes[i].set_ylabel("Sample Count", fontsize=32)
-        axes[i].tick_params(labelsize=22)
-        axes[i].set_title(f"Error Distribution: {group}", fontsize=32)
-        axes[i].set_xlim(-0.4, 0.4)  # Limit x-axis to match the range
+        axes[i].set_xlabel("Error", fontsize=28)
+        axes[i].set_ylabel("Sample Count", fontsize=28)
+        axes[i].tick_params(labelsize=28)
+        axes[i].set_title(f"Error Distribution: {group}", fontsize=28)
+        axes[i].set_xlim(-25, 25)  # Limit x-axis to match the range
 
         # Calculate mean and standard deviation for the current group
         mean_error = np.mean(group_error)
         std_error = np.std(group_error)
 
         # Add mean and std dev as text labels on the plot
-        axes[i].text(0.1, 0.85, f'Mean: {mean_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
-                     fontsize=32)
-        axes[i].text(0.1, 0.75, f'±1 Std Dev: {std_error:.2f}', ha='left', va='center', transform=axes[i].transAxes,
-                     fontsize=32)
+        axes[i].text(0.1, 0.85, f'Mean: {mean_error:.1f}%', ha='left', va='center', transform=axes[i].transAxes,
+                     fontsize=36)
+        axes[i].text(0.1, 0.65, f'STD: {std_error:.0f}%', ha='left', va='center', transform=axes[i].transAxes,
+                     fontsize=36)
 
     # Adjust spacing between subplots
-    plt.subplots_adjust(hspace=0.3)  # Increase vertical spacing
+    plt.subplots_adjust(hspace=0.4)  # Increase vertical spacing
     plt.tick_params(labelsize=28)  # Set font size for tick labels
     # Tight layout to avoid overlap of titles and labels
     plt.tight_layout()
-
-    # Show and save the plot
-    plt.show()
-
     # Save the plot to the specified directory
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
-    plt.savefig(save_dir, bbox_inches='tight')
+    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
+    # Show and save the plot
+    plt.show()
 
 
 def plot_prediction_performance_by_group(true_values, predicted_values, group_column):
     save_dir = f'images/results/perf_by_group.png'
-    # Create a dataframe for easier plotting with seaborn
+
+    # Create a dataframe for easier plotting
     df = pd.DataFrame({
         'True': true_values,
         'Predicted': predicted_values,
         'Group': group_column
     })
 
-    # Calculate the error (difference between true and predicted)
+    # Compute absolute error
     error = np.abs(true_values - predicted_values)
 
-    # Create a custom colormap directly from green to yellow to red
-    colors = ['darkgreen', 'green', 'yellowgreen', 'yellow', 'orange', 'red', 'darkred']
-    n_bins = 100
-    cmap = LinearSegmentedColormap.from_list('green_yellow_red', colors, N=n_bins)
+    # Define colormap for heatmap
+    n_bins = 5
+    # cmap = LinearSegmentedColormap.from_list('green_yellow_red', ['darkgreen', 'green', 'yellowgreen', 'yellow', 'orange', 'red', 'darkred'], N=n_bins)
+    cmap = LinearSegmentedColormap.from_list('green_yellow_red_transparent',
+                                             ['#aed476', '#ffff00', '#ff6b6b'], N=n_bins)
+    # Create figure and axis
+    fig, ax = plt.subplots(figsize=(24, 12))
 
-    # Create the plot
-    plt.figure(figsize=(18, 18))
-
-    # Create a grid of points
-    xi = np.linspace(-0.1, 1.1, 50)
-    yi = np.linspace(-0.1, 1.1, 50)
+    # Create grid for interpolation
+    xi = np.linspace(-100, 110, 50)
+    yi = np.linspace(-100, 110, 50)
     X, Y = np.meshgrid(xi, yi)
-
-    # Interpolate error values across the grid
     Z = griddata((df['True'], df['Predicted']), error, (X, Y), method='cubic')
 
-    # Create a normalization to match the error range
+    # Normalize error for color mapping
     norm = Normalize(vmin=0, vmax=np.max(error))
 
-    # Create a heatmap for the background
-    im = plt.imshow(Z, extent=[-0.1, 1.1, -0.1, 1.1],
-                    origin='lower',
-                    cmap=cmap,
-                    norm=norm,
-                    alpha=0.3,  # Transparency of the background
-                    aspect='auto')
+    # Heatmap background
+    im = ax.imshow(Z, extent=[-100, 110, -100, 110], origin='lower', cmap=cmap, norm=norm, alpha=0.25, aspect='auto')
 
-    # Define distinct colors for each group
-    group_colors = ['blue', 'red', 'green']
-
-    # Define distinct markers for each group
-    group_markers = ['o', 's', '^']  # circle, square, triangle
-
-    # Get the most frequent groups
+    # Get top 3 groups
     top_groups = df['Group'].value_counts().nlargest(3).index.tolist()
 
-    # Plot the scatterplot with group-specific colors and markers
+    # Define unique markers for each group
+    markers = ['^', 's', 'o']
+
+    # Use seaborn palette for colors
+    # colors = sns.color_palette("tab10", len(top_groups))  # Extract distinct colors
+    # colors = ["#505050", "#56B4E9", "#D55E00"]  # Gray, Light Blue, Purple
+
+    # Plot scatter points for each group
     for i, group in enumerate(top_groups):
         group_df = df[df['Group'] == group]
+        ax.scatter(group_df['True'], group_df['Predicted'],
+                   color=colors[i],  # Assign color from palette
+                   edgecolor='black',
+                   linewidths=1.2,
+                   marker=markers[i],  # Assign unique marker
+                   alpha=0.85,
+                   label=group,
+                   s=150)  # Marker size
 
-        plt.scatter(group_df['True'], group_df['Predicted'],
-                    color=group_colors[i],  # Color by group
-                    edgecolor='black',
-                    marker=group_markers[i],  # Use different marker for each group
-                    alpha=0.7,
-                    label=group,
-                    s=100)  # Marker size
+    # Add perfect prediction line (y = x)
+    ax.plot([-100, 110], [-100, 110], color='black', linestyle='--', label='Perfect Prediction')
 
-    # Add line for perfect prediction (y = x)
-    plt.plot([-0.1, 1.1], [-0.1, 1.1],
-             color='black',
-             linestyle='--',
-             label='Perfect Prediction')
+    # Labels and title with fontsize 28
+    ax.set_xlabel('True Values', fontsize=28)
+    ax.set_ylabel('Predicted Values', fontsize=28)
+    # ax.set_title('True vs Predicted Values by Group', fontsize=28)
 
-    # Add labels and title
-    plt.xlabel('True Values', fontsize=32)
-    plt.ylabel('Predicted Values', fontsize=32)
-    plt.title('True vs Predicted Values by Group', fontsize=32)
+    # Set axis limits
+    ax.set_xlim(0, 110)
+    ax.set_ylim(0, 110)
 
-    # Set x and y axis limits
-    plt.xlim(-0.1, 1.1)
-    plt.ylim(-0.1, 1.1)
+    # Set tick labels size
+    ax.tick_params(labelsize=28)
 
-    # Set custom tick marks
-    ticks = np.arange(0, 1.1, 0.1)
-    plt.xticks(ticks)
-    plt.yticks(ticks)
-    plt.tick_params(labelsize=28)  # Set font size for tick labels
+    # Colorbar customization
+    cbar = fig.colorbar(im, ax=ax)
+    cbar.set_label('Prediction Error', fontsize=28)  # Colorbar title
+    cbar.ax.tick_params(labelsize=28)  # Colorbar tick labels
 
-    # Add color bar to indicate error levels
-    plt.colorbar(im, label='Prediction Error')
+    # Add legend and set font size
+    ax.legend(title='Groups', title_fontsize=28, fontsize=34, loc='best')
 
-    # Add legend and adjust its properties
-    plt.legend(title='Groups', title_fontsize=32, fontsize=32, loc='best')
-    # Tight layout to prevent cutting off labels
+    # Save & display plot
     plt.tight_layout()
-
-    # Display the plot
     plt.show()
-    plt.savefig(save_dir, bbox_inches='tight')
-
 
 def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=""):
     save_path = f'images/results/{title}_perf.png'
-    palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
- # Red-focused colormap
+    # Red-focused colormap
     # Model performance plot
-    plt.figure(figsize=(14, 10))
-    plt.clf()
-    ax = sns.scatterplot(x=true_y, y=prediction, hue=error,
+    fig, ax = plt.subplots(figsize=(24, 12))  # This ensures t he figure and Axes are linked
+    sns.scatterplot(x=true_y, y=prediction, hue=error,
                          palette=palette)
-    norm = plt.Normalize(0, 0.4)  # set min and max for color_bar
+    norm = plt.Normalize(0, 40)  # set min and max for color_bar
     sm = plt.cm.ScalarMappable(cmap=palette, norm=norm)
     sm.set_array([])
-    ax.set_xlabel("True Porosity", fontsize=20)
-    ax.set_ylabel(f"Predicted Porosity", fontsize=20)
+    # Adding colorbar correctly
+    cbar = ax.figure.colorbar(sm, ax=ax)  # link colorbar to the Axes object
+    cbar.set_label("Error", fontsize=28)
+    cbar.ax.tick_params(labelsize=28)  # Increase colorbar tick label size
+
+    ax.set_xlabel("True Porosity", fontsize=28)
+    ax.set_ylabel(f"Predicted Porosity", fontsize=28)
     ax.get_legend().remove()
-    ax.figure.colorbar(sm)
-    ax.set(ylim=(-0.1, 1.11))
-    ax.set(xlim=(-0.1, 1.1))
+
+
+    ax.set(ylim=(-10, 111))
+    ax.set(xlim=(-10, 111))
     ax.tick_params(labelsize=28)
     # sns.move_legend(ax, "lower center", bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False)
-    plt.show()
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    plt.savefig(save_path, bbox_inches='tight')
+    plt.savefig(save_path, bbox_inches='tight', dpi=600)
+    plt.show()
 
 
 def plot_error_distribution(df, error: pd.Series, title=""):
     save_dir = f'images/results/{title}_error.png'
-    plt.figure(figsize=(18, 12))
-    bx = sns.histplot(data=df, x=error,  # hue="Group",
+    fig, ax = plt.subplots(figsize=(24, 12)) # This ensures the figure and Axes are linked
+    sns.histplot(data=df, x=error,  # hue="Group",
                       bins=20,
-                      palette=sns.color_palette("hls", 3))
-    bx.set_xlabel("Error", fontsize=20)
-    bx.set_ylabel(f"Sample count", fontsize=20)
-    bx.tick_params(labelsize=28)
-    bx.set(xlim=(-0.4, 0.4))
-    x_axis = [round(num, 2) for num in np.linspace(-0.4, 0.4, 7)]
-    plt.show()
+                      palette=sns.color_palette("hls", 3)
+                      )
+    ax.set_xlabel("Error", fontsize=20)
+    ax.set_ylabel(f"Sample count", fontsize=20)
+    ax.tick_params(labelsize=28)
+    ax.set(xlim=(-25, 25))
+    x_axis = [round(num, 2) for num in np.linspace(-25, 25, 7)]
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
-    plt.savefig(save_dir, bbox_inches='tight')
+    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
+    plt.show()
+
 
 
 def filter_topn_categories(df, column_name, n=3):
@@ -245,6 +239,8 @@ print("Loading Data...")
 selected_feats_name = "reduced_feats"
 df_train = pd.read_csv(f"data/{selected_feats_name}/train.csv")
 df_test = pd.read_csv(f"data/{selected_feats_name}/test.csv")
+df_train[target] = df_train[target] * 100
+df_test[target] = df_test[target] * 100
 
 """Get model paths from selected_models"""
 selected_models_dir = f'selected_models/{selected_feats_name}'
@@ -263,17 +259,20 @@ results_groups = []
 for pipe in selected_pipes:
     print(pipe.name, pipe.feats_name)
     pipe_ggparent_dir = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(pipe_path))))
-    train_preds, test_preds = pipe.predict(df_train), pipe.predict(df_test)
+    train_preds, test_preds = pipe.predict(df_train)*100, pipe.predict(df_test)*100
     df_test[f'{pipe.name}_prediction'] = test_preds
     mae_test = np.abs(test_preds - df_test[target])
     df_test[f'{pipe.name}_mae'] = mae_test
     print("Train results")
     r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
+    # r2_train, mae_train, mse_train, mape_train = r2_train, round(mae_train, 2), round(mse_train, 2), round(mape_train, 2)
     p_train = r2_score(df_train[target], train_preds)
     formatted_p_train = f"{p_train:.2f}" if p_train >= 0.001 else "<0.001"
 
     print("Test results")
     r2_test, mae_test, mse_test, mape_test = utils.get_regression_metrics(test_preds, df_test[target])
+    # r2_test, mae_test, mse_test, mape_test = r2_test, round(mae_test, 2), round(mse_test, 2), round(mape_test, 2)
+
     p_test = r2_score(df_test[target], test_preds)
     formatted_p_test = f"{p_test:.2f}" if p_test >= 0.001 else "<0.001"
 
@@ -288,15 +287,16 @@ for pipe in selected_pipes:
         # Keep rows where all columns of interest are non-null
         ]
 
-    test_preds_nulls = pipe.predict(df_test_filtered)
+    test_preds_nulls = pipe.predict(df_test_filtered)*100
     r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = utils.get_regression_metrics(test_preds_nulls, df_test[target])
+    # r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = r2_test_nulls, round(mae_test_nulls, 2), round(mse_test_nulls, 2), round(mape_test_nulls, 2)
 
     # Add model results
     result_model_dict = {'name': pipe.name,
                          'r2_train': r2_train, 'p_train': formatted_p_train, 'mae_train': mae_train, 'mse_train': mse_train,
                          'r2_test': r2_test, 'p_test': formatted_p_test, 'mae_test': mae_test, 'mse_test': mse_test}
     results_models_dict_list.append(result_model_dict)
-    preds_train, preds_test = pipe.predict(df_train), pipe.predict(df_test)
+    preds_train, preds_test = pipe.predict(df_train)*100, pipe.predict(df_test)*100
     results_train = {'name': pipe.name, 'feats': pipe.feats_name, 'prediction_train': preds_train,
                      'prediction_test': preds_test,
                      'train_true': df_train[target], 'test_true': df_test[target],
@@ -340,8 +340,8 @@ for pipe in selected_pipes:
             grouped_p = r2_score( group_y_true, group_y_pred)
             formatted_grouped_p = f"{grouped_p:.2f}" if grouped_p >= 0.001 else "<0.001"
 
-            group_variance = round(np.var(group_y_pred), 3)
-            group_std = round(np.std(group_y_true), 2)  # true porosity std
+            group_variance = round(np.var(group_y_pred), 2)
+            group_std = round(np.std(group_y_true), 1)  # true porosity std
             # append results
             results_groups.append({
                 'model': pipe.name,
@@ -389,19 +389,20 @@ plt.xlabel('Standard Deviation of true porosity')
 plt.ylabel(r'$R^2$ Value')
 plt.title('Linear Regression between STD and $R^2$')
 plt.legend()
+plt.savefig(f"{im_path}/r2_vs_std.png", dpi=600)
 plt.show()
-plt.savefig(f"{im_path}/r2_vs_std.png")
+
 
 ## Performance Plots
 selected_model_name = "catb"
-prediction = df_test[f"{selected_model_name}_prediction"]
-true_y = df_test[parser.target]
+prediction = df_test[f"{selected_model_name}_prediction"]*100
+true_y = df_test[parser.target]*100
 error = df_test[f"{selected_model_name}_prediction"] - df_test[parser.target]
 plot_prediction_performance(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test[f"{selected_model_name}_mae"], title=selected_model_name)
 plot_error_distribution(df_test, error)
-plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['name_fluid1'])
 plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['material_group'])
+# plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['name_fluid1'])
 
-plot_error_distribution_by_group(df_test, error, 'name_fluid1')
+
+# plot_error_distribution_by_group(df_test, error, 'name_fluid1')
 plot_error_distribution_by_group(df_test, error, 'material_group')
-plt.close('all')
