@@ -4,16 +4,7 @@ import warnings
 import glob
 import os
 from scipy.stats import kstest
-import matplotlib
-from scipy.stats import pearsonr
-# matplotlib.use("Tkagg")
 from sklearn.metrics import r2_score
-from scipy.stats import pearsonr
-
-import seaborn as sns
-import statsmodels.api as sm
-from scipy.stats import pearsonr, chi2_contingency
-from scipy.stats import chi2_contingency, kruskal
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -111,8 +102,8 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     fig, ax = plt.subplots(figsize=(24, 12))
 
     # Create grid for interpolation
-    xi = np.linspace(-100, 110, 50)
-    yi = np.linspace(-100, 110, 50)
+    xi = np.linspace(-100, 105, 50)
+    yi = np.linspace(-100, 105, 50)
     X, Y = np.meshgrid(xi, yi)
     Z = griddata((df['True'], df['Predicted']), error, (X, Y), method='cubic')
 
@@ -120,7 +111,7 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     norm = Normalize(vmin=0, vmax=np.max(error))
 
     # Heatmap background
-    im = ax.imshow(Z, extent=[-100, 110, -100, 110], origin='lower', cmap=cmap, norm=norm, alpha=0.25, aspect='auto')
+    im = ax.imshow(Z, extent=[-100, 105, -100, 105], origin='lower', cmap=cmap, norm=norm, alpha=0.25, aspect='auto')
 
     # Get top 3 groups
     top_groups = df['Group'].value_counts().nlargest(3).index.tolist()
@@ -142,10 +133,10 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
                    marker=markers[i],  # Assign unique marker
                    alpha=0.85,
                    label=group,
-                   s=150)  # Marker size
+                   s=120)  # Marker size
 
     # Add perfect prediction line (y = x)
-    ax.plot([-100, 110], [-100, 110], color='black', linestyle='--', label='Perfect Prediction')
+    ax.plot([-100, 105], [-100, 105], color='black', linestyle='--', label='Perfect Prediction')
 
     # Labels and title with fontsize 28
     ax.set_xlabel('True Values', fontsize=28)
@@ -153,8 +144,8 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     # ax.set_title('True vs Predicted Values by Group', fontsize=28)
 
     # Set axis limits
-    ax.set_xlim(0, 110)
-    ax.set_ylim(0, 110)
+    ax.set_xlim(0, 105)
+    ax.set_ylim(0, 105)
 
     # Set tick labels size
     ax.tick_params(labelsize=28)
@@ -165,10 +156,12 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     cbar.ax.tick_params(labelsize=28)  # Colorbar tick labels
 
     # Add legend and set font size
-    ax.legend(title='Groups', title_fontsize=28, fontsize=34, loc='best')
+    ax.legend(title='Groups', title_fontsize=32, fontsize=32, loc='best')
 
     # Save & display plot
     plt.tight_layout()
+    os.makedirs(os.path.dirname(save_dir), exist_ok=True)
+    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
     plt.show()
 
 def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=""):
@@ -263,7 +256,7 @@ for pipe in selected_pipes:
     df_test[f'{pipe.name}_prediction'] = test_preds
     mae_test = np.abs(test_preds - df_test[target])
     df_test[f'{pipe.name}_mae'] = mae_test
-    print("Train results")
+    print("\n Train results")
     r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
     # r2_train, mae_train, mse_train, mape_train = r2_train, round(mae_train, 2), round(mse_train, 2), round(mape_train, 2)
     p_train = r2_score(df_train[target], train_preds)

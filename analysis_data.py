@@ -17,6 +17,7 @@ pio.renderers.default = "browser"
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 0)
 pd.set_option('display.expand_frame_repr', False)
+pd.set_option("display.max_rows", 30)
 
 
 # Load Data
@@ -55,22 +56,33 @@ print(f"Count of Null values out of {len(df_all)} rows \n", df_all.isnull().sum(
 nulls = round(df_all.isnull().mean() * 100, 2)
 selected_nulls = nulls[parser.all_feats]
 print(f"\nPercentage of Null Values:\n", round(df_all.isnull().mean() * 100, 2), "%")
+zero_nan_percentage = ((df_all['cooling_rate'].isna() | (df_all['cooling_rate'] == 0)).mean()) * 100
+print(f"Percentage of 0 or NaN in 'cooling_rate': {zero_nan_percentage:.2f}%")
+
 
 #%% Correlation heatmap Numerical only
+
+# Calculate the correlation matrix
+import seaborn as sns
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+# Define custom colormap (green, yellow, red with transparency)
+n_bins = 100
+cmap = LinearSegmentedColormap.from_list('green_yellow_red_transparent',
+                                         ['#ff6b6b', '#ffffff',  '#aed476'], N=n_bins)
+cmap = LinearSegmentedColormap.from_list('green_blue', [ "#00427d", '#ffffff', "#00652e"], N=n_bins)
 
 
 # Calculate the correlation matrix
 df_num = df.select_dtypes(include=['number', 'float64']).copy()
-
-# Option 2: Fill NaN values with the mean of each column (uncomment this line if you prefer filling NaNs)
-df_num = df_num.fillna(df_num.mean())
-
 corr = df_num.corr()
-# Optional, use spearmans correlation
+
+# Optional: use Spearman's correlation
 # corr, _ = spearmanr(df_num)  # Calculate Spearman correlation, the second value is p-values
 
 corr = np.round(corr * 100, 0)  # Use np.round to round values to the nearest integer
-
 
 # Masking the upper triangle
 mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
@@ -79,18 +91,24 @@ mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
 plt.figure(figsize=(20, 12))
 # Set the style to 'white' to remove grid and background
 sns.set(style="white")
-# Plotting the heatmap
+
+# Plotting the heatmap with the custom colormap
 heatmap = sns.heatmap(corr,
                       vmin=-100, vmax=100,
                       mask=mask,
                       annot=True,
-                      cmap='BrBG',
+                      cmap=cmap,  # Apply the custom colormap
                       fmt=".0f",  # Display values as integers
                       annot_kws={"fontsize": 28},
                       cbar_kws={'shrink': 0.8})  # Adjust colorbar size
 
+# Format the annotations to include '%' sign
+for text in heatmap.texts:
+    text.set_text(f"{text.get_text()}%")  # Add '%' after each number
+
 # Remove grid and background
 heatmap.grid(False)
+
 # Increase colorbar fontsize
 colorbar = heatmap.collections[0].colorbar
 colorbar.ax.tick_params(labelsize=36)  # Increase colorbar fontsize
@@ -104,7 +122,9 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 # Tight layout and show
 plt.tight_layout()
 plt.show()
+# Save the plot
 plt.savefig(f"images/Correlation.png", dpi=600)
+
 
 
 #%% Correlation heatmap of Missing Values
@@ -126,7 +146,7 @@ heatmap = sns.heatmap(corr_missing,
                       vmin=-100, vmax=100,
                       mask=mask,
                       annot=True,
-                      cmap='BrBG',
+                      cmap=cmap, #'BrBG',
                       fmt=".0f",  # Display values as integers
                       annot_kws={"fontsize": 28},
                       cbar_kws={'shrink': 0.8})  # Adjust colorbar size
@@ -192,8 +212,57 @@ for key in filtered_p_values.keys():
             # print(key, key2, val2)
 
 #%% Categorical Analysis
-# Plot porosidade against string columns
+# List of categorical columns to use as the group
+df = pd.read_csv("data/all_feats/df_selected_feats.csv")  # dataframe for analysis
+df = parser.rename_columns_df(df)
 df_str = (df.select_dtypes(include=[object]))
+categorical_columns = df_str.columns.to_list()
+categorical_columns = ["Group", "Solid Name", "Fluid Name", ]
+
+for col in categorical_columns:
+    # Get category counts
+    category_counts = df[col].value_counts()
+
+    # Identify the top 4 categories and group the rest as "Others"
+    top_categories = category_counts.index[:5]
+    df[col] = df[col].apply(lambda x: x if x in top_categories else 'Others')
+
+    # Compute aggregated statistics
+    summary = df.groupby(col)['Porosity'].agg(
+        Count='count',
+        Mean_Porosity=lambda x: round(x.mean(), 2),
+        STD_Porosity=lambda x: round(x.std(), 1)
+    )
+
+    # Compute percentage of total and round
+    summary['Total%'] = round(((summary['Count'] / summary['Count'].sum()) * 100)).round().astype(int)
+
+    # Print the table
+    print(f"\nSummary for {col}:")
+    print(summary.sort_values(by='Count', ascending=False).to_string())
+
+    # Create the boxplot
+    plt.figure(figsize=(10, 6))
+    sns.boxplot(x=col, y='Porosity', data=df, color="#00652e")
+
+    # Format y-axis as percentage
+    plt.gca().set_ylabel('Porosity (%)')  # Set y-axis label
+    plt.gca().set_yticks([0, 0.25, 0.5, 0.75, 1])  # Define y-ticks
+    plt.gca().set_yticklabels([f'{int(i * 100)}%' for i in [0, 0.25, 0.5, 0.75, 1]])  # Format as percentages
+
+    # Set title and improve plot appearance
+    plt.title(f"Boxplot of Porosity by {col}", fontsize=16)
+    plt.xticks(rotation=45, ha='right', fontsize=12)  # Rotate x labels for readability
+    plt.yticks(fontsize=12)  # Set y-tick font size
+    plt.xlabel(col, fontsize=14)  # Set x-axis label
+    plt.tight_layout()  # Ensure everything fits well within the plot
+    plt.savefig(f"images/summary_of_{col}.png", dpi=600)
+    # Display the plot
+    plt.show()
+
+#%%
+# Plot porosidade against string columns
+
 # df_str = (df.select_dtypes(include=[object])).dropna()
 count_filter_n = 50
 rank_filter_n = 5
@@ -206,10 +275,10 @@ for col in df_str.columns:
     plt.suptitle(col, fontsize=48)
     top_n = 5
     top_samples = df.groupby(col)[col].count().sort_values(ascending=False)[0:top_n]
-    ax = top_samples.iloc[0:top_n].sort_values(ascending=False).plot(kind="bar", fontsize=38)
+    ax = top_samples.iloc[0:top_n].sort_values(ascending=False).plot(kind="bar", fontsize=38, color="#00652e")
     for tick in ax.get_xticklabels():
         tick.set_rotation(45)
-    ax.bar_label(ax.containers[0], label_type='center', fontsize=38, color='black')
+    ax.bar_label(ax.containers[0], label_type='center', fontsize=38, color='#f0f0f0')
     ax.axes.get_yaxis().set_visible(False)
     ax.xaxis.set_label_text("")
     f.tight_layout()
@@ -226,10 +295,6 @@ stat_test = ttest_ind  # One-way ANOVA
 # Set the name of the statistical test for display purposes
 stat_test_name = "T-test"  # Default name for ANOVA (can be changed accordingly)
 
-# List of categorical columns to use as the group
-df_str = (df.select_dtypes(include=[object]))
-categorical_columns = df_str.columns
-
 # Initialize dictionary to store results
 p_values_dict = {}
 
@@ -241,27 +306,30 @@ for group_col in categorical_columns:
     # Filter dataset to only include these top groups
     df_filtered = df[df[group_col].isin(top_groups)]
 
-    # Prepare data for the chosen statistical test
-    group_data = [df_filtered[df_filtered[group_col] == group]['Porosity'].dropna() for group in top_groups]
-    group_data = [g for g in group_data if len(g) > 0]  # Remove empty groups
+    # Determine the minimum sample size among the top 3 groups
+    min_sample_size = min(df_filtered[df_filtered[group_col] == group].shape[0] for group in top_groups)
+
+    # Sample the same number of observations for each group
+    balanced_group_data = [df_filtered[df_filtered[group_col] == group].sample(min_sample_size, random_state=42)['Porosity'].dropna()
+                           for group in top_groups]
 
     # Compute p-values for all pairs of groups
     p_values = []
-    for i in range(len(group_data)):
-        for j in range(i + 1, len(group_data)):
-            stat, p_value = stat_test(group_data[i], group_data[j])
+    for i in range(len(balanced_group_data)):
+        for j in range(i + 1, len(balanced_group_data)):
+            stat, p_value = stat_test(balanced_group_data[i], balanced_group_data[j])
             p_values.append((top_groups[i], top_groups[j], p_value))
 
-    # Sort p-values to find the minimum p-value pair
+    # Sort p-values to find the smallest one
     p_values_sorted = sorted(p_values, key=lambda x: x[2])
 
     # Get the pair with the smallest p-value
     category1, category2, min_p_value = p_values_sorted[0]
 
-    # Save the result for this group
+    # Save the result for this categorical feature
     p_values_dict[group_col] = (category1, category2, min_p_value)
 
-    # Prepare the title for the plot with the smallest p-value
+    # Prepare the title for the plot
     title = f'{category1} vs {category2} | {stat_test_name} p-value: {min_p_value:.0e}'
 
     # Create FacetGrid plot using histogram (bin plot) and KDE
