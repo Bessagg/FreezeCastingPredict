@@ -16,7 +16,7 @@ warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
-im_path = 'images/model_analysis'
+im_path = 'images/results'
 palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
 colors = ["#505050", "#56B4E9","#A066C2"]
 colors = ["#939393", "#00427d", "#00652e"]
@@ -75,7 +75,7 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
     plt.tight_layout()
     # Save the plot to the specified directory
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
-    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
+    plt.savefig(save_dir, bbox_inches='tight', dpi=300)
     # Show and save the plot
     plt.show()
 
@@ -161,7 +161,7 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     # Save & display plot
     plt.tight_layout()
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
-    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
+    plt.savefig(save_dir, bbox_inches='tight', dpi=300)
     plt.show()
 
 def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=""):
@@ -189,7 +189,7 @@ def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series,
     ax.tick_params(labelsize=28)
     # sns.move_legend(ax, "lower center", bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    plt.savefig(save_path, bbox_inches='tight', dpi=600)
+    plt.savefig(save_path, bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -206,7 +206,7 @@ def plot_error_distribution(df, error: pd.Series, title=""):
     ax.set(xlim=(-25, 25))
     x_axis = [round(num, 2) for num in np.linspace(-25, 25, 7)]
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
-    plt.savefig(save_dir, bbox_inches='tight', dpi=600)
+    plt.savefig(save_dir, bbox_inches='tight', dpi=300)
     plt.show()
 
 
@@ -382,7 +382,7 @@ plt.xlabel('Standard Deviation of true porosity')
 plt.ylabel(r'$R^2$ Value')
 plt.title('Linear Regression between STD and $R^2$')
 plt.legend()
-plt.savefig(f"{im_path}/r2_vs_std.png", dpi=600)
+plt.savefig(f"{im_path}/r2_vs_std.png", dpi=300)
 plt.show()
 
 

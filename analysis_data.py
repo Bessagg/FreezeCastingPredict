@@ -42,7 +42,7 @@ colors = sns.color_palette(pallete, len(samples_per_paper['values']))  # Choose 
 squarify.plot(sizes=samples_per_paper['values'], color=colors, alpha=0.7, label=samples_per_paper['label'])
 plt.axis('off')
 plt.show()
-plt.savefig(f"images/samples_per_paper.png", dpi=600)
+plt.savefig(f"images/samples_per_paper.png", dpi=300)
 
 
 # Temp sinter
@@ -123,7 +123,7 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 plt.tight_layout()
 plt.show()
 # Save the plot
-plt.savefig(f"images/Correlation.png", dpi=600)
+plt.savefig(f"images/Correlation.png", dpi=300)
 
 
 
@@ -167,7 +167,7 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 # Tight layout and show
 plt.tight_layout()
 plt.show()
-plt.savefig(f"images/Correlation_missing.png", dpi=600)
+plt.savefig(f"images/Correlation_missing.png", dpi=300)
 
 #%% Numerical Dist
 
@@ -184,7 +184,7 @@ for col in df_num:
                       height=1.6, aspect=4)
     g.map(sns.kdeplot, col, bw_adjust=.6)
     g.set_ylabels('Density')
-    plt.savefig(f"images/num_dist_{col}.png", dpi=600)
+    plt.savefig(f"images/num_dist_{col}.png", dpi=300)
 
 # Initialize a dictionary to store p-values
 p_values = {col: {} for col in df_num}
@@ -256,7 +256,7 @@ for col in categorical_columns:
     plt.yticks(fontsize=12)  # Set y-tick font size
     plt.xlabel(col, fontsize=14)  # Set x-axis label
     plt.tight_layout()  # Ensure everything fits well within the plot
-    plt.savefig(f"images/summary_of_{col}.png", dpi=600)
+    plt.savefig(f"images/summary_of_{col}.png", dpi=300)
     # Display the plot
     plt.show()
 
@@ -283,7 +283,7 @@ for col in df_str.columns:
     ax.xaxis.set_label_text("")
     f.tight_layout()
     f.subplots_adjust(top=0.9)
-    plt.savefig(f"images/Count of {col}.png", dpi=600)
+    plt.savefig(f"images/Count of {col}.png", dpi=300)
 
     plt.show()
 # plt.close("all")
@@ -342,7 +342,7 @@ for group_col in categorical_columns:
     # Adjust spacing to ensure title doesn't overlap
     g.fig.subplots_adjust(top=0.80)  # Increase space above plot for title
     plt.show()
-    plt.savefig(f"images/Count of {group_col}.png", dpi=600)
+    plt.savefig(f"images/Count of {group_col}.png", dpi=300)
 
 # Print out the results for all categorical columns
 for group_col, (cat1, cat2, p_value) in p_values_dict.items():

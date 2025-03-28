@@ -230,7 +230,7 @@ class ShapPlotter:
         shap.summary_plot(self.shap_values, plot_type="bar", features=self.X, feature_names=self.X.columns,
                           cmap=self.cmap)
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP_varimp.{self.plt_fmt}", dpi=600)
+            plt.savefig(f"{self.dirpath_root}/SHAP_varimp.{self.plt_fmt}", dpi=300)
 
     def plot_summary(self):
         plt.clf()
@@ -238,7 +238,7 @@ class ShapPlotter:
                           max_display=self.X.shape[1])
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP__Summary.{self.plt_fmt}", dpi=600)
+            plt.savefig(f"{self.dirpath_root}/SHAP__Summary.{self.plt_fmt}", dpi=300)
 
     def plot_summary_zoomed(self):
         plt.clf()
@@ -246,7 +246,7 @@ class ShapPlotter:
                           max_display=self.zoomed_display)
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/SHAP__SummaryZoomed.{self.plt_fmt}", dpi=600)
+            plt.savefig(f"{self.dirpath_root}/SHAP__SummaryZoomed.{self.plt_fmt}", dpi=300)
 
     def plot_dependence(self):
         plt.clf()
@@ -265,7 +265,7 @@ class ShapPlotter:
         plt.tight_layout()
         plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=10))
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_dependence}/Dependence_Plots.{self.plt_fmt}", bbox_inches='tight', dpi=600)
+            plt.savefig(f"{self.dirpath_dependence}/Dependence_Plots.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def plot_heatmap(self):
         print("Plotting Shap Heatmap...")
@@ -274,7 +274,7 @@ class ShapPlotter:
         shap.plots.heatmap(self.explainer(self.X), max_display=self.max_features,
                            instance_order=self.explainer(self.X).sum(1), plot_width=30)
         if self.dirpath_root:
-            plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight', dpi=600)
+            plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def plot_decision(self, T, sh, subdir=None, title=None, max_features=None):
         """
@@ -309,7 +309,7 @@ class ShapPlotter:
         if self.dirpath_root:
             dirpath = f"{self.dirpath_root}/{subdir}"
             os.makedirs(dirpath, exist_ok=True)
-            plt.savefig(f"{dirpath}/{T.index[0]}.{self.plt_fmt}", bbox_inches='tight', dpi=600)
+            plt.savefig(f"{dirpath}/{T.index[0]}.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def single_decision_plots(self, shap_confusion_matrix_dict, n_samples=100):
         # single decision plots
@@ -367,7 +367,7 @@ class ShapPlotter:
                 if not os.path.isdir(dirpath):
                     os.makedirs(dirpath)
                 save_path = f"{dirpath}/{feature}.{self.plt_fmt}"
-                plt.savefig(save_path, bbox_inches="tight", dpi=600)
+                plt.savefig(save_path, bbox_inches="tight", dpi=300)
                 print(f"Saved: {save_path}")
             else:
                 plt.show()
