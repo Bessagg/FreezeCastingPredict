@@ -19,11 +19,11 @@ def mean_absolute_percentage_error(y_true, y_pred):
     return np.mean(np.abs((y_true - y_pred) / y_true)) * 100
 
 
-def get_regression_metrics(preds, y, opt_print=True):
+def get_regression_metrics(preds, y, opt_print=True, round_n=2):
     r2 = "{:.02f}".format(r2_score(y, preds))
-    mse = "{:.03f}".format(mean_squared_error(y, preds))
-    mae = "{:.03f}".format(mean_absolute_error(y, preds))
-    mape = "{:.03f}".format(mean_absolute_percentage_error(y, preds))
+    mse = "{:.03f}".format(round(mean_squared_error(y, preds), round_n))
+    mae = "{:.03f}".format(round(mean_absolute_error(y, preds), round_n))
+    mape = "{:.03f}".format(round(mean_absolute_percentage_error(y, preds), round_n))
 
     if opt_print:
         print('r2:', r2_score(y, preds))
