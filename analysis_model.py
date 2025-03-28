@@ -52,11 +52,17 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
         sns.histplot(group_error, bins=bins, color=colors[i], ax=axes[i], kde=False)
 
         # Set labels and title for the subplot
-        axes[i].set_xlabel("Error", fontsize=28)
-        axes[i].set_ylabel("Sample Count", fontsize=28)
-        axes[i].tick_params(labelsize=28)
-        axes[i].set_title(f"Error Distribution: {group}", fontsize=28)
+        axes[i].set_xlabel("Error", fontsize=36)
+        axes[i].set_ylabel("Sample Count", fontsize=30)
+        axes[i].tick_params(labelsize=36)
+        axes[i].set_title(f"Error Distribution: {group}", fontsize=36)
         axes[i].set_xlim(-25, 25)  # Limit x-axis to match the range
+        # Ensure y-axis tick labels are formatted correctly
+        if i == 0:
+            axes[i].set_yticklabels([f"{int(tick)} " for tick in axes[i].get_yticks()])
+
+        if i== 1:
+            axes[i].set_yticklabels([f"{int(tick)}   " for tick in axes[i].get_yticks()])
 
         # Calculate mean and standard deviation for the current group
         mean_error = np.mean(group_error)
@@ -69,8 +75,8 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
                      fontsize=36)
 
     # Adjust spacing between subplots
-    plt.subplots_adjust(hspace=0.4)  # Increase vertical spacing
-    plt.tick_params(labelsize=28)  # Set font size for tick labels
+    plt.subplots_adjust(hspace=0.8)  # Increase vertical spacing
+    plt.tick_params(labelsize=36)  # Set font size for tick labels
     # Tight layout to avoid overlap of titles and labels
     plt.tight_layout()
     # Save the plot to the specified directory
@@ -99,7 +105,7 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     cmap = LinearSegmentedColormap.from_list('green_yellow_red_transparent',
                                              ['#aed476', '#ffff00', '#ff6b6b'], N=n_bins)
     # Create figure and axis
-    fig, ax = plt.subplots(figsize=(24, 12))
+    fig, ax = plt.subplots(figsize=(21, 9))
 
     # Create grid for interpolation
     xi = np.linspace(-100, 105, 50)
@@ -139,24 +145,24 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     ax.plot([-100, 105], [-100, 105], color='black', linestyle='--', label='Perfect Prediction')
 
     # Labels and title with fontsize 28
-    ax.set_xlabel('True Values', fontsize=28)
-    ax.set_ylabel('Predicted Values', fontsize=28)
-    # ax.set_title('True vs Predicted Values by Group', fontsize=28)
+    ax.set_xlabel('True Porosity', fontsize=36)
+    ax.set_ylabel('Predicted Porosity', fontsize=36)
+    # ax.set_title('True vs Predicted Values by Group', fontsize=36)
 
     # Set axis limits
     ax.set_xlim(0, 105)
     ax.set_ylim(0, 105)
 
     # Set tick labels size
-    ax.tick_params(labelsize=28)
+    ax.tick_params(labelsize=36)
 
     # Colorbar customization
     cbar = fig.colorbar(im, ax=ax)
-    cbar.set_label('Prediction Error', fontsize=28)  # Colorbar title
-    cbar.ax.tick_params(labelsize=28)  # Colorbar tick labels
+    cbar.set_label('Prediction Error', fontsize=36)  # Colorbar title
+    cbar.ax.tick_params(labelsize=36)  # Colorbar tick labels
 
     # Add legend and set font size
-    ax.legend(title='Groups', title_fontsize=32, fontsize=32, loc='best')
+    ax.legend(title='Groups', title_fontsize=28, fontsize=28, loc='best')
 
     # Save & display plot
     plt.tight_layout()
@@ -176,17 +182,17 @@ def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series,
     sm.set_array([])
     # Adding colorbar correctly
     cbar = ax.figure.colorbar(sm, ax=ax)  # link colorbar to the Axes object
-    cbar.set_label("Error", fontsize=28)
-    cbar.ax.tick_params(labelsize=28)  # Increase colorbar tick label size
+    cbar.set_label("Error", fontsize=36)
+    cbar.ax.tick_params(labelsize=36)  # Increase colorbar tick label size
 
-    ax.set_xlabel("True Porosity", fontsize=28)
-    ax.set_ylabel(f"Predicted Porosity", fontsize=28)
+    ax.set_xlabel("True Porosity", fontsize=36)
+    ax.set_ylabel(f"Predicted Porosity", fontsize=36)
     ax.get_legend().remove()
 
 
     ax.set(ylim=(-10, 111))
     ax.set(xlim=(-10, 111))
-    ax.tick_params(labelsize=28)
+    ax.tick_params(labelsize=36)
     # sns.move_legend(ax, "lower center", bbox_to_anchor=(.5, 1), ncol=3, title=None, frameon=False)
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
     plt.savefig(save_path, bbox_inches='tight', dpi=300)
@@ -200,9 +206,9 @@ def plot_error_distribution(df, error: pd.Series, title=""):
                       bins=20,
                       palette=sns.color_palette("hls", 3)
                       )
-    ax.set_xlabel("Error", fontsize=20)
-    ax.set_ylabel(f"Sample count", fontsize=20)
-    ax.tick_params(labelsize=28)
+    ax.set_xlabel("Error", fontsize=36)
+    ax.set_ylabel(f"Sample count", fontsize=38)
+    ax.tick_params(labelsize=36)
     ax.set(xlim=(-25, 25))
     x_axis = [round(num, 2) for num in np.linspace(-25, 25, 7)]
     os.makedirs(os.path.dirname(save_dir), exist_ok=True)
