@@ -11,7 +11,6 @@ import re
 matplotlib.use('Agg')  # hide plots
 
 
-# Function to clean and rename columns
 def rename_columns(columns, rename_dict):
     new_columns = []
     for col in columns:
@@ -19,8 +18,18 @@ def rename_columns(columns, rename_dict):
         clean_col = re.sub(r'\b\w*_sklearn_', '', col)  # Remove prefix ending with "_sklearn_"
         clean_col = re.sub(r'_sklearn$', '', clean_col)  # Remove _sklearn at the end if present
 
-        # Rename using dictionary, if present
-        new_columns.append(rename_dict.get(clean_col, clean_col))
+        # Try to match prefix and rename based on dictionary
+        matched = False
+        for key in rename_dict:
+            if clean_col.startswith(key):  # Check if the column starts with the key (prefix match)
+                new_col = clean_col.replace(key, rename_dict[key], 1)  # Replace the first occurrence of the prefix
+                new_columns.append(new_col)
+                matched = True
+                break
+
+        # If no match, keep the original name
+        if not matched:
+            new_columns.append(rename_dict.get(clean_col, clean_col))
 
     return new_columns
 
@@ -230,6 +239,7 @@ class ShapPlotter:
         shap.summary_plot(self.shap_values, plot_type="bar", features=self.X, feature_names=self.X.columns,
                           cmap=self.cmap)
         if self.dirpath_root:
+            plt.tight_layout()
             plt.savefig(f"{self.dirpath_root}/SHAP_varimp.{self.plt_fmt}", dpi=300)
 
     def plot_summary(self):
@@ -238,21 +248,28 @@ class ShapPlotter:
                           max_display=self.X.shape[1])
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
+            plt.tight_layout()
             plt.savefig(f"{self.dirpath_root}/SHAP__Summary.{self.plt_fmt}", dpi=300)
 
     def plot_summary_zoomed(self):
         plt.clf()
-        shap.summary_plot(self.shap_values, features=self.X, feature_names=self.X.columns, plot_size=(18, 8),
+        plt.rcParams.update({
+            'font.size': 38,  # Increase font size
+            'axes.labelsize': 38,  # Increase axis label size
+            'xtick.labelsize': 38,  # Increase x-tick label size
+            'ytick.labelsize': 38,  # Increase y-tick label size
+        })
+        shap.summary_plot(self.shap_values, features=self.X, feature_names=self.X.columns, plot_size=(10, 8),
                           max_display=self.zoomed_display)
-        plt.title(f"{self.plots_title}")
         if self.dirpath_root:
+            plt.tight_layout()
             plt.savefig(f"{self.dirpath_root}/SHAP__SummaryZoomed.{self.plt_fmt}", dpi=300)
 
     def plot_dependence(self):
         plt.clf()
         plt.rcParams.update({'font.size': 8})
         fig, axs = plt.subplots(nrows=len(self.feature_importance['col_name'][:self.max_features]),
-                                ncols=self.max_features, figsize=(60, 30))
+                                ncols=self.max_features, figsize=(10, 5))
         for i, col in enumerate(self.feature_importance['col_name'][:self.max_features]):
             inds = shap.approximate_interactions(col, self.shap_values, self.X)
             for j in range(self.max_features):
@@ -265,6 +282,7 @@ class ShapPlotter:
         plt.tight_layout()
         plt.gca().yaxis.set_major_locator(MaxNLocator(nbins=10))
         if self.dirpath_root:
+            plt.tight_layout()
             plt.savefig(f"{self.dirpath_dependence}/Dependence_Plots.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def plot_heatmap(self):
@@ -274,6 +292,7 @@ class ShapPlotter:
         shap.plots.heatmap(self.explainer(self.X), max_display=self.max_features,
                            instance_order=self.explainer(self.X).sum(1), plot_width=30)
         if self.dirpath_root:
+            plt.tight_layout()
             plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def plot_decision(self, T, sh, subdir=None, title=None, max_features=None):
@@ -309,6 +328,7 @@ class ShapPlotter:
         if self.dirpath_root:
             dirpath = f"{self.dirpath_root}/{subdir}"
             os.makedirs(dirpath, exist_ok=True)
+            plt.tight_layout()
             plt.savefig(f"{dirpath}/{T.index[0]}.{self.plt_fmt}", bbox_inches='tight', dpi=300)
 
     def single_decision_plots(self, shap_confusion_matrix_dict, n_samples=100):
@@ -352,21 +372,28 @@ class ShapPlotter:
             return
 
         plt.clf()
+        plt.rcParams.update({
+            'font.size': 38,  # Increase font size
+            'axes.labelsize': 38,  # Increase axis label size
+            'xtick.labelsize': 38,  # Increase x-tick label size
+            'ytick.labelsize': 38,  # Increase y-tick label size
+        })
         for feature in feature_list:
             if feature not in self.X.columns:
                 print(f"Feature '{feature}' not found in dataset. Skipping...")
                 continue
 
-            plt.figure(figsize=(8, 6))
+            plt.figure(figsize=(12, 3))
             interaction_index = color_feature if color_feature in self.X.columns else None
             shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=interaction_index)
-            plt.title(f"SHAP Dependence Plot: {feature}")
+            # plt.title(f"SHAP Dependence Plot: {feature}")
 
             if self.dirpath_dependence:
                 dirpath = f"{self.dirpath_dependence}/{color_feature}"
                 if not os.path.isdir(dirpath):
                     os.makedirs(dirpath)
                 save_path = f"{dirpath}/{feature}.{self.plt_fmt}"
+                plt.tight_layout()
                 plt.savefig(save_path, bbox_inches="tight", dpi=300)
                 print(f"Saved: {save_path}")
             else:
