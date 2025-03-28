@@ -34,7 +34,7 @@ top3_paper_ids = samples_per_paper.index[0:3]
 top3_papers_doi = df_all[df_all['paper_ID'].isin(top3_paper_ids)].drop_duplicates(subset='paper_ID')[['paper_ID', 'doi']]
 print("Distinct papers", df_all['paper_ID'].nunique())
 # Plot the TreeMap
-plt.figure(figsize=(10, 6))
+plt.figure(figsize=(21, 9))
 ths = 2  # count ths
 # large_rectangles = samples_per_paper[samples_per_paper >= ths]
 samples_per_paper['label'] = ['' if value <= ths else value for value in samples_per_paper['values']]
@@ -77,7 +77,10 @@ cmap = LinearSegmentedColormap.from_list('green_blue', [ "#00427d", '#ffffff', "
 
 # Calculate the correlation matrix
 df_num = df.select_dtypes(include=['number', 'float64']).copy()
+cols = ['Porosity'] + [col for col in df_num.columns if col != 'Porosity']
+df_num = df_num[cols]
 corr = df_num.corr()
+
 
 # Optional: use Spearman's correlation
 # corr, _ = spearmanr(df_num)  # Calculate Spearman correlation, the second value is p-values
@@ -88,7 +91,7 @@ corr = np.round(corr * 100, 0)  # Use np.round to round values to the nearest in
 mask = np.triu(np.ones_like(corr, dtype=bool), k=1)
 
 # Plot
-plt.figure(figsize=(20, 12))
+plt.figure(figsize=(21, 9))
 # Set the style to 'white' to remove grid and background
 sns.set(style="white")
 
@@ -121,14 +124,15 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 
 # Tight layout and show
 plt.tight_layout()
-plt.show()
 # Save the plot
 plt.savefig(f"images/Correlation.png", dpi=300)
+plt.show()
+
 
 
 
 #%% Correlation heatmap of Missing Values
-plt.figure(figsize=(20, 12))
+plt.figure(figsize=(21, 9))
 
 # Set the style to 'white' to remove grid and background
 sns.set(style="white")
@@ -242,19 +246,20 @@ for col in categorical_columns:
     print(summary.sort_values(by='Count', ascending=False).to_string())
 
     # Create the boxplot
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(21, 9))
     sns.boxplot(x=col, y='Porosity', data=df, color="#00652e")
 
     # Format y-axis as percentage
-    plt.gca().set_ylabel('Porosity (%)')  # Set y-axis label
+    plt.gca().set_ylabel('Porosity (%)', fontsize=28)  # Set y-axis label with fontsize 28
     plt.gca().set_yticks([0, 0.25, 0.5, 0.75, 1])  # Define y-ticks
     plt.gca().set_yticklabels([f'{int(i * 100)}%' for i in [0, 0.25, 0.5, 0.75, 1]])  # Format as percentages
 
     # Set title and improve plot appearance
-    plt.title(f"Boxplot of Porosity by {col}", fontsize=16)
-    plt.xticks(rotation=45, ha='right', fontsize=12)  # Rotate x labels for readability
-    plt.yticks(fontsize=12)  # Set y-tick font size
-    plt.xlabel(col, fontsize=14)  # Set x-axis label
+    # plt.title(f"Boxplot of Porosity by {col}", fontsize=28)
+    plt.xticks(rotation=45, ha='right', fontsize=28)  # Rotate x labels for readability
+    plt.yticks(fontsize=28)  # Set y-tick font size
+    # plt.xlabel(col, fontsize=28)  # Set x-axis label
+    plt.gca().set_xlabel('')  # Remove x-axis label
     plt.tight_layout()  # Ensure everything fits well within the plot
     plt.savefig(f"images/summary_of_{col}.png", dpi=300)
     # Display the plot
@@ -269,10 +274,10 @@ rank_filter_n = 5
 plt.close('all')
 # Count of categorical data
 for col in df_str.columns:
-    f = plt.figure(figsize=(12, 8))
+    f = plt.figure(figsize=(21, 9))
     f.set_figheight(12)
     plt.subplots_adjust(bottom=0.4)
-    plt.suptitle(col, fontsize=48)
+    # plt.suptitle(col, fontsize=48)
     top_n = 5
     top_samples = df.groupby(col)[col].count().sort_values(ascending=False)[0:top_n]
     ax = top_samples.iloc[0:top_n].sort_values(ascending=False).plot(kind="bar", fontsize=38, color="#00652e")
@@ -337,7 +342,7 @@ for group_col in categorical_columns:
     g.map(sns.histplot, 'Porosity', bins=5, kde=True)  # Use a consistent bin count
 
     # Set the title with line breaks
-    g.fig.suptitle(title, fontsize=16)
+    g.fig.suptitle(title, fontsize=28)
 
     # Adjust spacing to ensure title doesn't overlap
     g.fig.subplots_adjust(top=0.80)  # Increase space above plot for title
