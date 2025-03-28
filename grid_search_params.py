@@ -1,7 +1,7 @@
 param_grid_catb = [
     {
-        'model__n_estimators': [250, 500, 1000],  # best:500  [250, 500, 1000]
-        'model__depth': [5, 8, 10],  # best:8 [5, 8, 10]
+        'model__n_estimators': [500],  # best:500  [250, 500, 1000]
+        'model__depth': [8],  # best:8 [5, 8, 10]
         # 'model__loss_function': ['Logloss'],
         # 'model__task_type': ['GPU'],
         'model__eval_metric': ['MAE'],  # mae mape, poisson, rmse

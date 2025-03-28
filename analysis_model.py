@@ -11,6 +11,7 @@ import numpy as np
 import pandas as pd
 from matplotlib.colors import Normalize, LinearSegmentedColormap
 from scipy.interpolate import griddata
+import matplotlib.ticker as ticker
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
@@ -55,8 +56,10 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
         axes[i].set_xlabel("Error", fontsize=36)
         axes[i].set_ylabel("Sample Count", fontsize=30)
         axes[i].tick_params(labelsize=36)
-        axes[i].set_title(f"Error Distribution: {group}", fontsize=36)
+        axes[i].set_title(f"{group}", fontsize=36)
         axes[i].set_xlim(-25, 25)  # Limit x-axis to match the range
+        # Add percentage sign to x-axis ticks
+        axes[i].xaxis.set_major_formatter(ticker.FuncFormatter(lambda x, _: f'{x:.0f}%'))
         # Ensure y-axis tick labels are formatted correctly
         if i == 0:
             axes[i].set_yticklabels([f"{int(tick)} " for tick in axes[i].get_yticks()])

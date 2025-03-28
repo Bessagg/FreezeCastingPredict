@@ -53,7 +53,7 @@ feats_name = feats_name_input + "_feats"
 print("Loading Data...")
 selected_feats = parser.feats_dict[feats_name]
 selected_feats.remove(target)
-encode_min_frequency = 0.2  # 0.002 for simplest. best 0.2 for catb
+encode_min_frequency = 0.04  # 0.002 for simplest. best 0.2 for catb
 
 # remove features for testing
 # selected_feats = [item for item in selected_feats if item not in ['technique', 'direction', 'name_disp_1']]
@@ -182,9 +182,11 @@ if int(run_shap) == 1:
         plots_title=f'{model_name}_test'
     )
     shap_explainer.save_explainer(explainer, shap_plotter.filepath_explainer)
-    # TODO: add artifacts from shapley
-    shap_plotter.run_all_plots(feature_list=shap_plotter.X.columns.to_list(), color_feature="material_group_Ceramic")
+    # specific depende plot color feature
+    shap_plotter.run_all_plots()
+    shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="material_group_Polymer")
     shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Solid Loading")
+    shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Temp Sinter")
     shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
 
 print("Finished")
