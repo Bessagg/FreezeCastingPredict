@@ -17,14 +17,14 @@ warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
-im_path = 'images/results'
 palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
-colors = ["#505050", "#56B4E9","#A066C2"]
 colors = ["#939393", "#00427d", "#00652e"]
+dpi=200
+images_dir = f'images/results/'
 
 def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
     # Create a save directory for images
-    save_dir = f'images/results/{title}_error_by_group_{group_column}.png'
+    save_dir = f'{images_dir}/{title}_error_by_group_{group_column}.png'
 
     # Create a figure with 3 subplots (1 column, 3 rows)
     fig, axes = plt.subplots(nrows=3, ncols=1, figsize=(24, 12), sharex=True)
@@ -90,7 +90,7 @@ def plot_error_distribution_by_group(df, error: pd.Series, group_column, title="
 
 
 def plot_prediction_performance_by_group(true_values, predicted_values, group_column):
-    save_dir = f'images/results/perf_by_group.png'
+    save_dir = f'{images_dir}/perf_by_group.png'
 
     # Create a dataframe for easier plotting
     df = pd.DataFrame({
@@ -174,7 +174,7 @@ def plot_prediction_performance_by_group(true_values, predicted_values, group_co
     plt.show()
 
 def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series, title=""):
-    save_path = f'images/results/{title}_perf.png'
+    save_path = f'{images_dir}/{title}_perf.png'
     # Red-focused colormap
     # Model performance plot
     fig, ax = plt.subplots(figsize=(24, 12))  # This ensures t he figure and Axes are linked
@@ -203,7 +203,7 @@ def plot_prediction_performance(true_y, prediction: pd.Series, error: pd.Series,
 
 
 def plot_error_distribution(df, error: pd.Series, title=""):
-    save_dir = f'images/results/{title}_error.png'
+    save_dir = f'{images_dir}/{title}_error.png'
     fig, ax = plt.subplots(figsize=(24, 12)) # This ensures the figure and Axes are linked
     sns.histplot(data=df, x=error,  # hue="Group",
                       bins=20,
@@ -257,7 +257,7 @@ for pipe_path in pickle_pipeline_paths:
 """Evaluate models"""
 results_models_dict_list = []
 results_importances = []
-results_groups = []
+results_frequent_groups = []
 for pipe in selected_pipes:
     print(pipe.name, pipe.feats_name)
     pipe_ggparent_dir = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(pipe_path))))
@@ -272,14 +272,15 @@ for pipe in selected_pipes:
     formatted_p_train = f"{p_train:.2f}" if p_train >= 0.001 else "<0.001"
 
     print("Test results")
+    """Get metrics"""
     r2_test, mae_test, mse_test, mape_test = utils.get_regression_metrics(test_preds, df_test[target])
     # r2_test, mae_test, mse_test, mape_test = r2_test, round(mae_test, 2), round(mse_test, 2), round(mape_test, 2)
 
     p_test = r2_score(df_test[target], test_preds)
     formatted_p_test = f"{p_test:.2f}" if p_test >= 0.001 else "<0.001"
 
-    print("Test nulls results")
-    columns_not_null = ['name_part1', 'name_fluid1', 'vf_total', 'material_group', target]
+    print("Test no-nulls results")
+    columns_not_null = ['name_part1', 'name_fluid1', 'vf_total', 'material_group']
     df_test_nulls = df_test.copy()
     df_test_filtered = df_test.copy()
     print("Other feats are null count", len(df_test_filtered))
@@ -290,6 +291,8 @@ for pipe in selected_pipes:
         ]
 
     test_preds_nulls = pipe.predict(df_test_filtered)*100
+
+    """Get metrics for no-nulls """
     r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = utils.get_regression_metrics(test_preds_nulls, df_test[target])
     # r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = r2_test_nulls, round(mae_test_nulls, 2), round(mse_test_nulls, 2), round(mape_test_nulls, 2)
 
@@ -321,13 +324,13 @@ for pipe in selected_pipes:
             })
 
     # Calculate metrics grouped by the specified feature
-    groupby_features = ['material_group', 'name_part1', 'name_fluid1']
+    groupby_features = ['material_group', 'name_part1', 'name_fluid1', 'year']
     for groupby_feature in groupby_features:
         grouped = df_test.groupby(groupby_feature)  # to get metrics
         grouped_train = df_train.groupby(groupby_feature)  # to get most frequent groups
         category_counts = grouped_train[groupby_feature].value_counts().sort_values(ascending=False)
         # Determine top 5 most frequent categories
-        top_categories = category_counts[0:5]
+        top_categories = category_counts.index.to_list()[0:5]
 
         for category, category_indices in grouped.groups.items():
             # just for tagging top5 if category in most frequent and not filtering
@@ -345,7 +348,9 @@ for pipe in selected_pipes:
             group_variance = round(np.var(group_y_pred), 2)
             group_std = round(np.std(group_y_true), 1)  # true porosity std
             # append results
-            results_groups.append({
+
+            # Performance of frequent categories
+            results_frequent_groups.append({
                 'model': pipe.name,
                 'groupby_feature': groupby_feature,
                 'category': category,
@@ -365,9 +370,9 @@ for pipe in selected_pipes:
 
 """Plots"""
 selected_model = 'catb'
-df_results = pd.DataFrame(results_groups)
+df_results = pd.DataFrame(results_frequent_groups)
 df_imps = pd.DataFrame(results_importances)
-df_groups = pd.DataFrame(results_groups)
+df_groups = pd.DataFrame(results_frequent_groups)
 
 # Filter metrics of top5 most frequent categories
 df_groups_filtered = df_groups.query("model == 'catb' and top5 == True").sort_values(
@@ -391,7 +396,7 @@ plt.xlabel('Standard Deviation of true porosity')
 plt.ylabel(r'$R^2$ Value')
 plt.title('Linear Regression between STD and $R^2$')
 plt.legend()
-plt.savefig(f"{im_path}/r2_vs_std.png", dpi=300)
+plt.savefig(f"{images_dir}/r2_vs_std.png", bbox_inches='tight', dpi=300)
 plt.show()
 
 
