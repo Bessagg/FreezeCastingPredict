@@ -18,6 +18,7 @@ pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 0)
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option("display.max_rows", 30)
+dpi=200
 
 
 # Load Data
@@ -39,10 +40,13 @@ ths = 2  # count ths
 # large_rectangles = samples_per_paper[samples_per_paper >= ths]
 samples_per_paper['label'] = ['' if value <= ths else value for value in samples_per_paper['values']]
 colors = sns.color_palette(pallete, len(samples_per_paper['values']))  # Choose a colormap for the TreeMap
+plt.rcParams.update({'font.size': 18})
+plt.yticks(fontsize=18)
+
 squarify.plot(sizes=samples_per_paper['values'], color=colors, alpha=0.7, label=samples_per_paper['label'])
 plt.axis('off')
+plt.savefig(f"images/samples_per_paper.png", bbox_inches='tight', dpi=dpi)
 plt.show()
-plt.savefig(f"images/samples_per_paper.png", dpi=300)
 
 
 # Temp sinter
@@ -125,7 +129,7 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 # Tight layout and show
 plt.tight_layout()
 # Save the plot
-plt.savefig(f"images/Correlation.png", dpi=300)
+plt.savefig(f"images/Correlation.png", dpi=dpi)
 plt.show()
 
 
@@ -171,7 +175,7 @@ heatmap.set_yticklabels(heatmap.get_yticklabels(), rotation=0, horizontalalignme
 # Tight layout and show
 plt.tight_layout()
 plt.show()
-plt.savefig(f"images/Correlation_missing.png", dpi=300)
+plt.savefig(f"images/Correlation_missing.png", dpi=dpi)
 
 #%% Numerical Dist
 
@@ -188,7 +192,7 @@ for col in df_num:
                       height=1.6, aspect=4)
     g.map(sns.kdeplot, col, bw_adjust=.6)
     g.set_ylabels('Density')
-    plt.savefig(f"images/num_dist_{col}.png", dpi=300)
+    plt.savefig(f"images/num_dist_{col}.png", dpi=dpi)
 
 # Initialize a dictionary to store p-values
 p_values = {col: {} for col in df_num}
@@ -221,7 +225,7 @@ df = pd.read_csv("data/all_feats/df_selected_feats.csv")  # dataframe for analys
 df = parser.rename_columns_df(df)
 df_str = (df.select_dtypes(include=[object]))
 categorical_columns = df_str.columns.to_list()
-categorical_columns = ["Group", "Solid Name", "Fluid Name", ]
+categorical_columns = ["Group", "Solid Name", "Fluid Name"]
 
 for col in categorical_columns:
     # Get category counts
@@ -230,12 +234,15 @@ for col in categorical_columns:
     # Identify the top 4 categories and group the rest as "Others"
     top_categories = category_counts.index[:5]
     df[col] = df[col].apply(lambda x: x if x in top_categories else 'Others')
+    if col == 'Group':
+        df[col] = df[col].replace({'Others': 'Pharmaceutical'})
+
 
     # Compute aggregated statistics
     summary = df.groupby(col)['Porosity'].agg(
         Count='count',
-        Mean_Porosity=lambda x: round(x.mean(), 2),
-        STD_Porosity=lambda x: round(x.std(), 1)
+        Mean_Porosity=lambda x: round(x.mean()*100, 0),
+        STD_Porosity=lambda x: round(x.std()*100, 0)
     )
 
     # Compute percentage of total and round
@@ -261,7 +268,7 @@ for col in categorical_columns:
     # plt.xlabel(col, fontsize=28)  # Set x-axis label
     plt.gca().set_xlabel('')  # Remove x-axis label
     plt.tight_layout()  # Ensure everything fits well within the plot
-    plt.savefig(f"images/summary_of_{col}.png", dpi=300)
+    plt.savefig(f"images/summary_of_{col}.png", dpi=dpi)
     # Display the plot
     plt.show()
 
@@ -288,7 +295,7 @@ for col in df_str.columns:
     ax.xaxis.set_label_text("")
     f.tight_layout()
     f.subplots_adjust(top=0.9)
-    plt.savefig(f"images/Count of {col}.png", dpi=300)
+    plt.savefig(f"images/Count of {col}.png", dpi=dpi)
 
     plt.show()
 # plt.close("all")
@@ -347,7 +354,7 @@ for group_col in categorical_columns:
     # Adjust spacing to ensure title doesn't overlap
     g.fig.subplots_adjust(top=0.80)  # Increase space above plot for title
     plt.show()
-    plt.savefig(f"images/Count of {group_col}.png", dpi=300)
+    plt.savefig(f"images/Count of {group_col}.png", dpi=dpi)
 
 # Print out the results for all categorical columns
 for group_col, (cat1, cat2, p_value) in p_values_dict.items():

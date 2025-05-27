@@ -9,7 +9,7 @@ import time
 from matplotlib.ticker import MaxNLocator
 import re
 matplotlib.use('Agg')  # hide plots
-
+dpi=200
 
 def rename_columns(columns, rename_dict):
     new_columns = []
@@ -383,7 +383,7 @@ class ShapPlotter:
                 print(f"Feature '{feature}' not found in dataset. Skipping...")
                 continue
 
-            plt.figure(figsize=(12, 3))
+            plt.figure(figsize=(6, 3))
             interaction_index = color_feature if color_feature in self.X.columns else None
             shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=interaction_index)
             # plt.title(f"SHAP Dependence Plot: {feature}")
