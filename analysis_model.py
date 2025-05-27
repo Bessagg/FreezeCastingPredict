@@ -1,5 +1,6 @@
+from typing import List, Dict, Optional
+from helpers.utils import get_regression_metrics
 from data_parser import DataParser
-from helpers import utils
 import warnings
 import glob
 import os
@@ -12,15 +13,37 @@ import pandas as pd
 from matplotlib.colors import Normalize, LinearSegmentedColormap
 from scipy.interpolate import griddata
 import matplotlib.ticker as ticker
-warnings.filterwarnings("ignore", category=DeprecationWarning)
-warnings.filterwarnings("ignore", category=Warning)
-pd.set_option('display.max_columns', 100)
-pd.set_option('display.max_rows', 40)
-pd.set_option('display.width', 600)
+
+# Suppress warnings
+warnings.filterwarnings("ignore")
+pd.set_option('display.max_columns', None)  # Shows all columns
+pd.set_option('display.width', 1000)      # Widens the display to prevent wrapping
 palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the palette (green to red)
 colors = ["#939393", "#00427d", "#00652e"]
 dpi=200
 images_dir = f'images/results/'
+
+
+def print_deepest_keys(d, path=()):
+    if isinstance(d, dict):
+        for k, v in d.items():
+            print_deepest_keys(v, path + (k,))
+    elif isinstance(d, list):
+        for i, item in enumerate(d):
+            print_deepest_keys(item, path + (f"[{i}]",))
+    else:
+        print(" -> ".join(path))
+        print(d)
+        print('-' * 60)
+
+def safe_round_to_int(x):
+    if pd.isna(x):
+        return x
+    try:
+        return int(round(float(x)))
+    except Exception:
+        return x
+
 
 def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
     # Create a save directory for images
@@ -231,185 +254,272 @@ def ks_test_group(group_df, column, distribution='norm'):
     return pd.Series({'ks_statistic': statistic, 'p_value': p_value})
 
 
-"""General Setup"""
-print("Parsing data...")
-parser = DataParser()
-target = parser.target
 
-"""Fetch dataset"""
-print("Loading Data...")
-selected_feats_name = "reduced_feats"
-df_train = pd.read_csv(f"data/{selected_feats_name}/train.csv")
-df_test = pd.read_csv(f"data/{selected_feats_name}/test.csv")
-df_train[target] = df_train[target] * 100
-df_test[target] = df_test[target] * 100
+def load_data(feature_set: str) -> (pd.DataFrame, pd.DataFrame, str):
+    """
+    Load train and test CSVs for a given feature set and scale the target.
+    Returns: df_train, df_test, target_column_name
+    """
+    parser = DataParser()
+    target = parser.target
 
-"""Get model paths from selected_models"""
-selected_models_dir = f'selected_models/{selected_feats_name}'
-pickle_pipeline_paths = glob.glob(os.path.join(selected_models_dir, '**', 'model', '*.pickle'), recursive=True)
+    train_path = f"data/{feature_set}/train.csv"
+    test_path = f"data/{feature_set}/test.csv"
+    df_train = pd.read_csv(train_path)
+    df_test = pd.read_csv(test_path)
 
-"""Load models"""
-selected_pipes = []
-for pipe_path in pickle_pipeline_paths:
-    pipe = parser.load_pipeline(pipe_path)
-    selected_pipes.append(pipe)
+    # scale targets (e.g., to percent)
+    df_train[target] *= 100
+    df_test[target] *= 100
 
-"""Evaluate models"""
-results_models_dict_list = []
-results_importances = []
-results_frequent_groups = []
-for pipe in selected_pipes:
-    print(pipe.name, pipe.feats_name)
-    pipe_ggparent_dir = os.path.basename(os.path.dirname(os.path.dirname(os.path.dirname(pipe_path))))
-    train_preds, test_preds = pipe.predict(df_train)*100, pipe.predict(df_test)*100
-    df_test[f'{pipe.name}_prediction'] = test_preds
-    mae_test = np.abs(test_preds - df_test[target])
-    df_test[f'{pipe.name}_mae'] = mae_test
-    print("\n Train results")
-    r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
-    # r2_train, mae_train, mse_train, mape_train = r2_train, round(mae_train, 2), round(mse_train, 2), round(mape_train, 2)
-    p_train = r2_score(df_train[target], train_preds)
-    formatted_p_train = f"{p_train:.2f}" if p_train >= 0.001 else "<0.001"
+    return df_train, df_test, target
 
-    print("Test results")
-    """Get metrics"""
-    r2_test, mae_test, mse_test, mape_test = utils.get_regression_metrics(test_preds, df_test[target])
-    # r2_test, mae_test, mse_test, mape_test = r2_test, round(mae_test, 2), round(mse_test, 2), round(mape_test, 2)
+def load_pipelines_from_dir(base_dir: str) -> List[str]:
+    """
+    Recursively locate all model pickle files under base_dir.
+    """
+    """Get model paths from selected_models"""
+    parser = DataParser()
+    pickle_pipeline_paths = glob.glob(os.path.join(base_dir, '**', 'model', '*.pickle'), recursive=True)
 
-    p_test = r2_score(df_test[target], test_preds)
-    formatted_p_test = f"{p_test:.2f}" if p_test >= 0.001 else "<0.001"
+    """Load models"""
+    selected_pipes = []
+    for pipe_path in pickle_pipeline_paths:
+        pipe = parser.load_pipeline(pipe_path)
+        selected_pipes.append(pipe)
+    return selected_pipes
 
-    print("Test no-nulls results")
-    columns_not_null = ['name_part1', 'name_fluid1', 'vf_total', 'material_group']
-    df_test_nulls = df_test.copy()
-    df_test_filtered = df_test.copy()
-    print("Other feats are null count", len(df_test_filtered))
-    df_test_filtered = df_test_filtered[
-        df_test_filtered[pipe.selected_feats].notna().any(axis=1)  # Keep rows where any of the features are non-null
-        & df_test_filtered[columns_not_null].notna().all(axis=1)
-        # Keep rows where all columns of interest are non-null
-        ]
+# def load_pipelines(paths: List[str]) -> List:
+#     """
+#     Load pipeline objects given their pickle paths.
+#     """
+#     parser = DataParser()
+#     return [parser.load_pipeline(p) for p in paths]
 
-    test_preds_nulls = pipe.predict(df_test_filtered)*100
+def compute_overall_metrics(pipeline, df: pd.DataFrame, target: str) -> Dict:
+    """
+    Predict and compute regression metrics on a single dataframe.
+    Returns a dict with r2, mae, mse, mape, and formatted p-value.
+    """
+    preds = pipeline.predict(df) * 100
+    true = df[target]
+    r2, mae, mse, mape = get_regression_metrics(preds, true)
+    r2, mae, mse, mape = [safe_round_to_int(x) for x in [r2, mae, mse, mape]]
 
-    """Get metrics for no-nulls """
-    r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = utils.get_regression_metrics(test_preds_nulls, df_test[target])
-    # r2_test_nulls, mae_test_nulls, mse_test_nulls, mape_test_nulls = r2_test_nulls, round(mae_test_nulls, 2), round(mse_test_nulls, 2), round(mape_test_nulls, 2)
+    p_val = r2_score(true, preds)
+    return {
+        "r2": r2,
+        "mae": mae,
+        "mse": mse,
+        "mape": mape,
+    }
 
-    # Add model results
-    result_model_dict = {'name': pipe.name,
-                         'r2_train': r2_train, 'p_train': formatted_p_train, 'mae_train': mae_train, 'mse_train': mse_train,
-                         'r2_test': r2_test, 'p_test': formatted_p_test, 'mae_test': mae_test, 'mse_test': mse_test}
-    results_models_dict_list.append(result_model_dict)
-    preds_train, preds_test = pipe.predict(df_train)*100, pipe.predict(df_test)*100
-    results_train = {'name': pipe.name, 'feats': pipe.feats_name, 'prediction_train': preds_train,
-                     'prediction_test': preds_test,
-                     'train_true': df_train[target], 'test_true': df_test[target],
-                     'model_type': '-', }
+def compute_group_metrics(df_train: pd.DataFrame, df_test: pd.DataFrame, target: str,
+        group_feature: str, top_n: Optional[int] = None) -> pd.DataFrame:
+    """
+    Compute regression metrics per category of a group feature for both train and test sets.
 
-    # Add importances if available
-    estimator = pipe[-1]
-    if hasattr(estimator, 'feature_importances_'):
-        feature_importances = estimator.feature_importances_
-        # normalize
-        feature_importances = feature_importances / feature_importances.sum()
-        feature_names = pipe[0].get_feature_names_out()
-        feature_names = np.array([name.replace('remainder__', '').replace('cat__', '') for name in feature_names])
+    Parameters:
+        df_train (pd.DataFrame): DataFrame with train true and predicted values.
+        df_test (pd.DataFrame): DataFrame with test true and predicted values.
+        target (str): Name of the target column (true values).
+        group_feature (str): Feature to group by.
+        top_n (int, optional): Top N most frequent categories to evaluate. If None, use all.
 
-        for i, importance in enumerate(feature_importances):
-            results_importances.append({
-                'model': pipe.name,
-                'feature_name': feature_names[i],
-                'feature_importance': importance
-            })
+    Returns:
+        pd.DataFrame: Metrics for each category in train/test split.
+    """
+    counts = df_train[group_feature].value_counts() + df_test[group_feature].value_counts()
+    categories = counts.index if top_n is None else counts.nlargest(top_n).index
+    records = []
 
-    # Calculate metrics grouped by the specified feature
-    groupby_features = ['material_group', 'name_part1', 'name_fluid1', 'year']
-    for groupby_feature in groupby_features:
-        grouped = df_test.groupby(groupby_feature)  # to get metrics
-        grouped_train = df_train.groupby(groupby_feature)  # to get most frequent groups
-        category_counts = grouped_train[groupby_feature].value_counts().sort_values(ascending=False)
-        # Determine top 5 most frequent categories
-        top_categories = category_counts.index.to_list()[0:5]
+    for cat in categories:
+        record = {group_feature: cat}
 
-        for category, category_indices in grouped.groups.items():
-            # just for tagging top5 if category in most frequent and not filtering
-            tag_top5 = category in top_categories
-            if not tag_top5:
+        for split_name, df in [("train", df_train), ("test", df_test)]:
+            mask = df[group_feature] == cat
+            if mask.sum() == 0:
+                record[f"{split_name}_r2"] = None
+                record[f"{split_name}_mae"] = None
+                record[f"{split_name}_mse"] = None
+                record[f"{split_name}_mape"] = None
+                record[f"{split_name}_count"] = 0
                 continue
-            group_df = df_test.loc[category_indices]
-            group_y_true = df_test[target][category_indices]
-            group_y_pred = preds_test[category_indices]
-            grouped_r2, grouped_mae, grouped_mse, grouped_mape = (
-                utils.get_regression_metrics(group_y_pred, group_y_true, opt_print=False))
-            grouped_p = r2_score( group_y_true, group_y_pred)
-            formatted_grouped_p = f"{grouped_p:.2f}" if grouped_p >= 0.001 else "<0.001"
 
-            group_variance = round(np.var(group_y_pred), 2)
-            group_std = round(np.std(group_y_true), 1)  # true porosity std
-            # append results
+            y_true = df.loc[mask, target]
+            y_pred = df.loc[mask, "prediction"]
+            r2, mae, mse, mape = [safe_round_to_int(x) for x in get_regression_metrics(y_pred, y_true, opt_print=False)]
+            record[f"{split_name}_r2"] = r2
+            record[f"{split_name}_mae"] = mae
+            record[f"{split_name}_mse"] = mse
+            record[f"{split_name}_mape"] = mape
+            record[f"{split_name}_count"] = mask.sum()
 
-            # Performance of frequent categories
-            results_frequent_groups.append({
-                'model': pipe.name,
-                'groupby_feature': groupby_feature,
-                'category': category,
-                'train samples': df_train[groupby_feature].value_counts()[category],
-                'test_samples': df_test[groupby_feature].value_counts()[category],
-                'r2': grouped_r2,
-                'mae': grouped_mae,
-                'mse': grouped_mse,
-
-                'variance': group_variance,
-                'std': group_std,
-                'mape': grouped_mape,
-                'top5': tag_top5,
-            })
-
-    print('\n')
-
-"""Plots"""
-selected_model = 'catb'
-df_results = pd.DataFrame(results_frequent_groups)
-df_imps = pd.DataFrame(results_importances)
-df_groups = pd.DataFrame(results_frequent_groups)
-
-# Filter metrics of top5 most frequent categories
-df_groups_filtered = df_groups.query("model == 'catb' and top5 == True").sort_values(
-    by=['groupby_feature', 'train samples'], ascending=False)
-print("Selected model results by group:")
-print(df_groups_filtered)
-
-print("Relationship between STD")
-metric = 'train samples'
-df_groups_filtered['variance'] = df_groups_filtered[metric].astype(float)
-df_groups_filtered['std'] = df_groups_filtered['std'].astype(float)
-corr = df_groups_filtered['variance'].corr(df_groups_filtered['std'])
-plt.scatter(df_groups_filtered['r2'].astype(float), df_groups_filtered['std'].astype(float))
-plt.xlabel(r'$R^2$ value')
-plt.ylabel("STD")
-X = df_groups_filtered[metric]
-y = df_groups_filtered['r2']
-plt.clf()
-plt.scatter(X, y, color='blue', label='Grouped data')
-plt.xlabel('Standard Deviation of true porosity')
-plt.ylabel(r'$R^2$ Value')
-plt.title('Linear Regression between STD and $R^2$')
-plt.legend()
-plt.savefig(f"{images_dir}/r2_vs_std.png", bbox_inches='tight', dpi=300)
-plt.show()
+        records.append(record)
+    return pd.DataFrame.from_records(records)
 
 
-## Performance Plots
-selected_model_name = "catb"
-prediction = df_test[f"{selected_model_name}_prediction"]*100
-true_y = df_test[parser.target]*100
-error = df_test[f"{selected_model_name}_prediction"] - df_test[parser.target]
-plot_prediction_performance(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test[f"{selected_model_name}_mae"], title=selected_model_name)
-plot_error_distribution(df_test, error)
-plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['material_group'])
-# plot_prediction_performance_by_group(df_test[parser.target], df_test[f"{selected_model_name}_prediction"], df_test['name_fluid1'])
+def filter_null_mask_by_type(df: pd.DataFrame, columns_not_null: List[str], selected_feats: List[str], filter_type: str) -> pd.DataFrame:
+    """
+    Filters DataFrame based on null values in selected features:
+    - 'no_nan': Rows where all selected features are non-null AND columns_not_null are non-null.
+    - 'only_nans': Rows where some selected features are null, but columns_not_null are non-null.
+                   Also ensures there is at least one NaN in selected_feats to qualify.
+    """
+    # First, ensure all 'columns_not_null' are non-null for both types
+    df_base = df[df[columns_not_null].notna().all(axis=1)].copy()
+
+    if filter_type == 'no_nan':
+        # All selected features must be non-null
+        return df_base[df_base[selected_feats].notna().all(axis=1)]
+    elif filter_type == 'only_nans':
+        # At least one selected feature is non-null (to ensure the row is relevant to the model)
+        # AND at least one selected feature is null
+        has_some_nans = df_base[selected_feats].isna().any(axis=1)
+        has_some_non_nans = df_base[selected_feats].notna().any(axis=1)
+        return df_base[has_some_nans & has_some_non_nans] # Includes rows where some are nan, some are not
+    else:
+        raise ValueError("filter_type must be 'no_nan' or 'only_nans'")
+
+def filter_null_mask(df: pd.DataFrame, required_cols: List[str], any_of: List[str]) -> pd.DataFrame:
+    """
+    Returns rows where all required_cols are non-null, and at least one column in any_of is non-null.
+    """
+    mask_required = df[required_cols].notna().all(axis=1)
+    mask_any = df[any_of].notna().any(axis=1)
+    return df[mask_required & mask_any]
+
+def get_pipeline_metrics(pipelines: List, df_train: pd.DataFrame, df_test: pd.DataFrame, target: str,
+                         features_to_analyze: List[str], columns_not_null: List[str], selected_pipelines=None) -> Dict[str, object]:
+    """
+    Evaluate multiple pipelines on various metrics.
+    Returns:
+        - 'overall_metrics': DataFrame for all pipelines
+        - 'no_nan_metrics': DataFrame for selected_pipelines no-NaN subset
+        - 'only_nans_metrics': DataFrame for selected_pipelines only-NaNs subset
+        - 'group_metrics': nested dict {pipeline: {feature: {'topn': df, 'all': df}}}
+    """
+    if selected_pipelines is None:
+        selected_pipelines = ["catb"]
+
+    overall = []
+    group = {}
+    no_nan, only_nans = [], []
+
+    for pipe in pipelines:
+        # Predict and scale if necessary
+        pred_train = pipe.predict(df_train)
+        pred_test = pipe.predict(df_test)
+
+        # If most values are in [0, 1], assume it's not in percentage and scale
+        if (pred_train < 1.5).mean() > 0.9 and (pred_test < 1.5).mean() > 0.9:
+            pred_train *= 100
+            pred_test *= 100
+
+        # Add predictions to copies of the DataFrames
+        df_train_copy = df_train.copy()
+        df_test_copy = df_test.copy()
+        df_train_copy["prediction"] = pred_train
+        df_test_copy["prediction"] = pred_test
+
+        # Overall metrics
+        tr = compute_overall_metrics(pipe, df_train_copy, target)
+        te = compute_overall_metrics(pipe, df_test_copy, target)
+        overall.append({
+            'pipeline': pipe.name,
+            **{f'train_{k}': round(v, 0) for k, v in tr.items()},
+            **{f'test_{k}': round(v, 0) for k, v in te.items()}
+        })
+
+        # Only for selected pipelines
+        if pipe.name in selected_pipelines:
+            for mode in ['no_nan', 'only_nans']:
+                subset = filter_null_mask_by_type(df_test_copy, columns_not_null, pipe.selected_feats, mode)
+                if not subset.empty:
+                    m = compute_overall_metrics(pipe, subset, target)
+                    entry = {
+                        'pipeline': pipe.name,
+                        'count': len(subset),
+                        **{f'{mode}_{k}': v for k, v in m.items()}
+                    }
+                    (no_nan if mode == 'no_nan' else only_nans).append(entry)
+
+            # Group-wise metrics
+            feat_dict = {}
+            for feat in features_to_analyze:
+                feat_dict[feat] = {
+                    'topn': compute_group_metrics(df_train_copy, df_test_copy, target, feat, top_n=5),
+                    'all': compute_group_metrics(df_train_copy, df_test_copy, target, feat)
+                }
+            group[pipe.name] = feat_dict
+
+    return {
+        'overall_metrics': pd.DataFrame(overall),
+        'no_nan_metrics': pd.DataFrame(no_nan),
+        'only_nans_metrics': pd.DataFrame(only_nans),
+        'group_metrics': group
+    }
 
 
-# plot_error_distribution_by_group(df_test, error, 'name_fluid1')
-plot_error_distribution_by_group(df_test, error, 'material_group')
+def add_predictions_and_errors(df_test: pd.DataFrame, pipelines: List, target_column: str) -> pd.DataFrame:
+    """
+    For each pipeline, compute predictions, absolute error, and MAE, and add them to df_test.
+
+    Args:
+        df_test (pd.DataFrame): The test dataset.
+        pipelines (list): List of trained pipelines.
+        target_column (str): Name of the target column.
+
+    Returns:
+        pd.DataFrame: df_test with new columns per model:
+                      - {model}_prediction
+                      - {model}_error
+                      - {model}_mae
+    """
+    df_result = df_test.copy()
+    for pipeline in pipelines:
+        y_true = df_result[target_column]
+        y_pred = pipeline.predict(df_result)*100
+
+        df_result[f"{pipeline.name}_prediction"] = y_pred
+        df_result[f"{pipeline.name}_error"] = y_pred - y_true
+        df_result[f"{pipeline.name}_mae"] = np.abs(y_pred - y_true)
+    return df_result
+
+
+if __name__ == "__main__":
+    # Configuration
+    FEATURE_SET = "reduced_feats"
+    FEATURES_TO_ANALYZE = ["material_group", "name_part1", "name_fluid1", "year"]
+    COLUMNS_NOT_NULL = ["name_part1", "name_fluid1", "vf_total", "material_group"]
+    parser = DataParser()
+
+    # Load data and models
+    df_train, df_test, TARGET = load_data(FEATURE_SET)
+    pipelines = load_pipelines_from_dir(f"selected_models/{FEATURE_SET}")
+
+    # Get metrics
+    metrics_dict = get_pipeline_metrics(pipelines, df_train, df_test, TARGET, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL)
+    print("metrics:", metrics_dict.keys())
+    for key in metrics_dict['group_metrics']['catb'].keys():
+        print(key, 'topn')
+        print(metrics_dict['group_metrics']['catb'][key]['topn'])
+        print(key, 'all')
+        print(metrics_dict['group_metrics']['catb'][key]['all'])
+        print('-'*40)
+
+    # Get predictions and errors in dataframe
+    df_test = add_predictions_and_errors(df_test, pipelines, TARGET)
+    df_train = add_predictions_and_errors(df_train, pipelines, TARGET)
+
+    # --- Performance Plots ---
+    selected_model = 'catb'
+    prediction_col = f"{selected_model}_prediction"
+    true_y = df_test[parser.target]
+    pred_y = df_test[prediction_col]
+    error = pred_y - true_y
+
+    plot_prediction_performance(true_y, pred_y, error=df_test.get(f"{selected_model}_mae"), title=selected_model)
+    plot_error_distribution(df_test, error)
+    plot_prediction_performance_by_group(true_y, pred_y, df_test['material_group'])
+    plot_error_distribution_by_group(df_test, error, 'material_group')
