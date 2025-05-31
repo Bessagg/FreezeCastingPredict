@@ -7,8 +7,10 @@ from sklearn.model_selection import GridSearchCV
 from data_parser import DataParser
 import warnings
 import numpy as np
-import select_model
+import custom_models
 import sys
+from helpers import custom_features
+from data.additional_samples import df_gpt
 import matplotlib.pyplot as plt
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -16,6 +18,41 @@ warnings.filterwarnings("ignore", category=Warning)
 pd.set_option('display.max_columns', 100)
 pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
+
+import pandas as pd
+from typing import List
+
+def print_test_metrics_by_group(df_test: pd.DataFrame, test_preds: pd.Series, target: str, group_cols: List[str]):
+    """
+    Prints test regression metrics grouped by specified categorical columns,
+    including the count of samples in each group.
+
+    Parameters:
+    - df_test: test dataframe with features and target
+    - test_preds: predictions aligned with df_test index
+    - target: target column name in df_test
+    - group_cols: list of categorical columns to group by and print metrics
+    """
+    for col in group_cols:
+        rows = []
+        unique_vals = df_test[col].dropna().unique()
+        for val in sorted(unique_vals):
+            group = df_test[df_test[col] == val]
+            preds_group = test_preds[group.index]
+            r2, mae, mse, mape = utils.get_regression_metrics(preds_group, group[target])
+            rows.append({
+                'group': val,
+                'count': len(group),
+                'R2': r2,
+                'MAE': mae,
+                'MSE': mse,
+                'MAPE': mape
+            })
+        df_metrics = pd.DataFrame(rows)
+        df_metrics.index.name = col
+        print(f"\nTest Metrics by {col}")
+        print(df_metrics)
+
 
 
 def rename_columns_if_contains(columns, rename_dict):
@@ -66,6 +103,8 @@ ignored_feats = [feat for feat in selected_feats if feat not in set(num_cols + c
 try:
     df_train = pd.read_csv(f"data/{feats_name}/train.csv")
     df_test = pd.read_csv(f"data/{feats_name}/test.csv")
+    df_train, df_test = custom_features.add_material_novelty_feature(df_train, df_test, min_count=6)
+    df_train, df_test = custom_features.add_bin_material_frequency(df_train, df_test, feature='name_part1')
     models_folder = f"pipe/{feats_name}"
 except FileNotFoundError:
     print(f'train and test file not found in data/{feats_name}_feats')
@@ -81,7 +120,7 @@ except FileNotFoundError:
 print("selected_feats", df_train.columns)
 
 """Prepare models"""
-model, search_space, selected_preprocessor, model_name = select_model.get_model_by_name(seed, cat_cols, selected_feats,
+model, search_space, selected_preprocessor, model_name = custom_models.get_model_by_name(seed, cat_cols, selected_feats,
                                                                                         target, encode_min_frequency)
 selected_preprocessor.fit(df_train[selected_feats], df_train[target])
 prep_feats = selected_preprocessor.get_feature_names_out()
@@ -100,7 +139,7 @@ print('Fitting Grid...')
 start = time.time()
 grid = GridSearchCV(estimator=pipe, param_grid=search_space, cv=cv, verbose=0,
                     scoring='r2')  # r2, neg_mean_absolute_error, explained_variance, neg_mean_squared_error
-if model_name == 'catb2':
+if model_name.startswith('catb_native'):
     cat_feature_indices = [df_train[selected_feats].columns.get_loc(col) for col in cat_cols]
     df_train[cat_cols] = df_train[cat_cols].fillna("None")
     df_test[cat_cols] = df_test[cat_cols].fillna("None")
@@ -136,11 +175,24 @@ print("Elapsed", (time.time() - start) / 60, 'min')
 train_preds = best_clf.predict(df_train[selected_feats])
 test_preds = best_clf.predict(df_test[selected_feats])
 
+
+print("Test Results by Group")
+print_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
+
+print("Test GPT data")
+gpt_preds = best_clf.predict(df_gpt[selected_feats])*100
+utils.get_regression_metrics(gpt_preds, df_gpt[target])
+print_test_metrics_by_group(df_gpt, gpt_preds, target, ['name_part1'])
+
 print("Training Results")
 r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
+print(f"R²: {r2_train}, MAE: {mae_train}, MSE: {mse_train}, MAPE: {mape_train}")
 
 print("\nTest Results")
 r2, mae, mse, mape = utils.get_regression_metrics(test_preds, df_test[target])
+print(f"R²: {r2}, MAE: {mae}, MSE: {mse}, MAPE: {mape}")
+
+
 
 # important_cols = ['']
 # filtered_test_df = df_test[df_test[important_cols].notnull().all(axis=1)]

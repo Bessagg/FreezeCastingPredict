@@ -1,6 +1,6 @@
 param_grid_catb = [
     {
-        'model__n_estimators': [500],  # best:500  [250, 500, 1000]
+        'model__n_estimators': [250, 500, 1000],  # best:500  [250, 500, 1000]
         'model__depth': [8],  # best:8 [5, 8, 10]
         # 'model__loss_function': ['Logloss'],
         # 'model__task_type': ['GPU'],
@@ -20,7 +20,7 @@ param_grid_catb = [
 param_grid_xgb = [
     {
         # 'model__eval_metric': ['aucpr'],
-        'model__n_estimators': [100, 250, 500, 1000],  #
+        'model__n_estimators': [50, 100, 250, 500, 1000],  #
         # 'model__learning_rate': [0.2],
         # 'model__min_child_weight': [1, 2, 10, 50],
         # 'model__gamma': [2],
@@ -30,26 +30,6 @@ param_grid_xgb = [
         'model__max_depth': [3, 5, 8],  # best=5
         # 'model__tree_method': ['gpu_hist'],  # enables gpu
         # 'model__n_estimators': [2000],  # best 250
-        # 'model__learning_rate': [0.2, 0.01, 0.001],
-        # 'model__min_child_weight': [1, 10, 100, 1000],
-        # 'model__gamma': [2, 20, 200, 2000],
-        # 'model__subsample': [1, 0.5],  # best=1|
-        # 'model__colsample_bytree': [1, 0.5],
-        # 'model__reg_alpha': [0, 1, 20, 200],
-        # 'model__reg_lambda': [0, 1, 20, 200],  # best=1
-    }]
-
-param_grid_xgb_single = [
-    {
-        'model__n_estimators': [50, 100, 200, 500],  #
-        # 'model__learning_rate': [0.2],
-        # 'model__min_child_weight': [1, 2, 10, 50],
-        # 'model__gamma': [2],
-        # 'model__subsample': [1],
-        # 'model__colsample_bytree': [0.5],
-        # 'model__reg_alpha': [1],
-        'model__max_depth': [3, 5, 8, 10],  # best=5
-        # 'model__tree_method': ['gpu_hist'],  # enables gpu
         # 'model__learning_rate': [0.2, 0.01, 0.001],
         # 'model__min_child_weight': [1, 10, 100, 1000],
         # 'model__gamma': [2, 20, 200, 2000],

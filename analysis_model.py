@@ -1,4 +1,6 @@
 from typing import List, Dict, Optional
+
+from helpers.custom_features import add_material_novelty_feature, add_bin_material_frequency
 from helpers.utils import get_regression_metrics
 from data_parser import DataParser
 import warnings
@@ -22,6 +24,8 @@ palette = sns.color_palette("RdYlGn_r", as_cmap=True)  # 'RdYlGn_r' reverses the
 colors = ["#939393", "#00427d", "#00652e"]
 dpi=200
 images_dir = f'images/results/'
+
+import pandas as pd
 
 
 def print_deepest_keys(d, path=()):
@@ -490,15 +494,17 @@ def add_predictions_and_errors(df_test: pd.DataFrame, pipelines: List, target_co
 if __name__ == "__main__":
     # Configuration
     FEATURE_SET = "reduced_feats"
-    FEATURES_TO_ANALYZE = ["material_group", "name_part1", "name_fluid1", "year"]
+    FEATURES_TO_ANALYZE = ["material_group", "name_part1", "name_fluid1", "name_part1_novel_in_test", "name_part1_freq_bin", "year"]
     COLUMNS_NOT_NULL = ["name_part1", "name_fluid1", "vf_total", "material_group"]
     parser = DataParser()
 
     # Load data and models
     df_train, df_test, TARGET = load_data(FEATURE_SET)
+    df_train, df_test =  add_material_novelty_feature(df_train, df_test, min_count=6)
+    df_train, df_test = add_bin_material_frequency(df_train, df_test, feature='name_part1')
     pipelines = load_pipelines_from_dir(f"selected_models/{FEATURE_SET}")
 
-    # Get metrics
+    # Get metric tables
     metrics_dict = get_pipeline_metrics(pipelines, df_train, df_test, TARGET, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL)
     print("metrics:", metrics_dict.keys())
     for key in metrics_dict['group_metrics']['catb'].keys():
@@ -523,3 +529,8 @@ if __name__ == "__main__":
     plot_error_distribution(df_test, error)
     plot_prediction_performance_by_group(true_y, pred_y, df_test['material_group'])
     plot_error_distribution_by_group(df_test, error, 'material_group')
+
+
+
+
+
