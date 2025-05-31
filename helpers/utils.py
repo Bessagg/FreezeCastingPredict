@@ -1,5 +1,7 @@
 import os
 from datetime import datetime
+from typing import List
+
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 import joblib
 import shutil
@@ -93,3 +95,35 @@ def handle_outliers(df, col_name='vf_total', threshold=3):
 
     # Combine the filtered data (without outliers) with the original DataFrame (including NaN rows)
     return pd.concat([df[df[col_name].isna()], df_filtered])
+
+
+def print_test_metrics_by_group(df_test: pd.DataFrame, test_preds: pd.Series, target: str, group_cols: List[str]):
+    """
+    Prints test regression metrics grouped by specified categorical columns,
+    including the count of samples in each group.
+
+    Parameters:
+    - df_test: test dataframe with features and target
+    - test_preds: predictions aligned with df_test index
+    - target: target column name in df_test
+    - group_cols: list of categorical columns to group by and print metrics
+    """
+    for col in group_cols:
+        rows = []
+        unique_vals = df_test[col].dropna().unique()
+        for val in sorted(unique_vals):
+            group = df_test[df_test[col] == val]
+            preds_group = test_preds[group.index]
+            r2, mae, mse, mape = get_regression_metrics(preds_group, group[target])
+            rows.append({
+                'group': val,
+                'count': len(group),
+                'R2': r2,
+                'MAE': mae,
+                'MSE': mse,
+                'MAPE': mape
+            })
+        df_metrics = pd.DataFrame(rows)
+        df_metrics.index.name = col
+        print(f"\nTest Metrics by {col}")
+        print(df_metrics)

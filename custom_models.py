@@ -3,25 +3,43 @@ from xgboost import XGBRegressor
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.neural_network import MLPRegressor
-
+from typing import Union, Optional
 from grid_search_params import *
 from custom_preprocessors import Preprocessors
 
 
-def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequency=0.1):
-    """Select model by number index with associated preprocessing and search space."""
+def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequency=0.1, model_name: Optional[Union[str, int]] = None
+):
+    """
+      Select a model configuration by name or index.
 
+      Parameters:
+      - seed (int): Random seed for reproducibility.
+      - cat_cols (list): List of categorical feature names.
+      - selected_feats (list): List of selected feature names.
+      - target (str): Target column name.
+      - encode_min_frequency (float): Minimum frequency for encoding categories.
+      - model_name (str | int | None):
+          - If None, prompts user to select a model.
+          - If int, selects model by index from predefined options.
+          - If str, selects model by its string name.
+
+      Returns:
+      - model: Estimator instance.
+      - search_space: Hyperparameter grid.
+      - selected_preprocessor: Associated preprocessor object.
+      - model_name (str): Selected model's name.
+      """
     num_cols = [col for col in selected_feats if col not in cat_cols + [target]]
-    # Warning: cuda_1 is for training with GPU, remove it if not configured.
-    # Define all model options as (name, model_instance, search_space, preprocessor)
+
     options = {
-        0: (
+        1: (
             "catb_native",
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
             Preprocessors.opd()
         ),
-        1: (
+        2: (
             "catb_native_impute",
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
@@ -31,35 +49,25 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
                 encode_min_frequency=encode_min_frequency
             )
         ),
-        2: (
+        3: (
             "catb_onehot[selected]",
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
             Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
-        3: (
+        4: (
             "xgb_onehot",
             XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1"),
             param_grid_xgb,
             Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
-        4: (
+        5: (
             "xgb_impu",
             XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1"),
             param_grid_xgb,
             Preprocessors.impute_1hot(
                 impute_cols=num_cols,
                 cat_cols=cat_cols,
-                encode_min_frequency=encode_min_frequency
-            )
-        ),
-        5: (
-            "lr",
-            LinearRegression(),
-            param_grid_lr,
-            Preprocessors.impute_1hot(
-                impute_cols=[col for col in selected_feats if col not in cat_cols + [target]],
-                cat_cols=[col for col in cat_cols if col in selected_feats],
                 encode_min_frequency=encode_min_frequency
             )
         ),
@@ -70,6 +78,27 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
             Preprocessors.impute_1hot(impute_cols=num_cols, cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
         7: (
+            "lr",
+            LinearRegression(),
+            param_grid_lr,
+            Preprocessors.impute_1hot(
+                impute_cols=[col for col in selected_feats if col not in cat_cols + [target]],
+                cat_cols=[col for col in cat_cols if col in selected_feats],
+                encode_min_frequency=encode_min_frequency
+            )
+        ),
+        8: (
+            "lr_solidloading",
+            LinearRegression(),
+            param_grid_lr,
+            Preprocessors.impute_1hot(
+                impute_cols=[col for col in selected_feats if col not in cat_cols + [target]],
+                cat_cols=[col for col in cat_cols if col in selected_feats],
+                encode_min_frequency=encode_min_frequency
+            )
+        ),
+
+        9: (
             "nn",
             MLPRegressor(random_state=seed),
             param_grid_nn,
@@ -77,20 +106,27 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
         ),
     }
 
-    # Display model choices
-    print("\nAvailable models:")
-    for k, (name, _, _, _) in options.items():
-        print(f"  [{k}] {name}")
+    model_lookup = {v[0]: v for v in options.values()}
 
-    # Select model
-    try:
-        choice = int(input("\nSelect model by number: "))
-        model_name, model, search_space, selected_preprocessor = options[choice]
-    except (ValueError, KeyError):
-        print("Invalid selection. Exiting.")
-        exit()
+    if model_name is None:
+        # Print options and ask user
+        print("\nAvailable models:")
+        for k, (name, _, _, _) in options.items():
+            print(f"  [{k}] {name}")
+        try:
+            choice = int(input("\nSelect model by number: "))
+            model_name, model, search_space, selected_preprocessor = options[choice]
+        except (ValueError, KeyError):
+            print("Invalid selection. Exiting.")
+            exit()
+    elif isinstance(model_name, int) and model_name in options:
+        model_name, model, search_space, selected_preprocessor = options[model_name]
+    elif isinstance(model_name, str) and model_name in model_lookup:
+        model_name, model, search_space, selected_preprocessor = model_lookup[model_name]
+    else:
+        raise ValueError(f"Invalid model_name: {model_name}")
 
-    # Special case for linear regression: restrict features to 'vf_total'
+        # Special case for LR
     if model_name == "lr":
         selected_feats[:] = [col for col in selected_feats if col == "vf_total"]
 
