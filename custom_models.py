@@ -69,7 +69,7 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
             Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
         7: (
-            "xgb_impute",
+            "xgb_onehot_impute",
             XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1"),
             param_grid_xgb,
             Preprocessors.impute_1hot(

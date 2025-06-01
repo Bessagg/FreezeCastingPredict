@@ -8,7 +8,9 @@ from sklearn.model_selection import GridSearchCV
 from helpers import utils, shap_explainer, custom_features
 from data_parser import DataParser
 import custom_models
-from data.additional_samples import df_gpt
+from data.additional_samples import df_additional_data
+import analysis_model
+from analysis_model import FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 warnings.filterwarnings("ignore", category=Warning)
@@ -134,10 +136,27 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     print("Test Results by Group")
     utils.get_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
 
-    print("Test GPT Data")
-    gpt_preds = best_clf.predict(df_gpt[selected_feats]) * 100
-    utils.get_regression_metrics(gpt_preds, df_gpt[target])
-    utils.get_test_metrics_by_group(df_gpt, gpt_preds, target, ['name_part1'])
+    print("Test additional_data Data")
+    additional_data_preds = best_clf.predict(df_additional_data[selected_feats])
+    utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
+    utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
+    r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
+
+
+    print("*"* 40)
+    metrics_dict = analysis_model.get_pipeline_metrics([best_clf], df_train, df_test, target, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL, selected_pipelines=[model_name])
+    for key in metrics_dict['group_metrics'].keys():
+        print(key, "-"*20, 'topn')
+        print(metrics_dict['group_metrics'][key]['topn'])
+        print(key, "-"*20, 'all')
+        print(metrics_dict['group_metrics'][key]['all'])
+        print('-' * 40)
+    metrics_dict['additonal_metrics'] = pd.DataFrame([{
+        "r2": r2_additional_data,
+        "mae": mae_additional_data,
+        "mse": mse_additional_data,
+        "mape": mape_additional_data
+    }])
 
     print("Training Results")
     r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
@@ -193,19 +212,21 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
 
     print("Finished")
 
+    return metrics_dict
+
 
 if __name__ == "__main__":
     shap_opt=0
     """Running all possible pipeline trains by index"""
     if __name__ == "__main__":
         model_names =  [
-            # "catb_onehot[selected]",
+            "catb_onehot[selected]",
             # "catb_native",
             # "catb_onehot_impute",
             # "xgb_onehot", "xgb_impute",
             # "lr",
-            "lr_solidloading",
-            "rf"
+            #"lr_solidloading",
+            #"rf"
                         ]
         for model_name in model_names:
             print(f"\n=== Training with model: {model_name} ===")

@@ -462,3 +462,8 @@ dseek_data = [
 # Create DataFrame
 df_dseek = pd.DataFrame(dseek_data)
 df_gpt = pd.DataFrame(gpt_data)
+# Concatenate DataFrames
+df_additional_data = pd.concat([df_dseek, df_gpt], ignore_index=True)
+
+# Remove duplicates based on 'doi' and 'porosity'
+df_combined = df_additional_data.drop_duplicates(subset=["doi", "porosity"], keep="last")

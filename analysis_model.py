@@ -1,5 +1,4 @@
 from typing import List, Dict, Optional
-
 from helpers.custom_features import add_material_novelty_feature, add_bin_material_frequency
 from helpers.utils import get_regression_metrics
 from data_parser import DataParser
@@ -16,7 +15,12 @@ from matplotlib.colors import Normalize, LinearSegmentedColormap
 from scipy.interpolate import griddata
 import matplotlib.ticker as ticker
 
+# glovan environemnt features : used for analysis after train
+FEATURE_SET = "reduced_feats"
+FEATURES_TO_ANALYZE = ["material_group", "name_part1", "name_fluid1", "name_part1_novel_in_test", "name_part1_freq_bin", "year"]
+COLUMNS_NOT_NULL = ["name_part1", "name_fluid1", "vf_total", "material_group"]
 # Suppress warnings
+
 warnings.filterwarnings("ignore")
 pd.set_option('display.max_columns', None)  # Shows all columns
 pd.set_option('display.width', 1000)      # Widens the display to prevent wrapping
@@ -305,7 +309,7 @@ def compute_overall_metrics(pipeline, df: pd.DataFrame, target: str) -> Dict:
     Predict and compute regression metrics on a single dataframe.
     Returns a dict with r2, mae, mse, mape, and formatted p-value.
     """
-    preds = pipeline.predict(df) * 100
+    preds = pipeline.predict(df)
     true = df[target]
     r2, mae, mse, mape = get_regression_metrics(preds, true)
     r2, mae, mse, mape = [safe_round_to_int(x) for x in [r2, mae, mse, mape]]
@@ -415,10 +419,14 @@ def get_pipeline_metrics(pipelines: List, df_train: pd.DataFrame, df_test: pd.Da
         pred_train = pipe.predict(df_train)
         pred_test = pipe.predict(df_test)
 
-        # If most values are in [0, 1], assume it's not in percentage and scale
-        if (pred_train < 1.5).mean() > 0.9 and (pred_test < 1.5).mean() > 0.9:
-            pred_train *= 100
-            pred_test *= 100
+        # # If most values are in [0, 1], assume it's not in percentage and scale
+        # if (pred_train < 1.5).mean() > 0.9 and (pred_test < 1.5).mean() > 0.9:
+        #     pred_train *= 100
+        #     pred_test *= 100
+        #     if df_train[target].max() < 1.5 and df_test[target].max() < 1.5:
+        #         df_train[target] *= 100
+        #         df_test[target] *= 100
+
 
         # Add predictions to copies of the DataFrames
         df_train_copy = df_train.copy()
@@ -451,11 +459,10 @@ def get_pipeline_metrics(pipelines: List, df_train: pd.DataFrame, df_test: pd.Da
             # Group-wise metrics
             feat_dict = {}
             for feat in features_to_analyze:
-                feat_dict[feat] = {
-                    'topn': compute_group_metrics(df_train_copy, df_test_copy, target, feat, top_n=5),
-                    'all': compute_group_metrics(df_train_copy, df_test_copy, target, feat)
-                }
-            group[pipe.name] = feat_dict
+                feat_dict[feat] = {}
+                feat_dict[feat]["topn"] = compute_group_metrics(df_train_copy, df_test_copy, target, feat, top_n=5)
+                feat_dict[feat]["all"] =  compute_group_metrics(df_train_copy, df_test_copy, target, feat)
+            group = feat_dict
 
     return {
         'overall_metrics': pd.DataFrame(overall),
@@ -482,7 +489,7 @@ def add_predictions_and_errors(df_test: pd.DataFrame, pipelines: List, target_co
     """
     df_result = df_test.copy()
     for pipeline in pipelines:
-        y_true = df_result[target_column]
+        y_true = df_result[target_column]*100
         y_pred = pipeline.predict(df_result)*100
 
         df_result[f"{pipeline.name}_prediction"] = y_pred
@@ -509,9 +516,9 @@ if __name__ == "__main__":
     print("metrics:", metrics_dict.keys())
     for key in metrics_dict['group_metrics']['catb'].keys():
         print(key, 'topn')
-        print(metrics_dict['group_metrics']['catb'][key]['topn'])
+        print(metrics_dict['group_metrics']['catb']['topn'])
         print(key, 'all')
-        print(metrics_dict['group_metrics']['catb'][key]['all'])
+        print(metrics_dict['group_metrics']['catb']['all'])
         print('-'*40)
 
     # Get predictions and errors in dataframe
@@ -523,11 +530,12 @@ if __name__ == "__main__":
     prediction_col = f"{selected_model}_prediction"
     true_y = df_test[parser.target]
     pred_y = df_test[prediction_col]
+    df_test[parser.target] = df_test[parser.target]*100
     error = pred_y - true_y
 
     plot_prediction_performance(true_y, pred_y, error=df_test.get(f"{selected_model}_mae"), title=selected_model)
     plot_error_distribution(df_test, error)
-    plot_prediction_performance_by_group(true_y, pred_y, df_test['material_group'])
+    plot_prediction_performance_by_group(true_y*100, pred_y*100, df_test['material_group'])
     plot_error_distribution_by_group(df_test, error, 'material_group')
 
 
