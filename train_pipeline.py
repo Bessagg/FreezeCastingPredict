@@ -5,6 +5,8 @@ import numpy as np
 import warnings
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
+
+import helpers.metrics_utils
 from helpers import utils, shap_explainer, custom_features
 from data_parser import DataParser
 import custom_models
@@ -134,13 +136,13 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     test_preds = best_clf.predict(df_test[selected_feats])
 
     print("Test Results by Group")
-    utils.get_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
+    helpers.get_metrics.get_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
 
     print("Test additional_data Data")
     additional_data_preds = best_clf.predict(df_additional_data[selected_feats])
-    utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
-    utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
-    r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
+    helpers.get_metrics.get_regression_metrics(additional_data_preds, df_additional_data[target])
+    helpers.get_metrics.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
+    r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = helpers.get_metrics.get_regression_metrics(additional_data_preds, df_additional_data[target])
 
 
     print("*"* 40)
@@ -159,11 +161,11 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     }])
 
     print("Training Results")
-    r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
+    r2_train, mae_train, mse_train, mape_train = helpers.get_metrics.get_regression_metrics(train_preds, df_train[target])
     print(f"R²: {r2_train}, MAE: {mae_train}, MSE: {mse_train}, MAPE: {mape_train}")
 
     print("\nTest Results")
-    r2, mae, mse, mape = utils.get_regression_metrics(test_preds, df_test[target])
+    r2, mae, mse, mape = helpers.get_metrics.get_regression_metrics(test_preds, df_test[target])
     print(f"R²: {r2}, MAE: {mae}, MSE: {mse}, MAPE: {mape}")
 
     models_folder = f"pipe/{feats_name}"

@@ -1,6 +1,6 @@
 from typing import List, Dict, Optional
 from helpers.custom_features import add_material_novelty_feature, add_bin_material_frequency
-from helpers.utils import get_regression_metrics
+from helpers.metrics_utils import get_regression_metrics
 from data_parser import DataParser
 import warnings
 import glob
