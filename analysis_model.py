@@ -1,12 +1,11 @@
-from typing import List, Dict, Optional
+from typing import List, Dict
 from helpers.custom_features import add_material_novelty_feature, add_bin_material_frequency
-from helpers.metrics_utils import get_regression_metrics
+from helpers.metrics_utils import compute_overall_metrics, compute_group_metrics
 from data_parser import DataParser
 import warnings
 import glob
 import os
 from scipy.stats import kstest
-from sklearn.metrics import r2_score
 import seaborn as sns
 import matplotlib.pyplot as plt
 import numpy as np
@@ -303,68 +302,6 @@ def load_pipelines_from_dir(base_dir: str) -> List[str]:
 #     """
 #     parser = DataParser()
 #     return [parser.load_pipeline(p) for p in paths]
-
-def compute_overall_metrics(pipeline, df: pd.DataFrame, target: str) -> Dict:
-    """
-    Predict and compute regression metrics on a single dataframe.
-    Returns a dict with r2, mae, mse, mape, and formatted p-value.
-    """
-    preds = pipeline.predict(df)
-    true = df[target]
-    r2, mae, mse, mape = get_regression_metrics(preds, true)
-    r2, mae, mse, mape = [safe_round_to_int(x) for x in [r2, mae, mse, mape]]
-
-    p_val = r2_score(true, preds)
-    return {
-        "r2": r2,
-        "mae": mae,
-        "mse": mse,
-        "mape": mape,
-    }
-
-def compute_group_metrics(df_train: pd.DataFrame, df_test: pd.DataFrame, target: str,
-        group_feature: str, top_n: Optional[int] = None) -> pd.DataFrame:
-    """
-    Compute regression metrics per category of a group feature for both train and test sets.
-
-    Parameters:
-        df_train (pd.DataFrame): DataFrame with train true and predicted values.
-        df_test (pd.DataFrame): DataFrame with test true and predicted values.
-        target (str): Name of the target column (true values).
-        group_feature (str): Feature to group by.
-        top_n (int, optional): Top N most frequent categories to evaluate. If None, use all.
-
-    Returns:
-        pd.DataFrame: Metrics for each category in train/test split.
-    """
-    counts = df_train[group_feature].value_counts() + df_test[group_feature].value_counts()
-    categories = counts.index if top_n is None else counts.nlargest(top_n).index
-    records = []
-
-    for cat in categories:
-        record = {group_feature: cat}
-
-        for split_name, df in [("train", df_train), ("test", df_test)]:
-            mask = df[group_feature] == cat
-            if mask.sum() == 0:
-                record[f"{split_name}_r2"] = None
-                record[f"{split_name}_mae"] = None
-                record[f"{split_name}_mse"] = None
-                record[f"{split_name}_mape"] = None
-                record[f"{split_name}_count"] = 0
-                continue
-
-            y_true = df.loc[mask, target]
-            y_pred = df.loc[mask, "prediction"]
-            r2, mae, mse, mape = [safe_round_to_int(x) for x in get_regression_metrics(y_pred, y_true, opt_print=False)]
-            record[f"{split_name}_r2"] = r2
-            record[f"{split_name}_mae"] = mae
-            record[f"{split_name}_mse"] = mse
-            record[f"{split_name}_mape"] = mape
-            record[f"{split_name}_count"] = mask.sum()
-
-        records.append(record)
-    return pd.DataFrame.from_records(records)
 
 
 def filter_null_mask_by_type(df: pd.DataFrame, columns_not_null: List[str], selected_feats: List[str], filter_type: str) -> pd.DataFrame:
