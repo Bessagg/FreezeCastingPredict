@@ -395,7 +395,7 @@ class ShapPlotter:
                 save_path = f"{dirpath}/{feature}.{self.plt_fmt}"
                 plt.tight_layout()
                 plt.savefig(save_path, bbox_inches="tight", dpi=300)
-                print(f"Saved: {save_path}")
+                # print(f"Saved: {save_path}")
             else:
                 plt.show()
 

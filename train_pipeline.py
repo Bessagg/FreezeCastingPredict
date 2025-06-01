@@ -66,6 +66,9 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
 
     selected_feats = parser.feats_dict[feats_name]
     selected_feats.remove(target)
+    if model_name == 'lr_solidloading':
+        print("Using only Solid Loading feature for lr_solidloading model")
+        selected_feats = ['vf_total']
 
     num_cols = [x for x in parser.all_num_cols if x in selected_feats and x != target]
     cat_cols = [x for x in parser.all_cat_cols if x in selected_feats and x != target]
@@ -80,15 +83,15 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         print(f'train and test file not found in data/{feats_name}')
         sys.exit(1)
 
+    if model_name == "lr_solidloading":
+        print(model_name, "selected. Removing other features except Solid Loading")
+        selected_feats = ['vf_total']
+
     model, search_space, selected_preprocessor, model_name = custom_models.get_model_by_name(
         seed, cat_cols, selected_feats, target, encode_min_frequency, model_name
     )
 
-    if model_name == "lr_solidloading":
-        print(model_name, "selected. Removing other features except Solid Loading")
-        selected_feats = 'vf_total'
-
-    selected_preprocessor.fit(df_train[selected_feats], df_train[target])
+    # selected_preprocessor.fit(df_train[selected_feats], df_train[target])
     pipe = Pipeline([
         ('preprocess', selected_preprocessor),
         ('model', model)
@@ -99,10 +102,10 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     print("Search space:", search_space)
     print("Fitting Grid...")
     start = time.time()
-    if model_name.startswith('catb_native'):
+    if model_name == 'catb_native':
         cat_feature_indices = [df_train[selected_feats].columns.get_loc(col) for col in cat_cols]
-        df_train[cat_cols] = df_train[cat_cols].fillna("None")
-        df_test[cat_cols] = df_test[cat_cols].fillna("None")
+        df_train[cat_cols] = df_train[cat_cols].fillna("None").astype(str)
+        df_test[cat_cols] = df_test[cat_cols].fillna("None").astype(str)
         grid = GridSearchCV(pipe, search_space, cv=cv, scoring='r2', verbose=0)
         grid.fit(df_train[selected_feats], df_train[target], model__cat_features=cat_feature_indices)
     else:
@@ -129,12 +132,12 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     test_preds = best_clf.predict(df_test[selected_feats])
 
     print("Test Results by Group")
-    utils.print_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
+    utils.get_test_metrics_by_group(df_test, test_preds, target, ['name_part1_freq_bin', 'year'])
 
     print("Test GPT Data")
     gpt_preds = best_clf.predict(df_gpt[selected_feats]) * 100
     utils.get_regression_metrics(gpt_preds, df_gpt[target])
-    utils.print_test_metrics_by_group(df_gpt, gpt_preds, target, ['name_part1'])
+    utils.get_test_metrics_by_group(df_gpt, gpt_preds, target, ['name_part1'])
 
     print("Training Results")
     r2_train, mae_train, mse_train, mape_train = utils.get_regression_metrics(train_preds, df_train[target])
@@ -185,24 +188,25 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Disp. wf.")
         shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Solid Diameter")
         shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Temp. Cold")
-
-
         shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="material_group_Polymer")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
+        # shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
 
     print("Finished")
 
 
 if __name__ == "__main__":
-    shap_opt=1
-    """Train single pipeline"""
-    # train_model()
-
+    shap_opt=0
     """Running all possible pipeline trains by index"""
     if __name__ == "__main__":
-        model_names =  ["catb_native", "catb_native_impute", "catb_onehot[selected]",
-            "xgb_onehot", "xgb_impu",
-            "lr", "lr_solidloading","rf"]
+        model_names =  [
+            # "catb_onehot[selected]",
+            # "catb_native",
+            # "catb_onehot_impute",
+            # "xgb_onehot", "xgb_impute",
+            # "lr",
+            "lr_solidloading",
+            "rf"
+                        ]
         for model_name in model_names:
             print(f"\n=== Training with model: {model_name} ===")
             train_model(model_name=model_name, feats_name="reduced_feats", shap_opt=shap_opt)

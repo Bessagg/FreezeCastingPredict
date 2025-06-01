@@ -30,39 +30,46 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
       - selected_preprocessor: Associated preprocessor object.
       - model_name (str): Selected model's name.
       """
+    # Special case for LR
+    if model_name == "lr_solidloading":
+        selected_feats = ['vf_total']
+        cat_cols = []
     num_cols = [col for col in selected_feats if col not in cat_cols + [target]]
 
     options = {
         1: (
-            "catb_native",
+            "catb_native",  # onehot not used
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
             Preprocessors.opd()
         ),
         2: (
-            "catb_native_impute",
+            "catb_native_impute", # not working, not even with correct preprocessor. catb is a pain with sklearn pipelines.
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
-            Preprocessors.impute_1hot(
-                impute_cols=num_cols,
-                cat_cols=cat_cols,
-                encode_min_frequency=encode_min_frequency
-            )
+            Preprocessors.opd()
         ),
-        3: (
-            "catb_onehot[selected]",
+        4: (
+            "catb_onehot[selected]",  # onehot used
             CatBoostRegressor(random_state=seed, logging_level='Silent'),
             param_grid_catb,
             Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
-        4: (
+        5: (
+            "catb_onehot_impute",  # onehot used
+            CatBoostRegressor(random_state=seed, logging_level='Silent'),
+            param_grid_catb,
+            Preprocessors.impute_1hot(impute_cols=num_cols,
+                                      cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
+        ),
+        6: (
             "xgb_onehot",
             XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1"),
             param_grid_xgb,
             Preprocessors.onehot(cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
-        5: (
-            "xgb_impu",
+        7: (
+            "xgb_impute",
             XGBRegressor(random_state=seed, logging_level='Silent', tree_method="gpu_hist", device="cuda:1"),
             param_grid_xgb,
             Preprocessors.impute_1hot(
@@ -71,13 +78,13 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
                 encode_min_frequency=encode_min_frequency
             )
         ),
-        6: (
+        8: (
             "rf",
             RandomForestRegressor(random_state=seed),
             param_grid_rf,
             Preprocessors.impute_1hot(impute_cols=num_cols, cat_cols=cat_cols, encode_min_frequency=encode_min_frequency)
         ),
-        7: (
+        9: (
             "lr",
             LinearRegression(),
             param_grid_lr,
@@ -87,18 +94,14 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
                 encode_min_frequency=encode_min_frequency
             )
         ),
-        8: (
+        10: (
             "lr_solidloading",
             LinearRegression(),
             param_grid_lr,
-            Preprocessors.impute_1hot(
-                impute_cols=[col for col in selected_feats if col not in cat_cols + [target]],
-                cat_cols=[col for col in cat_cols if col in selected_feats],
-                encode_min_frequency=encode_min_frequency
-            )
+            Preprocessors.impute(num_cols)
         ),
 
-        9: (
+        0: (
             "nn",
             MLPRegressor(random_state=seed),
             param_grid_nn,
@@ -126,9 +129,7 @@ def get_model_by_name(seed, cat_cols, selected_feats, target, encode_min_frequen
     else:
         raise ValueError(f"Invalid model_name: {model_name}")
 
-        # Special case for LR
-    if model_name == "lr":
-        selected_feats[:] = [col for col in selected_feats if col == "vf_total"]
+
 
     print("Model selected:", model_name)
     return model, search_space, selected_preprocessor, model_name

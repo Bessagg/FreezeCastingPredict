@@ -54,6 +54,27 @@ class Preprocessors:
         return preprocessor
 
     @staticmethod
+    def impute(num_cols):
+        name = 'impute'
+        """Define preprocessing steps"""
+        num_transformer = Pipeline([
+            ('imputer', SimpleImputer(strategy='mean')),  # Impute missing values with mean. Best mean
+            # ('scaler', StandardScaler())  # Scale the numerical values
+        ])
+
+        # column transformer to combine the numerical and categorical pipelines
+        # # min_frequency: if value is int categories with a smaller cardinality will be considered infrequent. If float categories with a smaller cardinality than min_frequency * n_samples will be considered infrequent # handle_unkown: 'ignore' or , ‘infrequent_if_exist’
+
+        preprocessor = ColumnTransformer(verbose_feature_names_out=False,
+                                         transformers=[
+                                             ('num', num_transformer, num_cols),
+                                         ],
+                                         remainder='passthrough'
+                                         )
+        preprocessor.name = name
+        return preprocessor
+
+    @staticmethod
     def pass_all():
         name = 'pass'
         """Define preprocessing steps"""
