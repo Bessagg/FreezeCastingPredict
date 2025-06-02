@@ -5,13 +5,11 @@ import numpy as np
 import warnings
 from sklearn.pipeline import Pipeline
 from sklearn.model_selection import GridSearchCV
-
 import helpers.metrics_utils
 from helpers import utils, shap_explainer, custom_features
 from data_parser import DataParser
 import custom_models
 from data.additional_samples import df_additional_data
-import analysis_model
 from analysis_model import FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL
 
 warnings.filterwarnings("ignore", category=DeprecationWarning)
@@ -146,7 +144,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
 
 
     print("*"* 40)
-    metrics_dict = analysis_model.get_pipeline_metrics([best_clf], df_train, df_test, target, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL, selected_pipelines=[model_name])
+    metrics_dict = helpers.metrics_utils.get_pipeline_metrics([best_clf], df_train, df_test, target, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL, selected_pipelines=[model_name])
     for key in metrics_dict['group_metrics'].keys():
         print(key, "-"*20, 'topn')
         print(metrics_dict['group_metrics'][key]['topn'])

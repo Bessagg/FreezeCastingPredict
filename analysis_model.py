@@ -1,6 +1,5 @@
-from typing import List, Dict
+from typing import List
 from helpers.custom_features import add_material_novelty_feature, add_bin_material_frequency
-from helpers.metrics_utils import compute_overall_metrics, compute_group_metrics
 from data_parser import DataParser
 import warnings
 import glob
@@ -13,6 +12,7 @@ import pandas as pd
 from matplotlib.colors import Normalize, LinearSegmentedColormap
 from scipy.interpolate import griddata
 import matplotlib.ticker as ticker
+from helpers.metrics_utils import get_pipeline_metrics
 
 # glovan environemnt features : used for analysis after train
 FEATURE_SET = "reduced_feats"
@@ -29,27 +29,6 @@ dpi=200
 images_dir = f'images/results/'
 
 import pandas as pd
-
-
-def print_deepest_keys(d, path=()):
-    if isinstance(d, dict):
-        for k, v in d.items():
-            print_deepest_keys(v, path + (k,))
-    elif isinstance(d, list):
-        for i, item in enumerate(d):
-            print_deepest_keys(item, path + (f"[{i}]",))
-    else:
-        print(" -> ".join(path))
-        print(d)
-        print('-' * 60)
-
-def safe_round_to_int(x):
-    if pd.isna(x):
-        return x
-    try:
-        return int(round(float(x)))
-    except Exception:
-        return x
 
 
 def plot_error_distribution_by_group(df, error: pd.Series, group_column, title=""):
@@ -249,12 +228,6 @@ def plot_error_distribution(df, error: pd.Series, title=""):
     plt.show()
 
 
-
-def filter_topn_categories(df, column_name, n=3):
-    top3_group = df[column_name].value_counts().iloc[:n].index.to_list()
-    return df[(df[column_name].isin(top3_group))]
-
-
 def ks_test_group(group_df, column, distribution='norm'):
     # Perform the one-sample K-S test
     statistic, p_value = kstest(group_df[column], distribution)
@@ -304,28 +277,6 @@ def load_pipelines_from_dir(base_dir: str) -> List[str]:
 #     return [parser.load_pipeline(p) for p in paths]
 
 
-def filter_null_mask_by_type(df: pd.DataFrame, columns_not_null: List[str], selected_feats: List[str], filter_type: str) -> pd.DataFrame:
-    """
-    Filters DataFrame based on null values in selected features:
-    - 'no_nan': Rows where all selected features are non-null AND columns_not_null are non-null.
-    - 'only_nans': Rows where some selected features are null, but columns_not_null are non-null.
-                   Also ensures there is at least one NaN in selected_feats to qualify.
-    """
-    # First, ensure all 'columns_not_null' are non-null for both types
-    df_base = df[df[columns_not_null].notna().all(axis=1)].copy()
-
-    if filter_type == 'no_nan':
-        # All selected features must be non-null
-        return df_base[df_base[selected_feats].notna().all(axis=1)]
-    elif filter_type == 'only_nans':
-        # At least one selected feature is non-null (to ensure the row is relevant to the model)
-        # AND at least one selected feature is null
-        has_some_nans = df_base[selected_feats].isna().any(axis=1)
-        has_some_non_nans = df_base[selected_feats].notna().any(axis=1)
-        return df_base[has_some_nans & has_some_non_nans] # Includes rows where some are nan, some are not
-    else:
-        raise ValueError("filter_type must be 'no_nan' or 'only_nans'")
-
 def filter_null_mask(df: pd.DataFrame, required_cols: List[str], any_of: List[str]) -> pd.DataFrame:
     """
     Returns rows where all required_cols are non-null, and at least one column in any_of is non-null.
@@ -333,80 +284,6 @@ def filter_null_mask(df: pd.DataFrame, required_cols: List[str], any_of: List[st
     mask_required = df[required_cols].notna().all(axis=1)
     mask_any = df[any_of].notna().any(axis=1)
     return df[mask_required & mask_any]
-
-def get_pipeline_metrics(pipelines: List, df_train: pd.DataFrame, df_test: pd.DataFrame, target: str,
-                         features_to_analyze: List[str], columns_not_null: List[str], selected_pipelines=None) -> Dict[str, object]:
-    """
-    Evaluate multiple pipelines on various metrics.
-    Returns:
-        - 'overall_metrics': DataFrame for all pipelines
-        - 'no_nan_metrics': DataFrame for selected_pipelines no-NaN subset
-        - 'only_nans_metrics': DataFrame for selected_pipelines only-NaNs subset
-        - 'group_metrics': nested dict {pipeline: {feature: {'topn': df, 'all': df}}}
-    """
-    if selected_pipelines is None:
-        selected_pipelines = ["catb"]
-
-    overall = []
-    group = {}
-    no_nan, only_nans = [], []
-
-    for pipe in pipelines:
-        # Predict and scale if necessary
-        pred_train = pipe.predict(df_train)
-        pred_test = pipe.predict(df_test)
-
-        # # If most values are in [0, 1], assume it's not in percentage and scale
-        # if (pred_train < 1.5).mean() > 0.9 and (pred_test < 1.5).mean() > 0.9:
-        #     pred_train *= 100
-        #     pred_test *= 100
-        #     if df_train[target].max() < 1.5 and df_test[target].max() < 1.5:
-        #         df_train[target] *= 100
-        #         df_test[target] *= 100
-
-
-        # Add predictions to copies of the DataFrames
-        df_train_copy = df_train.copy()
-        df_test_copy = df_test.copy()
-        df_train_copy["prediction"] = pred_train
-        df_test_copy["prediction"] = pred_test
-
-        # Overall metrics
-        tr = compute_overall_metrics(pipe, df_train_copy, target)
-        te = compute_overall_metrics(pipe, df_test_copy, target)
-        overall.append({
-            'pipeline': pipe.name,
-            **{f'train_{k}': round(v, 0) for k, v in tr.items()},
-            **{f'test_{k}': round(v, 0) for k, v in te.items()}
-        })
-
-        # Only for selected pipelines
-        if pipe.name in selected_pipelines:
-            for mode in ['no_nan', 'only_nans']:
-                subset = filter_null_mask_by_type(df_test_copy, columns_not_null, pipe.selected_feats, mode)
-                if not subset.empty:
-                    m = compute_overall_metrics(pipe, subset, target)
-                    entry = {
-                        'pipeline': pipe.name,
-                        'count': len(subset),
-                        **{f'{mode}_{k}': v for k, v in m.items()}
-                    }
-                    (no_nan if mode == 'no_nan' else only_nans).append(entry)
-
-            # Group-wise metrics
-            feat_dict = {}
-            for feat in features_to_analyze:
-                feat_dict[feat] = {}
-                feat_dict[feat]["topn"] = compute_group_metrics(df_train_copy, df_test_copy, target, feat, top_n=5)
-                feat_dict[feat]["all"] =  compute_group_metrics(df_train_copy, df_test_copy, target, feat)
-            group = feat_dict
-
-    return {
-        'overall_metrics': pd.DataFrame(overall),
-        'no_nan_metrics': pd.DataFrame(no_nan),
-        'only_nans_metrics': pd.DataFrame(only_nans),
-        'group_metrics': group
-    }
 
 
 def add_predictions_and_errors(df_test: pd.DataFrame, pipelines: List, target_column: str) -> pd.DataFrame:
