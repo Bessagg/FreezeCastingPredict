@@ -40,7 +40,7 @@ gpt_data = [
         "porosity": 54.11
     },
     {
-        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁₂ (LTO)",
+        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
         "journal": "Int. J. Appl. Ceram. Tech.",
         "year": 2025,
         "doi": "10.1111/ijac.14883",
@@ -57,7 +57,7 @@ gpt_data = [
         "porosity": 50.00
     },
     {
-        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁₂ (LTO)",
+        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
         "journal": "Int. J. Appl. Ceram. Tech.",
         "year": 2025,
         "doi": "10.1111/ijac.14883",
@@ -91,7 +91,7 @@ gpt_data = [
         "porosity": 97.90
     },
     {
-        "name_part1": "Al₂O₃",
+        "name_part1": "Al2O3",
         "name_fluid1": "TBA",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
@@ -124,7 +124,7 @@ gpt_data = [
     },
 
     {
-        "name_part1": "Al₂O₃",
+        "name_part1": "Al2O3",
         "name_fluid1": "TBA",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
@@ -167,7 +167,7 @@ dseek_data = [
         "journal": "Scientific Reports",
         "year": 2020,
         "doi": "10.1038/s41598-020-64757-z",
-        "name_part1": "HAp",
+        "name_part1": "HAP",
         "name_fluid1": "camphene",
         "material_group": "Ceramic",
         "dia_part_1": 0.02,
@@ -186,7 +186,7 @@ dseek_data = [
         "journal": "Scientific Reports",
         "year": 2020,
         "doi": "10.1038/s41598-020-64757-z",
-        "name_part1": "HAp",
+        "name_part1": "HAP",
         "name_fluid1": "camphene",
         "material_group": "Ceramic",
         "dia_part_1": 0.02,
@@ -205,7 +205,7 @@ dseek_data = [
         "journal": "Ceramics International",
         "year": 2019,
         "doi": "10.1016/j.ceramint.2019.03.004",
-        "name_part1": "HAp",
+        "name_part1": "HAP",
         "name_fluid1": "camphene",
         "material_group": "Ceramic",
         "dia_part_1": 0.02,
@@ -243,7 +243,7 @@ dseek_data = [
         "journal": "Journal of Biomedical Materials Research Part A",
         "year": 2023,
         "doi": "10.1002/jbm.a.37645",
-        "name_part1": "HAp",
+        "name_part1": "HAP",
         "name_fluid1": "water",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
@@ -262,8 +262,8 @@ dseek_data = [
         "journal": "Journal of Biomedical Materials Research Part A",
         "year": 2023,
         "doi": "10.1002/jbm.a.37645",
-        "name_part1": "HAp/TiO₂",
-        "name_fluid1": "water",
+        "name_part1": "HAP",
+        "name_part2": "TiO2",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
@@ -281,8 +281,8 @@ dseek_data = [
         "journal": "Journal of Biomedical Materials Research Part A",
         "year": 2023,
         "doi": "10.1002/jbm.a.37645",
-        "name_part1": "HAp/TiO₂",
-        "name_fluid1": "water",
+        "name_part1": "HAP",
+        "name_part2": "TiO2",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
@@ -300,7 +300,8 @@ dseek_data = [
         "journal": "Journal of Biomedical Materials Research Part A",
         "year": 2023,
         "doi": "10.1002/jbm.a.37645",
-        "name_part1": "HAp/TiO₂",
+        "name_part1": "HAP",
+        "name_part2": "TiO2",
         "name_fluid1": "water",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
@@ -338,7 +339,7 @@ dseek_data = [
         "journal": "Journal of Materials Research",
         "year": 2021,
         "doi": "10.1557/jmr.2021.82",
-        "name_part1": "ZrO₂",
+        "name_part1": "ZrO2",
         "name_fluid1": "water",
         "material_group": "Ceramic",
         "dia_part_1": 0.50,
@@ -358,7 +359,8 @@ dseek_data = [
         "journal": "Ceramics International",
         "year": 2023,
         "doi": "10.1016/j.ceramint.2023.05.123",
-        "name_part1": "HAp/BNNT",
+        "name_part1": "HAP",
+        "name_part2": "BNNT",
         "name_fluid1": "camphene",
         "material_group": "Ceramic Composite",
         "dia_part_1": 0.01,  # BNNT diameter
@@ -373,13 +375,13 @@ dseek_data = [
         "porosity": 72.0  # Avg. from structural analysis :cite[1]
     },
 
-    # Al₂O₃ scaffolds with lamellar pores (Sci. Direct 2025)
+    # Al2O3 scaffolds with lamellar pores (Sci. Direct 2025)
     {
         "title": "Effect of pore architecture on quasistatic compressive deformation of freeze-cast porous alumina scaffolds",
         "journal": "Journal of the European Ceramic Society",
         "year": 2025,
         "doi": "10.1016/j.jeurceramsoc.2025.01.045",
-        "name_part1": "Al₂O₃ (BP)",
+        "name_part1": "Al2O3",  # BP
         "name_fluid1": "water",
         "material_group": "Ceramic",
         "dia_part_1": 8.1,  # Bigger platelets
@@ -387,7 +389,7 @@ dseek_data = [
         "name_disp1": "PAA-NH₄",
         "wf_bind_1": np.nan,
         "name_binder1": np.nan,
-        "temp_cold": -196 + 273.15,  # Liquid N₂ cooling
+        "temp_cold": -196 + 273.15,  # Liquid N2 cooling
         "time_sinter_1": 2.0,
         "temp_sinter_1": 1500.0,
         "vf_total": 0.15,  # 15 vol%
@@ -400,7 +402,7 @@ dseek_data = [
         "journal": "Materials",
         "year": 2017,
         "doi": "10.3390/ma10040367",
-        "name_part1": "HAp",
+        "name_part1": "HAP",
         "name_fluid1": "camphene",
         "material_group": "Ceramic",
         "dia_part_1": np.nan,
@@ -415,13 +417,14 @@ dseek_data = [
         "porosity": 65.0  # Mid-range value :cite[8]
     },
 
-    # Magnetic field-assisted Al₂O₃ (J. Mater. Res. 2020)
+    # Magnetic field-assisted Al2O3 (J. Mater. Res. 2020)
     {
         "title": "Design of porous aluminum oxide ceramics using magnetic field-assisted freeze-casting",
         "journal": "Journal of Materials Research",
         "year": 2020,
         "doi": "10.1557/jmr.2020.150",
-        "name_part1": "Al₂O₃/Fe₃O₄",
+        "name_part1": "Al2O3/",
+        "name_part2": "Fe3O₄",
         "name_fluid1": "water",
         "material_group": "Ceramic Composite",
         "dia_part_1": 0.4,  # Typical alumina particle size
@@ -436,13 +439,14 @@ dseek_data = [
         "porosity": 68.0  # Controlled unidirectional pores :cite[3]
     },
 
-    # HAP-TiO₂ composites (J Biomed Mater Res A 2023)
+    # HAP-TiO2 composites (J Biomed Mater Res A 2023)
     {
         "title": "Freeze casting of hydroxyapatite-titania composites for bone substitutes",
         "journal": "Journal of Biomedical Materials Research Part A",
         "year": 2023,
         "doi": "10.1002/jbm.a.37645",
-        "name_part1": "HAp/TiO₂",
+        "name_part1": "HAP",
+        "name_part2": "TiO2",
         "name_fluid1": "water",
         "material_group": "Ceramic Composite",
         "dia_part_1": np.nan,
@@ -466,4 +470,6 @@ df_gpt = pd.DataFrame(gpt_data)
 df_additional_data = pd.concat([df_dseek, df_gpt], ignore_index=True)
 
 # Remove duplicates based on 'doi' and 'porosity'
-df_combined = df_additional_data.drop_duplicates(subset=["doi", "porosity"], keep="last")
+df_additional_data =  df_additional_data.drop_duplicates(subset=["doi", "porosity"], keep="last")
+df_additional_data[['name_disp_1', 'name_part2']] = ""
+df_additional_data['porosity'] = df_additional_data['porosity'] / 100

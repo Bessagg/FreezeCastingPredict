@@ -19,7 +19,7 @@ pd.set_option('display.max_rows', 40)
 pd.set_option('display.width', 600)
 
 
-def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequency=0.04, shap_opt=None):
+def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequency=0.04, shap_opt=None, selected_feats=None):
     """
       Train a regression model pipeline with preprocessing, grid search, and optional SHAP explanation.
 
@@ -55,7 +55,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     }
 
     if feats_name is None:
-        print("\nSelect feature set:")
+        print("\nSelect feature dataset:")
         for k, v in feats_options.items():
             print(f"{k}: {v}")
         while True:
@@ -66,7 +66,12 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
             except (ValueError, KeyError):
                 print("Invalid selection. Please enter 1, 2, or 3.")
 
-    selected_feats = parser.feats_dict[feats_name]
+    if selected_feats:
+        print("Using provided selected features:", selected_feats)
+        selected_feats = selected_feats
+    else:         # Fetch selected_feats from parser dict
+        selected_feats = parser.feats_dict[feats_name]
+
     selected_feats.remove(target)
     if model_name == 'lr_solidloading':
         print("Using only Solid Loading feature for lr_solidloading model")
@@ -139,7 +144,8 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     print("Test additional_data Data")
     additional_data_preds = best_clf.predict(df_additional_data[selected_feats])
     helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
-    helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
+    if 'name_part1' in selected_feats:
+        helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
     r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
 
 
@@ -151,7 +157,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         print(key, "-"*20, 'all')
         print(metrics_dict['group_metrics'][key]['all'])
         print('-' * 40)
-    metrics_dict['additonal_metrics'] = pd.DataFrame([{
+    metrics_dict['additional_metrics'] = pd.DataFrame([{
         "r2": r2_additional_data,
         "mae": mae_additional_data,
         "mse": mse_additional_data,
@@ -173,8 +179,8 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     )
 
     cols_p = np.char.replace(np.array(preprocessor.get_feature_names_out(), dtype=str), 'remainder__', '')
-    train_X_p = pd.DataFrame(preprocessor.transform(df_train[selected_feats]), columns=cols_p)
-    test_X_p = pd.DataFrame(preprocessor.transform(df_test[selected_feats]), columns=cols_p)
+    # train_X_p = pd.DataFrame(preprocessor.transform(df_train[selected_feats]), columns=cols_p)
+    # test_X_p = pd.DataFrame(preprocessor.transform(df_test[selected_feats]), columns=cols_p)
     print("Count of created preprocessed columns:", len(cols_p))
 
     if shap_opt is None:

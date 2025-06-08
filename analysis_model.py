@@ -325,31 +325,32 @@ if __name__ == "__main__":
     df_train, df_test = add_bin_material_frequency(df_train, df_test, feature='name_part1')
     pipelines = load_pipelines_from_dir(f"selected_models/{FEATURE_SET}")
 
-    # Get metric tables
-    metrics_dict = get_pipeline_metrics(pipelines, df_train, df_test, TARGET, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL)
-    print("metrics:", metrics_dict.keys())
-    for key in metrics_dict['group_metrics']['catb'].keys():
-        print(key, 'topn')
-        print(metrics_dict['group_metrics']['catb']['topn'])
-        print(key, 'all')
-        print(metrics_dict['group_metrics']['catb']['all'])
-        print('-'*40)
+
+
+    # # Get metric tables
+    # metrics_dict = get_pipeline_metrics(pipelines, df_train, df_test, TARGET, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL)
+    # print("metrics:", metrics_dict.keys())
+    # for key in metrics_dict['group_metrics'].keys():
+    #     print(key, 'topn')
+    #     print(metrics_dict['group_metrics']['catb']['topn'])
+    #     print(key, 'all')
+    #     print(metrics_dict['group_metrics']['catb']['all'])
+    #     print('-'*40)
 
     # Get predictions and errors in dataframe
     df_test = add_predictions_and_errors(df_test, pipelines, TARGET)
     df_train = add_predictions_and_errors(df_train, pipelines, TARGET)
 
     # --- Performance Plots ---
-    selected_model = 'catb'
+    selected_model = 'catb_onehot[selected]'
     prediction_col = f"{selected_model}_prediction"
     true_y = df_test[parser.target]
     pred_y = df_test[prediction_col]
-    df_test[parser.target] = df_test[parser.target]*100
     error = pred_y - true_y
 
     plot_prediction_performance(true_y, pred_y, error=df_test.get(f"{selected_model}_mae"), title=selected_model)
     plot_error_distribution(df_test, error)
-    plot_prediction_performance_by_group(true_y*100, pred_y*100, df_test['material_group'])
+    plot_prediction_performance_by_group(true_y, pred_y, df_test['material_group'])
     plot_error_distribution_by_group(df_test, error, 'material_group')
 
 

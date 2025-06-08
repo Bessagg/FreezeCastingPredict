@@ -47,6 +47,7 @@ def get_test_metrics_by_group(
           ...
         }
     """
+    df_test = df_test.reset_index(drop=True)
     grouped_metrics = {}
     for col in group_cols:
         metrics_by_value = {}
@@ -63,7 +64,6 @@ def get_test_metrics_by_group(
                 'mape': mape
             }
         grouped_metrics[col] = metrics_by_value
-
     return grouped_metrics
 
 

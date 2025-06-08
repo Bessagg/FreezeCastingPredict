@@ -1,24 +1,17 @@
 import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from sklearn.preprocessing import OneHotEncoder
-import seaborn as sns
+from matplotlib.colors import LinearSegmentedColormap
 import plotly.io as pio
 import data_parser
-import squarify
 import matplotlib.pyplot as plt
 from scipy.stats import f_oneway, ttest_ind, ks_1samp, spearmanr  # For One-way ANOVA (which will compare groups in pairs)
 from scipy.stats import ks_2samp  # Kolmogorov-Smirnov test
-from scipy.stats import kruskal
-from factor_analyzer.factor_analyzer import calculate_bartlett_sphericity
-from factor_analyzer.factor_analyzer import calculate_kmo
 pio.renderers.default = "browser"
 # Show all columns
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 0)
 pd.set_option('display.expand_frame_repr', False)
 pd.set_option("display.max_rows", 30)
-dpi=200
+dpi=300
 
 
 # Load Data
@@ -29,26 +22,101 @@ df_all = pd.read_csv(f'data/df_all_feats.csv')
 pallete = "summer"
 
 # Samples per paper
-samples_per_paper = df_all.groupby('paper_ID').size()
-samples_per_paper = pd.DataFrame(samples_per_paper.sort_values(ascending=False), columns=['values'])
-top3_paper_ids = samples_per_paper.index[0:3]
-top3_papers_doi = df_all[df_all['paper_ID'].isin(top3_paper_ids)].drop_duplicates(subset='paper_ID')[['paper_ID', 'doi']]
-print("Distinct papers", df_all['paper_ID'].nunique())
-# Plot the TreeMap
-plt.figure(figsize=(21, 9))
-ths = 2  # count ths
-# large_rectangles = samples_per_paper[samples_per_paper >= ths]
-samples_per_paper['label'] = ['' if value <= ths else value for value in samples_per_paper['values']]
-colors = sns.color_palette(pallete, len(samples_per_paper['values']))  # Choose a colormap for the TreeMap
-plt.rcParams.update({'font.size': 18})
-plt.yticks(fontsize=18)
+# samples_per_paper = df_all.groupby('paper_ID').size()
+# samples_per_paper = pd.DataFrame(samples_per_paper.sort_values(ascending=False), columns=['values'])
+# top3_paper_ids = samples_per_paper.index[0:3]
+# top3_papers_doi = df_all[df_all['paper_ID'].isin(top3_paper_ids)].drop_duplicates(subset='paper_ID')[['paper_ID', 'doi']]
+# print("Distinct papers", df_all['paper_ID'].nunique())
+# # Plot the TreeMap
+# plt.figure(figsize=(21, 9))
+# ths = 2  # count ths
+# # large_rectangles = samples_per_paper[samples_per_paper >= ths]
+# samples_per_paper['label'] = ['' if value <= ths else value for value in samples_per_paper['values']]
+# colors = sns.color_palette(pallete, len(samples_per_paper['values']))  # Choose a colormap for the TreeMap
+# plt.rcParams.update({'font.size': 18})
+# plt.yticks(fontsize=18)
+# squarify.plot(sizes=samples_per_paper['values'], color=colors, alpha=0.7, label=samples_per_paper['label'])
+# plt.axis('off')
+# plt.savefig(f"images/samples_per_paper.png", bbox_inches='tight', dpi=dpi)
+# plt.show()
 
-squarify.plot(sizes=samples_per_paper['values'], color=colors, alpha=0.7, label=samples_per_paper['label'])
-plt.axis('off')
-plt.savefig(f"images/samples_per_paper.png", bbox_inches='tight', dpi=dpi)
+
+
+# Sample count per paper : by sample count and by country
+import os
+import pandas as pd
+import matplotlib.pyplot as plt
+from matplotlib.colors import LinearSegmentedColormap
+
+# Create output directory
+images_dir = "images/data_analysis"
+os.makedirs(images_dir, exist_ok=True)
+
+#%%  Sample count
+fontsize = 22
+
+#%% Binned Sample Count per Paper
+samples_per_paper = df_all.groupby('paper_ID').size()
+bins = [0, 5, 10, 20, 30, 50, float('inf')]
+labels = ['1–5', '6–10', '11–20', '21–30', '31–50', '51+']
+binned = pd.cut(samples_per_paper, bins=bins, labels=labels, right=True)
+bin_counts = binned.value_counts(sort=False)
+total_samples = samples_per_paper.sum()
+bin_samples = samples_per_paper.groupby(binned).sum()
+bin_percent = (100 * bin_samples / total_samples).round(0).astype(int)
+bin_table = pd.DataFrame({
+    'Sample Count Bin': labels,
+    'Paper Count': bin_counts.values,
+    'Total Samples in Bin': bin_samples.values,
+    'Total % of Samples': [f"{p}%" for p in bin_percent.values]
+})
+print("\n📊 Samples per Paper - Binned Distribution:")
+print(bin_table)
+
+n_bins = len(labels)
+cmap = LinearSegmentedColormap.from_list('green_blue', ["#00427d", "#ffffff", "#00652e"], N=n_bins)
+colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
+
+fig, ax = plt.subplots(figsize=(8, 8))
+bars = ax.barh(bin_table['Sample Count Bin'], bin_table['Total Samples in Bin'], color=colors)
+for bar, pct in zip(bars, bin_percent.values):
+    ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
+            f"{pct}%", va='center', fontsize=fontsize)
+ax.set_xlabel("Total Number of Samples", fontsize=fontsize)
+ax.set_ylabel("Sample Count Bin (per Paper)", fontsize=fontsize)
+ax.set_title("Samples per Paper", fontsize=fontsize)
+ax.tick_params(axis='both', labelsize=fontsize)
+plt.tight_layout()
+plt.savefig(os.path.join(images_dir, "samples_per_paper_binned.png"), dpi=dpi)
+plt.show()
+
+#%% Sample Count per Country
+samples_by_country = df_all['country'].value_counts()
+country_percent = (100 * samples_by_country / len(df_all)).round(0).astype(int)
+country_table = pd.DataFrame({
+    'Country': samples_by_country.index,
+    'Sample Count': samples_by_country.values,
+    'Total % of Samples': [f"{p}%" for p in country_percent.values]
+})
+print("\n🌍 Samples per Country:")
+print(country_table)
+
+fig, ax = plt.subplots(figsize=(8, 8))
+bars = ax.barh(country_table['Country'], country_table['Sample Count'], color="#00427d")
+ax.set_yticklabels(country_table['Country'], fontsize=fontsize)
+ax.set_xlabel("Number of Samples", fontsize=fontsize)
+ax.set_title("Samples by Country", fontsize=fontsize)
+ax.tick_params(axis='x', labelsize=fontsize)
+for bar, pct in zip(bars, country_percent.values):
+    if pct >= 1:
+        ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
+                f"{pct}%", va='center', fontsize=fontsize)
+plt.tight_layout()
+plt.savefig(os.path.join(images_dir, "samples_by_country.png"), dpi=dpi)
 plt.show()
 
 
+#%%
 # Temp sinter
 max_temp_sinter1_row = df_all[df_all['temp_sinter_1'] == df_all['temp_sinter_1'].max()]
 doi_with_max_temp_sinter1 = max_temp_sinter1_row['doi'].values[0]
@@ -295,6 +363,7 @@ for col in df_str.columns:
     ax.xaxis.set_label_text("")
     f.tight_layout()
     f.subplots_adjust(top=0.9)
+    plt.tight_layout()  # Ensure everything fits well within the plot
     plt.savefig(f"images/Count of {col}.png", dpi=dpi)
 
     plt.show()
@@ -353,6 +422,7 @@ for group_col in categorical_columns:
 
     # Adjust spacing to ensure title doesn't overlap
     g.fig.subplots_adjust(top=0.80)  # Increase space above plot for title
+    plt.tight_layout()  # Ensure everything fits well within the plot
     plt.show()
     plt.savefig(f"images/Count of {group_col}.png", dpi=dpi)
 
