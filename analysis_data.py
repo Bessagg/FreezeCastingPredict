@@ -75,6 +75,8 @@ print(bin_table)
 
 n_bins = len(labels)
 cmap = LinearSegmentedColormap.from_list('green_blue', ["#00427d", "#ffffff", "#00652e"], N=n_bins)
+colors2 = ["#00427d", "#00652e", "#E84855", "#f9dc5c", "#efbcd5", "#A9F0D1", "#461220", "#A37C40", "#BFCDE0", "#E3D26F"]
+
 colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
 
 fig, ax = plt.subplots(figsize=(8, 8))
@@ -83,7 +85,7 @@ for bar, pct in zip(bars, bin_percent.values):
     ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
             f"{pct}%", va='center', fontsize=fontsize)
 ax.set_xlabel("Total Number of Samples", fontsize=fontsize)
-ax.set_ylabel("Sample Count Bin (per Paper)", fontsize=fontsize)
+ax.set_ylabel("Number of samples reported per paper", fontsize=fontsize)
 ax.set_title("Samples per Paper", fontsize=fontsize)
 ax.tick_params(axis='both', labelsize=fontsize)
 plt.tight_layout()
@@ -130,6 +132,88 @@ selected_nulls = nulls[parser.all_feats]
 print(f"\nPercentage of Null Values:\n", round(df_all.isnull().mean() * 100, 2), "%")
 zero_nan_percentage = ((df_all['cooling_rate'].isna() | (df_all['cooling_rate'] == 0)).mean()) * 100
 print(f"Percentage of 0 or NaN in 'cooling_rate': {zero_nan_percentage:.2f}%")
+
+
+
+# %%
+# Year Plot
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+
+def plot_samples_and_new_materials(df, feature, top_n=5, output_path=None, dpi=dpi, n_years=15):
+    df = df[['year', feature]].dropna()
+    df['year'] = df['year'].astype(int)
+    df = df[df['year'].isin(sorted(df['year'].unique())[-n_years:])]
+
+    top_materials = df[feature].value_counts().nlargest(top_n).index
+    df['material_grouped'] = df[feature].where(df[feature].isin(top_materials), 'Other')
+
+    year_material_counts = df.groupby(['year', 'material_grouped']).size().unstack(fill_value=0).sort_index()
+
+    # Sort materials by total count descending so first color matches biggest count
+    total_counts = year_material_counts.sum(axis=0).sort_values(ascending=False)
+    year_material_counts = year_material_counts[total_counts.index]
+
+    seen = set()
+    pct_new_by_year = {}
+    for year in sorted(df['year'].unique()):
+        current = set(df[df['year'] == year][feature])
+        new = current - seen
+        pct_new_by_year[year] = 100 * len(new) / len(current) if current else 0
+        seen |= current
+    pct_new_series = pd.Series(pct_new_by_year)
+
+    n_colors = min(top_n + 1, len(year_material_counts.columns))
+    base_colors = colors2[:n_colors]
+    if n_colors > len(colors2):
+        base_colors += sns.color_palette('tab10', n_colors=n_colors - len(colors2))
+
+    fig, ax1 = plt.subplots(figsize=(16, 8))
+
+    bars = year_material_counts.plot(kind='bar', stacked=True, ax=ax1, width=0.8, color=base_colors, zorder=2)
+
+    x_pos = range(len(year_material_counts.index))
+    y_line = pct_new_series.loc[year_material_counts.index].values  # align index
+
+    line, = ax1.plot(x_pos, y_line, color='black', marker='o', linestyle='-', linewidth=2, markersize=6,
+                     label='% New Materials', zorder=3)
+
+    ax1.set_xticks(x_pos)
+    ax1.set_xticklabels(year_material_counts.index, rotation=45, fontsize=fontsize)
+    ax1.set_ylabel("Sample Count", fontsize=fontsize)
+    ax1.set_xlabel("Year", fontsize=fontsize)
+    ax1.tick_params(labelsize=fontsize)
+
+    ax2 = ax1.twinx()
+    ax2.set_ylim(0, 110)
+    ax2.set_ylabel("% New Materials", fontsize=fontsize)
+    ax2.tick_params(labelsize=fontsize)
+    ax2.set_yticks(range(0, 111, 20))
+
+    handles1, labels1 = ax1.get_legend_handles_labels()
+    handles2, labels2 = [line], [line.get_label()]
+
+    # Combine and remove duplicates
+    all_handles_labels = dict(zip(labels1 + labels2, handles1 + handles2))
+    ax1.legend(all_handles_labels.values(), all_handles_labels.keys(), loc='upper left', bbox_to_anchor=(1.25, 1), fontsize=fontsize, title=None)
+
+    # plt.title(f"Sample Count by Year and Material ({feature})", fontsize=fontsize)
+    plt.tight_layout()
+    if output_path:
+        plt.savefig(output_path, dpi=dpi, bbox_inches='tight')
+    plt.show()
+
+# Example call (replace with your actual DataFrame and column)
+# Assumes you have a DataFrame `df` with columns like 'year' and 'name_part1'
+plot_samples_and_new_materials(df_all, feature='name_part1', top_n=10, n_years=10, output_path=images_dir + "/samples_per_year.png")
+
+
+
+
+
+
 
 
 #%% Correlation heatmap Numerical only
