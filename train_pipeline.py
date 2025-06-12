@@ -72,7 +72,8 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     else:         # Fetch selected_feats from parser dict
         selected_feats = parser.feats_dict[feats_name]
 
-    selected_feats.remove(target)
+    if target in selected_feats:
+        selected_feats.remove(target)
     if model_name == 'lr_solidloading':
         print("Using only Solid Loading feature for lr_solidloading model")
         selected_feats = ['vf_total']
@@ -144,8 +145,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     print("Test additional_data Data")
     additional_data_preds = best_clf.predict(df_additional_data[selected_feats])
     helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
-    if 'name_part1' in selected_feats:
-        helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['name_part1'])
+    additional_group_metrics = helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['title'])
     r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
 
 
@@ -157,12 +157,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         print(key, "-"*20, 'all')
         print(metrics_dict['group_metrics'][key]['all'])
         print('-' * 40)
-    metrics_dict['additional_metrics'] = pd.DataFrame([{
-        "r2": r2_additional_data,
-        "mae": mae_additional_data,
-        "mse": mse_additional_data,
-        "mape": mape_additional_data
-    }])
+    metrics_dict['additional_metrics'] = additional_group_metrics
 
     print("Training Results")
     r2_train, mae_train, mse_train, mape_train = helpers.metrics_utils.get_regression_metrics(train_preds, df_train[target])
@@ -208,13 +203,38 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         )
         shap_explainer.save_explainer(explainer, shap_plotter.filepath_explainer)
         shap_plotter.run_all_plots()
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Solid Loading")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Temp Sinter")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Disp. wf.")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Solid Diameter")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="Temp. Cold")
-        shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list(), color_feature="material_group_Polymer")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Solid Loading")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp Sinter")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Disp. wf.")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Solid Diameter")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp. Cold")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="material_group_Polymer")
         # shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
+
+        # Single decision plot for feature importance
+        # import matplotlib.pyplot as plt
+        # import os
+        # import shap
+        # plt.close('all')
+        # feature = 'wf_disp_1'
+        # feature_idx = list(preprocessed_X.columns).index(feature)
+        # save_path = f"{model_results_path}/shap/decision/{feature}.png"
+        # os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        # shap_vals = explainer(preprocessed_X)
+        # min_idx = np.argmin(shap_values[:, feature_idx])
+        # print(df_test.iloc[min_idx])
+        # shap.decision_plot(explainer.expected_value, shap_values[min_idx], feature_names=preprocessed_X.columns.to_list(), link="logit")
+        # plt.tight_layout()
+        # plt.show()
+        # plt.savefig(save_path, bbox_inches="tight", dpi=300)
+        # preprocessed_X
+        # sh2 = explainer.shap_values(preprocessed_X2, check_additivity = False)
+
+
+
+        # Find material has lowest solid loading importance
+
+
 
     print("Finished")
 
@@ -237,3 +257,5 @@ if __name__ == "__main__":
         for model_name in model_names:
             print(f"\n=== Training with model: {model_name} ===")
             train_model(model_name=model_name, feats_name="reduced_feats", shap_opt=shap_opt)
+        # results = train_model()
+
