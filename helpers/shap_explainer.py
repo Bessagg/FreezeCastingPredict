@@ -8,6 +8,7 @@ import numpy as np
 import time
 from matplotlib.ticker import MaxNLocator
 import re
+from typing import Optional, List
 matplotlib.use('Agg')  # hide plots
 dpi=200
 
@@ -157,6 +158,28 @@ def get_shap_values(explainer, preprocessed_X):
     return explainer.shap_values(preprocessed_X, check_additivity=False)
 
 
+def plot_summary(explainer, preprocessed_X: pd.DataFrame,  feature_names: Optional[List[str]] = None,
+                    max_display: int = 30, save_path: str = None,title: str = None):
+
+    if feature_names is None:
+        feature_names = preprocessed_X.columns.tolist()
+    shap_vals = shap.Explanation(
+        values=explainer(preprocessed_X, check_additivity=False),
+        data=preprocessed_X,
+        feature_names=feature_names,
+    )
+    plt.clf()
+    plt.close('all')
+    shap.plots.beeswarm(shap_vals, show=False, max_display=max_display)
+    plt.tight_layout()
+    if title: plt.title(title)
+    if save_path:
+        os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        print("Saving summary plot to", save_path)
+        plt.savefig(save_path)
+
+
+
 class ShapPlotter:
     """
     Loads shap variables.
@@ -189,13 +212,13 @@ class ShapPlotter:
             self.shap_confusion_matrix_dict = {"X": preprocessed_X}
 
         # Get dataframe preprocessed by the pipeline (for example: one-hot-encoded/scaled dataframe)
-        self.X = preprocessed_X  # preprocess_and_cast(preprocessor, df, selected_cols)
+        self.preprocessed_X = preprocessed_X  # preprocess_and_cast(preprocessor, df, selected_cols)
         if col_rename_dict:
-            self.X.columns = rename_columns(self.X.columns, col_rename_dict)
+            self.preprocessed_X.columns = rename_columns(self.preprocessed_X.columns, col_rename_dict)
         self.check_additivity = check_additivity
         self.cmap = 'RdBu'  # plasma, RdBu
-        self.X_raw = self.X.copy()  # for debug
-        self.n_all_features = len(self.X.columns)
+        self.X_raw = self.preprocessed_X.copy()  # for debug
+        self.n_all_features = len(self.preprocessed_X.columns)
         self.zoomed_display = 20  # number of variables to show in zoomed summary plot
         self.dirpath_single = self.dirpath_root + "/single"
         self.dirpath_dependence = self.dirpath_root + "/dependence"
@@ -221,7 +244,7 @@ class ShapPlotter:
                 os.makedirs(folder)
 
         # reset indexes
-        self.X.reset_index(inplace=True, drop=True)
+        self.preprocessed_X.reset_index(inplace=True, drop=True)
         self.feature_importance = self.get_feature_importance()
         self.feature_ordered_index = self.feature_importance.index.to_list()
         self.feature_ordered_names = self.feature_importance['col_name']
@@ -229,14 +252,14 @@ class ShapPlotter:
 
     def get_feature_importance(self):
         vals = np.abs(self.shap_values).mean(axis=0)
-        feature_importance = pd.DataFrame(list(zip(self.X.columns, vals)),
+        feature_importance = pd.DataFrame(list(zip(self.preprocessed_X.columns, vals)),
                                           columns=['col_name', 'feature_importance_vals'])
         feature_importance.sort_values(by=['feature_importance_vals'], ascending=False, inplace=True)
         return feature_importance
 
     def plot_varimp(self):
         plt.clf()
-        shap.summary_plot(self.shap_values, plot_type="bar", features=self.X, feature_names=self.X.columns,
+        shap.summary_plot(self.shap_values, plot_type="bar", features=self.preprocessed_X, feature_names=self.preprocessed_X.columns,
                           cmap=self.cmap)
         if self.dirpath_root:
             plt.tight_layout()
@@ -244,8 +267,8 @@ class ShapPlotter:
 
     def plot_summary(self):
         plt.clf()
-        shap.summary_plot(self.shap_values, features=self.X, feature_names=self.X.columns, plot_size=(18, 8),
-                          max_display=self.X.shape[1])
+        shap.summary_plot(self.shap_values, features=self.preprocessed_X, feature_names=self.preprocessed_X.columns, plot_size=(18, 8),
+                          max_display=self.preprocessed_X.shape[1])
         plt.title(f"{self.plots_title}")
         if self.dirpath_root:
             plt.tight_layout()
@@ -259,7 +282,7 @@ class ShapPlotter:
             'xtick.labelsize': 38,  # Increase x-tick label size
             'ytick.labelsize': 38,  # Increase y-tick label size
         })
-        shap.summary_plot(self.shap_values, features=self.X, feature_names=self.X.columns, plot_size=(10, 8),
+        shap.summary_plot(self.shap_values, features=self.preprocessed_X, feature_names=self.preprocessed_X.columns, plot_size=(10, 8),
                           max_display=self.zoomed_display)
         if self.dirpath_root:
             plt.tight_layout()
@@ -271,10 +294,10 @@ class ShapPlotter:
         fig, axs = plt.subplots(nrows=len(self.feature_importance['col_name'][:self.max_features]),
                                 ncols=self.max_features, figsize=(10, 5))
         for i, col in enumerate(self.feature_importance['col_name'][:self.max_features]):
-            inds = shap.approximate_interactions(col, self.shap_values, self.X)
+            inds = shap.approximate_interactions(col, self.shap_values, self.preprocessed_X)
             for j in range(self.max_features):
-                ind_name = self.X.columns[inds[j]]
-                shap.dependence_plot(ind=col, interaction_index=inds[j], shap_values=self.shap_values, features=self.X,
+                ind_name = self.preprocessed_X.columns[inds[j]]
+                shap.dependence_plot(ind=col, interaction_index=inds[j], shap_values=self.shap_values, features=self.preprocessed_X,
                                      ax=axs[i, j])
                 axs[i, j].set(xticklabels=[])
                 axs[i, j].set(yticklabels=[])
@@ -289,8 +312,8 @@ class ShapPlotter:
         print("Plotting Shap Heatmap...")
         plt.clf()
 
-        shap.plots.heatmap(self.explainer(self.X), max_display=self.max_features,
-                           instance_order=self.explainer(self.X).sum(1), plot_width=30)
+        shap.plots.heatmap(self.explainer(self.preprocessed_X), max_display=self.max_features,
+                           instance_order=self.explainer(self.preprocessed_X).sum(1), plot_width=30)
         if self.dirpath_root:
             plt.tight_layout()
             plt.savefig(f"{self.dirpath_root}/Heatmap.{self.plt_fmt}", bbox_inches='tight', dpi=300)
@@ -379,13 +402,13 @@ class ShapPlotter:
             'ytick.labelsize': 38,  # Increase y-tick label size
         })
         for feature in feature_list:
-            if feature not in self.X.columns:
+            if feature not in self.preprocessed_X.columns:
                 print(f"Feature '{feature}' not found in dataset. Skipping...")
                 continue
 
             plt.figure(figsize=(6, 3))
-            interaction_index = color_feature if color_feature in self.X.columns else None
-            shap.dependence_plot(feature, self.shap_values, self.X, interaction_index=interaction_index)
+            interaction_index = color_feature if color_feature in self.preprocessed_X.columns else None
+            shap.dependence_plot(feature, self.shap_values, self.preprocessed_X, interaction_index=interaction_index)
             # plt.title(f"SHAP Dependence Plot: {feature}")
 
             if self.dirpath_dependence:
@@ -403,6 +426,7 @@ class ShapPlotter:
         self.plot_varimp()
         self.plot_summary()
         self.plot_summary_zoomed()
+        plot_summary(self.explainer, self.preprocessed_X, feature_names=self.preprocessed_X.columns, save_path=self.dirpath_root + "/summary.png", max_display=20)
         if feature_list:
             self.plot_dependence_for_features(feature_list, color_feature)
 
