@@ -18,8 +18,10 @@ class DataParser:
         self.target = 'porosity'
         self.ratios = [0.8]
         self.seed = 42
+        self.not_used_features = ['technique', 'name_part2', 'direction', 'name_bind1', 'cooling_rate', 'time_sub']
         # 19 columns. All chosen columns that might be relevant for porosity prediction.
-        self.all_feats = ['name_part1', 'name_part2',  # 'material',
+        self.all_feats = ['name_part1',
+                          'name_part2',  # 'material',
                           'name_fluid1',
                           'dia_part_1',  # could be used. discarded for simplification.
                           # 'technique', 'direction',  # mostly empty
