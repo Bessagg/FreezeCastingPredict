@@ -55,6 +55,17 @@ os.makedirs(images_dir, exist_ok=True)
 #%%  Sample count
 fontsize = 22
 
+
+# %% Missing percentage
+features = parser.all_feats + parser.not_used_features
+# Count both NaN and 0 as missing
+missing_perc = ((df_all[features].isna() | (df_all[features] == 0)).mean() * 100).round(0).astype(int)
+missing_perc = missing_perc.sort_values(ascending=False)
+print(missing_perc)
+
+
+
+
 #%% Binned Sample Count per Paper
 samples_per_paper = df_all.groupby('paper_ID').size()
 bins = [0, 5, 10, 20, 30, 50, float('inf')]
@@ -72,7 +83,6 @@ bin_table = pd.DataFrame({
 })
 print("\n📊 Samples per Paper - Binned Distribution:")
 print(bin_table)
-
 n_bins = len(labels)
 cmap = LinearSegmentedColormap.from_list('green_blue', ["#00427d", "#ffffff", "#00652e"], N=n_bins)
 colors2 = ["#00427d", "#00652e", "#E84855", "#f9dc5c", "#efbcd5", "#A9F0D1", "#461220", "#A37C40", "#BFCDE0", "#E3D26F"]
@@ -95,26 +105,40 @@ plt.show()
 #%% Sample Count per Country
 samples_by_country = df_all['country'].value_counts()
 country_percent = (100 * samples_by_country / len(df_all)).round(0).astype(int)
+
+# Separate top 9 countries
+top9 = samples_by_country.head(9)
+top9_percent = country_percent.loc[top9.index]
+
+# Group remaining as "Others"
+others_count = samples_by_country.iloc[9:].sum()
+others_percent = country_percent.iloc[9:].sum()
+
+# Build combined DataFrame
 country_table = pd.DataFrame({
-    'Country': samples_by_country.index,
-    'Sample Count': samples_by_country.values,
-    'Total % of Samples': [f"{p}%" for p in country_percent.values]
+    'Country': list(top9.index) + ['Others'],
+    'Sample Count': list(top9.values) + [others_count],
+    'Total % of Samples': list(top9_percent.astype(str) + '%') + [f"{others_percent}%"]
 })
-print("\n🌍 Samples per Country:")
+country_table['Country'] = country_table['Country'].replace('Republic of Korea', 'R. Korea')
+print("\n🌍 Samples per Country (Top 9 + Others):")
 print(country_table)
 
+# Plot
 fig, ax = plt.subplots(figsize=(8, 8))
 bars = ax.barh(country_table['Country'], country_table['Sample Count'], color="#00427d")
 ax.set_yticklabels(country_table['Country'], fontsize=fontsize)
 ax.set_xlabel("Number of Samples", fontsize=fontsize)
-ax.set_title("Samples by Country", fontsize=fontsize)
+ax.set_title("Samples by Country (Top 9 + Others)", fontsize=fontsize)
 ax.tick_params(axis='x', labelsize=fontsize)
-for bar, pct in zip(bars, country_percent.values):
+
+for bar, pct in zip(bars, [*top9_percent.values, others_percent]):
     if pct >= 1:
         ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
                 f"{pct}%", va='center', fontsize=fontsize)
+
 plt.tight_layout()
-plt.savefig(os.path.join(images_dir, "samples_by_country.png"), dpi=dpi)
+plt.savefig(os.path.join(images_dir, "samples_by_country_top9_others.png"), dpi=dpi)
 plt.show()
 
 
