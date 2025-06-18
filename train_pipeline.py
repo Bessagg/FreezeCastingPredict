@@ -85,7 +85,7 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     try:
         df_train = pd.read_csv(f"data/{feats_name}/train.csv")
         df_test = pd.read_csv(f"data/{feats_name}/test.csv")
-        df_train, df_test = custom_features.add_material_novelty_feature(df_train, df_test, min_count=6)
+        df_train, df_test = custom_features.add_material_novelty_feature(df_train, df_test, min_count=5)
         df_train, df_test = custom_features.add_bin_material_frequency(df_train, df_test, feature='name_part1')
     except FileNotFoundError:
         print(f'train and test file not found in data/{feats_name}')
@@ -145,19 +145,29 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
     print("Test additional_data Data")
     additional_data_preds = best_clf.predict(df_additional_data[selected_feats])
     helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
-    additional_group_metrics = helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['title'])
+    additional_group_metrics = helpers.metrics_utils.get_test_metrics_by_group(df_additional_data, additional_data_preds, target, ['title', 'name_part1'])
+    for key in additional_group_metrics.keys():
+        additional_group_metrics[key] = pd.DataFrame(additional_group_metrics[key]).T
+        print("Additional Data Group Metrics for", key)
+        print(additional_group_metrics[key])
+    df_additional_data['preds'] =  additional_data_preds
+    df_additional_data['error'] = df_additional_data['preds'] - df_additional_data['porosity']
+    print(df_additional_data[['title', 'year', 'doi', 'vf_total', 'name_part1','porosity', 'preds', 'error']].sort_values('year', ascending=False))
+    print('paper mae')
+    additional_group_metrics['recent_papers'] = df_additional_data[['title', 'year', 'doi', 'vf_total', 'name_part1','porosity', 'preds', 'error']].sort_values('year', ascending=False)
+
     r2_additional_data, mae_additional_data, mse_additional_data, mape_additional_data = helpers.metrics_utils.get_regression_metrics(additional_data_preds, df_additional_data[target])
 
 
     print("*"* 40)
     metrics_dict = helpers.metrics_utils.get_pipeline_metrics([best_clf], df_train, df_test, target, FEATURES_TO_ANALYZE, COLUMNS_NOT_NULL, selected_pipelines=[model_name])
+    metrics_dict['additional_metrics'] = additional_group_metrics
     for key in metrics_dict['group_metrics'].keys():
         print(key, "-"*20, 'topn')
         print(metrics_dict['group_metrics'][key]['topn'])
         print(key, "-"*20, 'all')
         print(metrics_dict['group_metrics'][key]['all'])
         print('-' * 40)
-    metrics_dict['additional_metrics'] = additional_group_metrics
 
     print("Training Results")
     r2_train, mae_train, mse_train, mape_train = helpers.metrics_utils.get_regression_metrics(train_preds, df_train[target])
@@ -206,9 +216,9 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Solid Loading")
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp Sinter")
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Disp. wf.")
-        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Solid Diameter")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp. Sinter")
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp. Cold")
-        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="material_group_Polymer")
+        shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Binder wf.")
         # shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
 
         # Single decision plot for feature importance
@@ -242,20 +252,19 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
 
 
 if __name__ == "__main__":
-    shap_opt=0
+    shap_opt=1
     """Running all possible pipeline trains by index"""
-    if __name__ == "__main__":
-        model_names =  [
-            "catb_onehot[selected]",
-            # "catb_native",
-            # "catb_onehot_impute",
-            # "xgb_onehot", "xgb_impute",
-            # "lr",
-            #"lr_solidloading",
-            #"rf"
-                        ]
-        for model_name in model_names:
-            print(f"\n=== Training with model: {model_name} ===")
-            train_model(model_name=model_name, feats_name="reduced_feats", shap_opt=shap_opt)
-        # results = train_model()
+    model_names =  [
+        # "catb_onehot[selected]",
+        # "catb_native",
+        "catb_onehot_impute",
+        # "xgb_onehot", "xgb_impute",
+        # "lr",
+        #"lr_solidloading",
+        #"rf"
+                    ]
+    for model_name in model_names:
+        print(f"\n=== Training with model: {model_name} ===")
+        train_model(model_name=model_name, feats_name="reduced_feats", shap_opt=shap_opt)
+    # results = train_model()
 

@@ -40,7 +40,7 @@ class DataParser:
             ['name_part1',
              # 'name_part2',   # removed : missing data >50%
              'name_fluid1',
-             'dia_part_1',
+             # 'dia_part_1',  # low importance
              # 'technique', 'direction',  # 'sublimated'   # removed : missing data >50%
              'material_group',
              # 'name_mold_mat',  # should not be considered

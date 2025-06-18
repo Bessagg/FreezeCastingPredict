@@ -5,6 +5,8 @@ import numpy as np
 
 # Data fetched using GPT and validated/adjusted afterwards.
 gpt_data = [
+
+    # Could not validate. Which porosity to use? Which is HAP and which is B-TCP values.
     {
         "title": "Bone-like structure by modified freeze casting",
         "journal": "Scientific Reports",
@@ -39,122 +41,60 @@ gpt_data = [
         "vf_total": 0.40,
         "porosity": 54.11
     },
-    {
-        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
-        "journal": "Int. J. Appl. Ceram. Tech.",
-        "year": 2025,
-        "doi": "10.1111/ijac.14883",
-        "name_part1": "LTO",
-        "name_fluid1": "water",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": np.nan,
-        "time_sinter_1": np.nan,
-        "temp_sinter_1": np.nan,
-        "vf_total": 0.30,
-        "porosity": 50.00
-    },
-    {
-        "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
-        "journal": "Int. J. Appl. Ceram. Tech.",
-        "year": 2025,
-        "doi": "10.1111/ijac.14883",
-        "name_part1": "LTO",
-        "name_fluid1": "water",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": np.nan,
-        "time_sinter_1": np.nan,
-        "temp_sinter_1": np.nan,
-        "vf_total": 0.37,
-        "porosity": 36.00
-    },
-    {
-        "title": "Anisotropic freeze-cast collagen scaffolds",
-        "journal": "J. Mech. Behav. Biomed. Mater.",
-        "year": 2019,
-        "doi": "10.1016/j.jmbbm.2018.09.012",
-        "name_part1": "Collagen",
-        "name_fluid1": "water",
-        "material_group": "Polymer",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": -85+273,
-        "time_sinter_1": np.nan,
-        "temp_sinter_1": np.nan,
-        "vf_total": np.nan,
-        "porosity": 97.90
-    },
-    {
-        "name_part1": "Al2O3",
-        "name_fluid1": "TBA",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": np.nan,
-        "time_sinter_1": np.nan,
-        "temp_sinter_1": np.nan,
-        "vf_total": 0.20,
-        "porosity": 65.0,
-        "title": "Preparation of porous alumina ceramic with ultra-high porosity and long straight pores by freeze casting",
-        "journal": "Journal of Porous Materials",
-        "doi": "10.1007/s10934-011-9480-y"
-    },
-    {
-        "name_part1": "HAP",
-        "name_fluid1": "water",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": -20,
-        "time_sinter_1": 3,
-        "temp_sinter_1": 1350,
-        "vf_total": 0.50,
-        "porosity": 50.0,
-        "title": "Freeze casting of porous hydroxyapatite scaffolds. I. Processing and general microstructure",
-        "journal": "Journal of Biomedical Materials Research Part B: Applied Biomaterials",
-        "doi": "10.1002/jbm.b.30957"
-    },
+    # {
+    #     "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
+    #     "journal": "Int. J. Appl. Ceram. Tech.",
+    #     "year": 2025,
+    #     "doi": "10.1111/ijac.14883",
+    #     "name_part1": "LTO",
+    #     "name_fluid1": "water",
+    #     "material_group": "Ceramic",
+    #     "dia_part_1": np.nan,
+    #     "wf_disp_1": np.nan,
+    #     "wf_bind_1": np.nan,
+    #     "temp_cold": np.nan,
+    #     "time_sinter_1": np.nan,
+    #     "temp_sinter_1": np.nan,
+    #     "vf_total": 0.30,
+    #     "porosity": 50.00
+    # },
+    # {
+    #     "title": "Assessing porosity limit in freeze-cast sintered Li₄Ti₅O₁2 (LTO)",
+    #     "journal": "Int. J. Appl. Ceram. Tech.",
+    #     "year": 2025,
+    #     "doi": "10.1111/ijac.14883",
+    #     "name_part1": "LTO",
+    #     "name_fluid1": "water",
+    #     "material_group": "Ceramic",
+    #     "dia_part_1": np.nan,
+    #     "wf_disp_1": np.nan,
+    #     "wf_bind_1": np.nan,
+    #     "temp_cold": np.nan,
+    #     "time_sinter_1": np.nan,
+    #     "temp_sinter_1": np.nan,
+    #     "vf_total": 0.37,
+    #     "porosity": 36.00
+    # },
 
-    {
-        "name_part1": "Al2O3",
-        "name_fluid1": "TBA",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": np.nan,
-        "time_sinter_1": np.nan,
-        "temp_sinter_1": np.nan,
-        "vf_total": 0.20,
-        "porosity": 65.0,
-        "title": "Preparation of porous alumina ceramic with ultra-high porosity and long straight pores by freeze casting",
-        "journal": "Journal of Porous Materials",
-        "doi": "10.1007/s10934-011-9480-y"
-    },
-    {
-        "name_part1": "HAP",
-        "name_fluid1": "water",
-        "material_group": "Ceramic",
-        "dia_part_1": np.nan,
-        "wf_disp_1": np.nan,
-        "wf_bind_1": np.nan,
-        "temp_cold": -20,
-        "time_sinter_1": 3,
-        "temp_sinter_1": 1350,
-        "vf_total": 0.50,
-        "porosity": 50.0,
-        "title": "Freeze casting of porous hydroxyapatite scaffolds. I. Processing and general microstructure",
-        "journal": "Journal of Biomedical Materials Research Part B: Applied Biomaterials",
-        "doi": "10.1002/jbm.b.30957"
-    }, 
+
+    # # couldnt validate
+    # {
+    #     "name_part1": "HAP",
+    #     "name_fluid1": "water",
+    #     "material_group": "Ceramic",
+    #     "dia_part_1": np.nan,
+    #     "wf_disp_1": np.nan,
+    #     "wf_bind_1": np.nan,
+    #     "temp_cold": -20,
+    #     "time_sinter_1": 3,
+    #     "temp_sinter_1": 1350,
+    #     "vf_total": 0.50,
+    #     "porosity": 50.0,
+    #     "title": "Freeze casting of porous hydroxyapatite scaffolds. I. Processing and general microstructure",
+    #     "journal": "Journal of Biomedical Materials Research Part B: Applied Biomaterials",
+    #     "doi": "10.1002/jbm.b.30957"
+    # },
+
 
 ]
 
@@ -212,7 +152,7 @@ dseek_data = [
         "doi": "10.1002/jbm.a.37645",
         "name_part1": "HAP",
         "name_fluid1": "water",
-        "material_group": "Metal/Ceramic",
+        "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
         "name_disp_1": "Dynol 604",
@@ -232,7 +172,7 @@ dseek_data = [
         "name_part1": "HAP",
         "name_fluid1": "water",
         "name_part2": "TiO2",
-        "material_group": "Metal/Ceramic",
+        "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
         "name_disp_1": "Dynol 604",
@@ -252,7 +192,7 @@ dseek_data = [
         "name_part1": "HAP",
         "name_part2": "TiO2",
         "name_fluid1": "water",
-        "material_group": "Metal/Ceramic",
+        "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
         "name_disp_1": "Dynol 604",
@@ -262,7 +202,7 @@ dseek_data = [
         "time_sinter_1": 3.0,
         "temp_sinter_1": 1250.0+ 273,
         "vf_total": 0.10,
-        "porosity": 52.7
+        "porosity": 54.0
     },
     {
         "title": "Freeze casting of hydroxyapatite-titania composites for bone substitutes",
@@ -272,7 +212,7 @@ dseek_data = [
         "name_part1": "HAP",
         "name_part2": "TiO2",
         "name_fluid1": "water",
-        "material_group": "Metal/Ceramic",
+        "material_group": "Ceramic",
         "dia_part_1": np.nan,
         "wf_disp_1": 1.0,
         "name_disp_1": "Dynol 604",
@@ -282,7 +222,7 @@ dseek_data = [
         "time_sinter_1": 3.0,
         "temp_sinter_1": 1250.0 + 273,
         "vf_total": 0.10,
-        "porosity": 68.40
+        "porosity": 52.7
     },
 
 
@@ -506,7 +446,7 @@ dseek_data = [
         "time_sinter_1": 3.0,
         "temp_sinter_1": 1500.0,
         "vf_total": 0.10 + 0.06,
-        "porosity": 0.76  # Controlled unidirectional pores :cite[3]
+        "porosity": 76  # Controlled unidirectional pores :cite[3]
     },
     {
         "title": "Design of porous aluminum oxide ceramics using magnetic field-assisted freeze-casting",
@@ -526,7 +466,7 @@ dseek_data = [
         "time_sinter_1": 6.0,
         "temp_sinter_1": 1500.0,
         "vf_total": 0.10  + 0.06,
-        "porosity": 0.72  # Controlled unidirectional pores :cite[3]
+        "porosity": 72  # Controlled unidirectional pores :cite[3]
     },    {
         "title": "Design of porous aluminum oxide ceramics using magnetic field-assisted freeze-casting",
         "journal": "Journal of Materials Research",

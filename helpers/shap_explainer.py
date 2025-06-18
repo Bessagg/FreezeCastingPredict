@@ -416,6 +416,7 @@ class ShapPlotter:
                 if not os.path.isdir(dirpath):
                     os.makedirs(dirpath)
                 save_path = f"{dirpath}/{feature}.{self.plt_fmt}"
+                plt.grid(False)  # Remove grid for the current figure
                 plt.tight_layout()
                 plt.savefig(save_path, bbox_inches="tight", dpi=300)
                 # print(f"Saved: {save_path}")

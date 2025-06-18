@@ -2,7 +2,7 @@
 import pandas as pd
 
 
-def add_material_novelty_feature(df_train: pd.DataFrame, df_test: pd.DataFrame, feature='name_part1', min_count=6):
+def add_material_novelty_feature(df_train: pd.DataFrame, df_test: pd.DataFrame, feature='name_part1', min_count=5):
     """
     Adds a boolean column '{feature}_novel_in_test' to df_test and df_train indicating if
     the feature value appears less than min_count times in df_train.
@@ -12,7 +12,7 @@ def add_material_novelty_feature(df_train: pd.DataFrame, df_test: pd.DataFrame, 
 
     # Materials in test with count < min_count in train
     def is_novel(val):
-        return train_counts.get(val, 0) < min_count
+        return train_counts.get(val, 0) <= min_count
 
     # Add column to test
     df_test[f'{feature}_novel_in_test'] = df_test[feature].apply(is_novel)

@@ -1,4 +1,6 @@
 import pandas as pd
+from matplotlib.ticker import FuncFormatter
+import seaborn as sns
 from matplotlib.colors import LinearSegmentedColormap
 import plotly.io as pio
 import data_parser
@@ -90,12 +92,16 @@ colors2 = ["#00427d", "#00652e", "#E84855", "#f9dc5c", "#efbcd5", "#A9F0D1", "#4
 colors = [cmap(i / (n_bins - 1)) for i in range(n_bins)]
 
 fig, ax = plt.subplots(figsize=(8, 8))
+fig.patch.set_facecolor('white')     # White figure background
+ax.set_facecolor('white')            # White plot background
+ax.grid(False)                       # Remove grid
+
 bars = ax.barh(bin_table['Sample Count Bin'], bin_table['Total Samples in Bin'], color=colors)
 for bar, pct in zip(bars, bin_percent.values):
     ax.text(bar.get_width() + 5, bar.get_y() + bar.get_height() / 2,
             f"{pct}%", va='center', fontsize=fontsize)
-ax.set_xlabel("Total Number of Samples", fontsize=fontsize)
-ax.set_ylabel("Number of samples reported per paper", fontsize=fontsize)
+ax.set_xlabel("Number of Samples", fontsize=fontsize)
+ax.set_ylabel("Number of samples per paper", fontsize=fontsize)
 ax.set_title("Samples per Paper", fontsize=fontsize)
 ax.tick_params(axis='both', labelsize=fontsize)
 plt.tight_layout()
@@ -126,10 +132,20 @@ print(country_table)
 
 # Plot
 fig, ax = plt.subplots(figsize=(8, 8))
-bars = ax.barh(country_table['Country'], country_table['Sample Count'], color="#00427d")
+fig.patch.set_facecolor('white')
+ax.set_facecolor('white')
+ax.grid(False)
+
+bars = ax.barh(
+    country_table['Country'],
+    country_table['Sample Count'],
+    color="#00427d",
+    edgecolor='none'  # removes black contour
+)
+
 ax.set_yticklabels(country_table['Country'], fontsize=fontsize)
 ax.set_xlabel("Number of Samples", fontsize=fontsize)
-ax.set_title("Samples by Country (Top 9 + Others)", fontsize=fontsize)
+ax.set_title("Samples by Country", fontsize=fontsize)
 ax.tick_params(axis='x', labelsize=fontsize)
 
 for bar, pct in zip(bars, [*top9_percent.values, others_percent]):
@@ -138,8 +154,9 @@ for bar, pct in zip(bars, [*top9_percent.values, others_percent]):
                 f"{pct}%", va='center', fontsize=fontsize)
 
 plt.tight_layout()
-plt.savefig(os.path.join(images_dir, "samples_by_country_top9_others.png"), dpi=dpi)
+plt.savefig(os.path.join(images_dir, "samples_by_country_top9_others.png"), dpi=dpi, bbox_inches='tight')
 plt.show()
+
 
 
 #%%
@@ -161,22 +178,17 @@ print(f"Percentage of 0 or NaN in 'cooling_rate': {zero_nan_percentage:.2f}%")
 
 # %%
 # Year Plot
-
-import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 
-def plot_samples_and_new_materials(df, feature, top_n=5, output_path=None, dpi=dpi, n_years=15):
+def plot_samples_and_new_materials(df, feature, top_n=5, output_path=None, n_years=15):
     df = df[['year', feature]].dropna()
     df['year'] = df['year'].astype(int)
     df = df[df['year'].isin(sorted(df['year'].unique())[-n_years:])]
 
     top_materials = df[feature].value_counts().nlargest(top_n).index
-    df['material_grouped'] = df[feature].where(df[feature].isin(top_materials), 'Other')
+    df['material_grouped'] = df[feature].where(df[feature].isin(top_materials), 'Others')
 
     year_material_counts = df.groupby(['year', 'material_grouped']).size().unstack(fill_value=0).sort_index()
-
-    # Sort materials by total count descending so first color matches biggest count
     total_counts = year_material_counts.sum(axis=0).sort_values(ascending=False)
     year_material_counts = year_material_counts[total_counts.index]
 
@@ -195,35 +207,59 @@ def plot_samples_and_new_materials(df, feature, top_n=5, output_path=None, dpi=d
         base_colors += sns.color_palette('tab10', n_colors=n_colors - len(colors2))
 
     fig, ax1 = plt.subplots(figsize=(16, 8))
+    fig.patch.set_facecolor('white')
+    ax1.set_facecolor('white')
+    ax1.grid(False)
 
-    bars = year_material_counts.plot(kind='bar', stacked=True, ax=ax1, width=0.8, color=base_colors, zorder=2)
+    bars = year_material_counts.plot(kind='bar', stacked=True, ax=ax1, width=0.8, color=base_colors, zorder=2, edgecolor='none')
 
     x_pos = range(len(year_material_counts.index))
-    y_line = pct_new_series.loc[year_material_counts.index].values  # align index
-
+    y_line = pct_new_series.loc[year_material_counts.index].values
     line, = ax1.plot(x_pos, y_line, color='black', marker='o', linestyle='-', linewidth=2, markersize=6,
                      label='% New Materials', zorder=3)
 
     ax1.set_xticks(x_pos)
     ax1.set_xticklabels(year_material_counts.index, rotation=45, fontsize=fontsize)
     ax1.set_ylabel("Sample Count", fontsize=fontsize)
-    ax1.set_xlabel("Year", fontsize=fontsize)
+    ax1.set_xlabel("Publication Year", fontsize=fontsize)
     ax1.tick_params(labelsize=fontsize)
 
+    # Secondary axis for % new materials
     ax2 = ax1.twinx()
+    ax2.set_facecolor('white')
+    ax2.grid(False)
     ax2.set_ylim(0, 110)
-    ax2.set_ylabel("% New Materials", fontsize=fontsize)
     ax2.tick_params(labelsize=fontsize)
     ax2.set_yticks(range(0, 111, 20))
+    ax2.yaxis.set_major_formatter(FuncFormatter(lambda x, _: f"{int(x)}%"))
 
+    # Add R² (hardcoded, scaled to %)
+    r2_by_year = {
+        2007: 94,
+        2008: 82, 2009: 73, 2010: 42, 2011: 68, 2012: 70,
+        2013: 81, 2014: 79, 2015: 77, 2016: 86
+    }
+    r2_values = [r2_by_year.get(y, None) for y in year_material_counts.index]
+    valid_idx = [i for i, v in enumerate(r2_values) if v is not None]
+    x_r2 = [x_pos[i] for i in valid_idx]
+    y_r2 = [r2_values[i] for i in valid_idx]
+
+    ax3 = ax1.twinx()
+    ax3.spines["right"].set_position(("outward", 60))
+    ax3.set_facecolor('white')
+    ax3.grid(False)
+    r2_line, = ax3.plot(x_r2, y_r2, color='red', linestyle='--', marker='s', linewidth=2,
+                        markersize=6, label='Test R² (%)', zorder=4)
+    ax3.set_ylim(0, 110)
+    # Remove ticks on ax3
+    ax3.tick_params(left=False, right=False, labelleft=False, labelright=False)
+
+    # Combine all legends with correct order
     handles1, labels1 = ax1.get_legend_handles_labels()
-    handles2, labels2 = [line], [line.get_label()]
+    handles_ordered = [line, r2_line] + [h for l, h in zip(labels1, handles1) if l not in ['% New Materials', 'Test R² (%)']]
+    labels_ordered = ['% New Materials', 'Test R² (%)'] + [l for l in labels1 if l not in ['% New Materials', 'Test R² (%)']]
+    ax1.legend(handles_ordered, labels_ordered, loc='upper left', bbox_to_anchor=(1.25, 1), fontsize=fontsize)
 
-    # Combine and remove duplicates
-    all_handles_labels = dict(zip(labels1 + labels2, handles1 + handles2))
-    ax1.legend(all_handles_labels.values(), all_handles_labels.keys(), loc='upper left', bbox_to_anchor=(1.25, 1), fontsize=fontsize, title=None)
-
-    # plt.title(f"Sample Count by Year and Material ({feature})", fontsize=fontsize)
     plt.tight_layout()
     if output_path:
         plt.savefig(output_path, dpi=dpi, bbox_inches='tight')
