@@ -100,7 +100,7 @@ def plot_freq_bin_model_perf(df, metric='R2', output_path=None, fontsize=20, dpi
 
     ax1.set_ylabel(f"Test $R^2$", fontsize=fontsize)
     # ax1.set_ylabel(f"Test {metric}", fontsize=fontsize)
-    ax1.set_xlabel("Number of material's trained samples", fontsize=fontsize)
+    ax1.set_xlabel("Number of material's samples in the training set", fontsize=fontsize)
     ax1.set_xticklabels(bins_order, rotation=0, fontsize=fontsize)
     ax1.tick_params(axis='y', labelsize=fontsize)
     ax1.legend(title="Model", fontsize=fontsize-2, title_fontsize=fontsize-2, bbox_to_anchor=(1.01, 1))

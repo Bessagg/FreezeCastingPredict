@@ -194,12 +194,12 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
 
     if shap_opt == 1:
         prevalence = df_train[target].mean()
-        predicted_label = best_clf.predict(df_test)
+        prediction = best_clf.predict(df_test)
 
         explainer, preprocessed_X, shap_values, shap_confusion_matrix_dict = (
             shap_explainer.get_shap_plotter_inputs(
                 estimator, preprocessor, df_test,
-                selected_feats, predicted_label, prevalence,
+                selected_feats, prediction, prevalence,
                 df_test[target])
         )
 
@@ -213,6 +213,11 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         )
         shap_explainer.save_explainer(explainer, shap_plotter.filepath_explainer)
         shap_plotter.run_all_plots()
+
+
+
+
+        # Single feature plots
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Solid Loading")
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Temp Sinter")
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Disp. wf.")
@@ -221,25 +226,42 @@ def train_model(model_name=None, feats_name=None, seed=6, cv=5, encode_min_frequ
         shap_plotter.plot_dependence_for_features(shap_plotter.preprocessed_X.columns.to_list(), color_feature="Binder wf.")
         # shap_plotter.plot_dependence_for_features(shap_plotter.X.columns.to_list())
 
-        # Single decision plot for feature importance
-        # import matplotlib.pyplot as plt
-        # import os
-        # import shap
-        # plt.close('all')
-        # feature = 'wf_disp_1'
-        # feature_idx = list(preprocessed_X.columns).index(feature)
-        # save_path = f"{model_results_path}/shap/decision/{feature}.png"
-        # os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        # shap_vals = explainer(preprocessed_X)
-        # min_idx = np.argmin(shap_values[:, feature_idx])
-        # print(df_test.iloc[min_idx])
-        # shap.decision_plot(explainer.expected_value, shap_values[min_idx], feature_names=preprocessed_X.columns.to_list(), link="logit")
-        # plt.tight_layout()
-        # plt.show()
-        # plt.savefig(save_path, bbox_inches="tight", dpi=300)
-        # preprocessed_X
-        # sh2 = explainer.shap_values(preprocessed_X2, check_additivity = False)
 
+
+
+        # Single decision plot for feature importance
+        import matplotlib.pyplot as plt
+        import shap
+        plt.clf()
+        plt.rcParams.update({'font.size': 20})
+        plt.rcParams.update({
+            'font.size': 38,  # Increase font size
+            'axes.labelsize': 38,  # Increase axis label size
+            'xtick.labelsize': 38,  # Increase x-tick label size
+            'ytick.labelsize': 38,  # Increase y-tick label size
+        })
+
+        print("First Sample", preprocessed_X.iloc[0])
+        print("First sample prediction:", prediction[0])
+        shap_vals = explainer(preprocessed_X)
+        shap.force_plot(shap_vals[0], feature_names=preprocessed_X.columns,
+                        matplotlib=True, contribution_threshold=0.1)
+        plt.savefig(f"{shap_plotter.dirpath_root}/ForcePlot_sample0.{shap_plotter.plt_fmt}", bbox_inches='tight', dpi=300)
+
+        plt.clf()
+        plt.rcParams.update({'font.size': 20})
+        plt.rcParams.update({
+            'font.size': 38,  # Increase font size
+            'axes.labelsize': 38,  # Increase axis label size
+            'xtick.labelsize': 38,  # Increase x-tick label size
+            'ytick.labelsize': 38,  # Increase y-tick label size
+        })
+        adjusted_X = preprocessed_X.copy()
+        adjusted_X.at[0, "Time Sinter."] = 1
+        shap_vals2 = explainer(adjusted_X)
+        shap.force_plot(shap_vals2[0], feature_names=adjusted_X.columns,
+                        matplotlib=True, contribution_threshold=0.1)
+        plt.savefig(f"{shap_plotter.dirpath_root}/ForcePlot_sample0_adjusted.{shap_plotter.plt_fmt}", bbox_inches='tight', dpi=300)
 
 
         # Find material has lowest solid loading importance
@@ -255,9 +277,9 @@ if __name__ == "__main__":
     shap_opt=1
     """Running all possible pipeline trains by index"""
     model_names =  [
-        # "catb_onehot[selected]",
+        "catb_onehot[selected]",
         # "catb_native",
-        "catb_onehot_impute",
+        # "catb_onehot_impute",
         # "xgb_onehot", "xgb_impute",
         # "lr",
         #"lr_solidloading",

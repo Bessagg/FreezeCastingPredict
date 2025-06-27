@@ -394,7 +394,6 @@ class ShapPlotter:
             print("Feature list is empty. Please provide feature names.")
             return
 
-        plt.clf()
         plt.rcParams.update({
             'font.size': 38,  # Increase font size
             'axes.labelsize': 38,  # Increase axis label size
@@ -406,7 +405,7 @@ class ShapPlotter:
                 print(f"Feature '{feature}' not found in dataset. Skipping...")
                 continue
 
-            plt.figure(figsize=(6, 3))
+            plt.close()
             interaction_index = color_feature if color_feature in self.preprocessed_X.columns else None
             shap.dependence_plot(feature, self.shap_values, self.preprocessed_X, interaction_index=interaction_index)
             # plt.title(f"SHAP Dependence Plot: {feature}")
@@ -427,6 +426,14 @@ class ShapPlotter:
         self.plot_varimp()
         self.plot_summary()
         self.plot_summary_zoomed()
+        shap_vals = self.explainer(self.preprocessed_X, check_additivity=self.check_additivity)
+        plt.close('all')  # ✅ Close any previous figures
+        fig = shap.plots.beeswarm(shap_vals, max_display=4)
+        plt.title("")
+        plt.savefig(self.dirpath_root+ "/summary3.png", dpi=300, bbox_inches='tight')
+
+
+
         plot_summary(self.explainer, self.preprocessed_X, feature_names=self.preprocessed_X.columns, save_path=self.dirpath_root + "/summary.png", max_display=20)
         if feature_list:
             self.plot_dependence_for_features(feature_list, color_feature)
